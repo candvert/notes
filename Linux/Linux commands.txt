@@ -1,0 +1,71 @@
+date (print or set the system date and time)
+cal, ncal (displays a calendar)
+df (report file system disk space usage)
+free (display amount of free and used memory in the system)
+
+Even if we have no terminal emulator running, several terminal sessions 
+continue to run behind the graphical desktop. Called virtual terminals or virtual
+consoles, these sessions can be accessed on most Linux distributions by pressing
+CTRL-ALT-F1 through CTRL-ALT-F6 on most systems. When a session is accessed, it
+presents a login prompt into which we can enter our username and password.
+To switch from one virtual console to another, press ALT and F1–F6. To return
+to the graphical desktop, press ALT-F7.
+
+pwd (print name of current/working directory)
+cd (change directory)
+ls (list directory contents)
+file (determine file type)
+
+less (view file contents) {
+	space : scroll forward one page;
+	b     : scoll back one page;
+	up arrow : scroll up one line
+	down arrow : scroll down one line;
+	G : move to the end of the text file;
+	1G or g : move to the beginning of the text file;
+	/characters : search forward to the next occurrence of characters;
+	n : search for the next occurrence of the previous search;
+	h : display help screen;
+	q : quit less;
+}
+
+cp (copy files and directories)
+mv (move/rename files)
+mkdir (make directories)
+rm (remove files or directories)
+ln (make links between files)
+
+shell Wildcards
+* : any characters
+? : any single character
+[characters] : any character that is a member of the set characters
+[!characters] : any character that is not a member of the set characters
+[[:class:]] any character that is a member of the specified class {
+	[:alnum:] : any alphanumeric character;
+	[:alpha:] : any alphabetic character;
+	[:digit:] : any numeral;
+	[:lower:] : any lowercase letter;
+	[:upper:] : any uppercase letter;
+}
+
+type (indicate how a command name is interpreted)
+which (locate a command)
+man (an interface to the system reference manuals)
+apropos (display a list of apropriate commands)
+
+info (display a command's info entry) {
+	? : display command help;
+	BACKSPACE : display previous page;
+	Spacebar : display next page;
+	n : display the next node;
+	p : display the previous node;
+	u : display the parent node of the currently displayed node, usually a menu;
+	ENTER : follow the hyperlink at the cursor location;
+	q : quit;
+}
+
+whatis (display a very brief description of a command)
+alias (create an alias for a command)
+unalias
+
+help [shell built-in command]
