@@ -69,3 +69,140 @@ alias (create an alias for a command)
 unalias
 
 help [shell built-in command]
+
+cat (concatenate files and print on the standard output)
+sort (sort lines of text files)
+uniq (report or omit repeated lines)
+wc (print newline, word, and byte counts for each file)
+grep, egrep, fgrep, rgrep (print lines that match patterns)
+head (output the first part of files)
+tail (output the last part of files)
+tee (read from standard input and write to standard output and files)
+
+ls -l /bin/usr 2> ls-error.txt (redirect standard error, 2 can be replaced with any file descriptor)
+ls -l /bin/usr &> ls-output.txt (redirect both standard output and standard error)
+ls -l /bin/usr 2> /dev/null (/dev/null receive input and does nothing with it, used for don't want any messages from a command)
+
+echo (display a line of text)
+
+Expansion
+Pathname Expansion : echo *
+Tilde Expansion : echo ~[username]
+Arithmetic Expansion : echo $((expression)) {support only integers, operator is one of the following : +, -, *, /, %, **}
+Brace Expansion : echo Front-{A,B,C}-Back (or can use {A..Z}, {M..A}, {1..8}, {8..1})
+Parameter Expansion : echo $USER
+Command Substitution : echo $(ls)	echo $(ls /usr/bin | grep zip)
+
+Quotes
+Double Quotes : ls -l "this is a file" (treat like one file, but $, \, `still remain the same meaning like in the shell, that means parameter expansion, arithmetic expansion and command substitution are still carried out)
+Single Quotes : suppress all expansion
+
+Escaping Characters (\)
+\ can be used in shell and double quotes to escape character
+
+clear (clear the terminal screen)
+history (display the contents of the history list)
+
+Command Line Editing {
+	Cursor Movement:
+	CTRL-A Move cursor to the beginning of the line.
+	CTRL-E Move cursor to the end of the line.
+	CTRL-F Move cursor forward one character; same as the right arrow key.
+	CTRL-B Move cursor backward one character; same as the left arrow key.
+	ALT-F Move cursor forward one word.
+	ALT-B Move cursor backward one word.
+	CTRL-L Clear the screen and move the cursor to the top left corner. The clear command does the same thing.
+
+	Text Editing Commands:
+	CTRL-D Delete the character at the cursor location.
+	CTRL-T Transpose (exchange) the character at the cursor location with the one preceding it.
+	ALT-T Transpose the word at the cursor location with the one preceding it.
+	ALT-L Convert the characters from the cursor location to the end of the word to lowercase.
+	ALT-U Convert the characters from the cursor location to the end of the word to uppercase.
+
+	Cut and Paste Commands:
+	CTRL-K Kill text from the cursor location to the end of line.
+	CTRL-U Kill text from the cursor location to the beginning of the line.
+	ALT-D Kill text from the cursor location to the end of the current word.
+	ALT-BACKSPACE Kill text from the cursor location to the beginning of the current word. If the cursor is at the beginning of a word, kill the previous word.
+	CTRL-Y Yank text from the kill-ring and insert it at the cursor location.
+}
+
+Search History
+!number (carry out the number command in the command history, which is in .bash_history)
+first enter CTRL-R perform a reverse incremental search in command history, which means as search as you enter characters, press CTRL-j to copy the line from search to current command line, to find the next occurrence of the text, press CTRL-R again. To quit searching, press either CTRL-G or CTRL-C.
+
+id (print real and effective user and group IDs)
+chmod (change a file's mode)
+umask (display or set file mode mask)
+su (run a shell as another user)
+sudo (execute a command as another user)
+chown (change a file's owner)
+chgrp (change a file's group ownership)
+passwd (change a user's password)
+
+File Types (-rw-rw-rw-) {
+	- 		A regular file.
+	d 		A directory.
+	l 		A symbolic link. Notice that with symbolic links, the remaining file attributes are always rwxrwxrwx and are dummy values. The real file attributes are those of the file the symbolic link points to.
+	c 		A character special file. This file type refers to a device that handles data as a stream of bytes, such as a terminal or modem.
+	b 		A block special file. This file type refers to a device that handles data in blocks, such as a hard drive or CD-ROM drive.
+}
+
+Permission Attributes {
+	                Files 										Directories
+	r               Allows a file to be opened and read.		Allows a directory’s
+																contents to be listed if
+																the execute attribute is
+																also set.
+
+	w 				Allows a file to be written to or 			Allows files within a
+					truncated; however, this attribute does 	directory to be created,
+					not allow files to be renamed or 			deleted, and renamed if
+					deleted.The ability to delete or rename 	the execute attribute is
+					files is determined by directory 			also set.
+					attributes.
+
+	x 				Allows a file to be treated as a program 	Allows a directory to
+					and executed. Program files written in 		be entered; e.g., 
+					scripting languages must alsobe set as 		cd directory.
+					readable to be executed.
+}
+
+chmod 700 filename/directory 		 chmod [a,u,g,o] [+,-,=] [r,w,x] (only file/directory owner and superuser can change file mode)
+umask 0002 (if umask is 0000, the new file created with attributes -rw-rw-rw-, which is default file attributes, through umask we can remove some of those attributes)
+su - [user] (change to user)		su -c 'command' (pass the command to new shell)
+chown [owner][:[group]] file... (need add sudo at front)
+
+ps (report a snapshot of the current processes)
+top (display Linux processes)
+jobs (list active jobs)
+bg (place a job in the background)
+fg (place a job in the foreground)
+kill (send a signal to process)
+killall (kill processes by name)
+shutdown (shut down or reboot the system)
+
+Process States {
+	R 	Running. The process is running or ready to run.
+	S 	Sleeping. The process is not running; rather, it is waiting for an event, such as a keystroke or network packet.
+	D 	Uninterruptible sleep. Process is waiting for I/O such as a disk drive.
+	T 	Stopped. Process has been instructed to stop (more on this later).
+	Z 	A defunct or “zombie” process. This is a child process that has terminated but has not been cleaned up by its parent.
+	< 	A high-priority process. It’s possible to grant more importance to a process, giving it more time on the CPU. This property of a process is called niceness. A process with high priority is said to be less nice because it’s taking more of the CPU’s time, which leaves less for everybody else.
+	N 	A low-priority process. A process with low priority (a nice process) will get processor time only after other processes with higher priority have been serviced.
+}
+
+BSD-Style ps Column Headers (ps aux) {
+	USER 	User ID. This is the owner of the process.
+	%CPU 	CPU usage as a percent.
+	%MEM 	Memory usage as a percent.
+	VSZ 	Virtual memory size.
+	RSS 	Resident Set Size. The amount of physical memory (RAM) the process is using in kilobytes.
+	START 	Time when the process started. For values over 24 hours, a date is used.
+}
+
+xlogo & (make xlogo running in the background, use jobs to see active jobs, use fg %number to make the job back to foreground)
+
+pstree (display a tree of processes)
+vmstat (report virtual memory statistics)
