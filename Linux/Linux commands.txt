@@ -350,3 +350,73 @@ Cursor Movement Escape Sequences {
 	\033[s 				Store the current cursor position.
 	\033[u 				Recall the stored cursor position.
 }
+
+
+ping (send ICMP ECHO_REQUEST to network hosts)
+traceroute (print the route packets trace to network host)
+netstat (print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships)
+ftp (internet file transfer program)
+lftp (an improved internet file transfer program)
+wget (the non-interactive network downloader)
+scp (OpenSSH secure file copy)
+sftp (OpenSSH secure file transfer)
+locate (find files by name)
+find (search for files in a directory hierarchy)
+xargs (build and execute command lines from standard input)
+touch (change file timestamps)
+stat (display file or file system status)
+
+locate searchstring (The locate database is created by another program named updatedb. Most systems equipped with locate run updatedb once a day. Since the database is not updated continuously, you will notice that very recent files do not show up when using locate. To overcome this, it’s possible to run the updatedb program manually by becoming the superuser and running updatedb at the prompt. )
+
+find [directory] [test] {
+	-cmin n 			Match files or directories whose content or attributes were last modified exactly n minutes ago. To specify fewer than n minutes ago, use -n; to specify more than n minutes ago, use +n.
+	-cnewer file 		Match files or directories whose contents or attributes were last modified more recently than those of file.
+	-ctime n 			Match files or directories whose contents or attributes (i.e., permissions) were last modified n*24 hours ago.
+	-empty 				Match empty files and directories.
+	-group name 		Match file or directories belonging to group name. name may be expressed as either a group name or as a numeric group ID.
+	-iname pattern 		Like the -name test but case insensitive.
+	-inum n 			Match files with inode number n. This is helpful for finding all the hard links to a particular inode.
+	-mmin n 			Match files or directories whose contents were modified n minutes ago.
+	-mtime n 			Match files or directories whose contents only were last modified n*24 hours ago.
+	-name pattern 		Match files and directories with the specified wildcard pattern.
+	-newer file 		Match files and directories whose contents were modified more recently than the specified file. This is very useful when writing shell scripts that perform file backups. Each time you make a backup, update a file (such as a log) and then use find to determine which files have changed since the last update.
+	-nouser 			Match file and directories that do not belong to a valid user. This can be used to find files belonging to deleted accounts or to detect activity by attackers.
+	-nogroup 			Match files and directories that do not belong to a valid group.
+	-perm mode 			Match files or directories that have permissions set to the specified mode. mode may be expressed by either octal or symbolic notation.
+	-samefile name 		Similar to the -inum test. Matches files that share the same inode number as file name.
+	-size n 			Match files of size n.
+	-type c 			Match files of type c.
+	-user name 			Match files or directories belonging to name. name may be expressed by a username or by a numeric user ID.
+}
+
+gzip (compress or expand files)
+bzip2 (a block-sorting file compressor)
+tar (an archiving utility)
+zip (package and compress (archive) files)
+rsync (remote file and directory synchronization)
+
+tar mode[options] pathname... {
+	tar Modes
+	c 					Create an archive from a list of files and/or directories.
+	x 					Extract an archive.
+	r 					Append specified pathnames to the end of an archive.
+	t 					List the contents of an archive.
+} (Unless you are operating as the superuser, files and directories extracted from archives take on the ownership of the user performing the restoration, rather than the original owner.)
+
+
+cut (remove sections from each line of files)
+paste (merge lines of files)
+join (join lines of two files on a common field)
+comm (compare two sorted files line by line)
+diff (compare files line by line)
+patch (apply a diff file to an oringinal)
+tr (translate or delete characters)
+sed (stream editor for filtering and transforming text)
+aspell (interactive spell checker)
+
+nl (number lines of files)
+fold (wrap each input line to fit in specified witch)
+fmt (simple optimal text formatter)
+pr (coonvert text files for printing)
+printf (format and print data)
+groff (a document formatting system)
