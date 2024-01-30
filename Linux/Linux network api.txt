@@ -1,6 +1,6 @@
 Linux network programming(api)
 
-socket, bind, connect, accept, listen
+socket, bind, connect, accept, listen, shutdown, getsockname, getpeername
 #include <sys/types.h>
 #include <sys/socket.h>
 int socket(int domain, int type, int protocol);
@@ -48,3 +48,29 @@ close, write, read
 int close(int fd);
 ssize_t write(int fd, const void *buf, size_t count);
 ssize_t read(int fd, void *buf, size_t count);
+
+sprintf, snprintf, fgets, 
+
+bzero, bcopy, bcmp
+
+memset, memcopy
+
+strcat, substr
+
+getenv
+
+fork
+
+execl, execlp, execle, execv, execvp, execvpe
+The differences in the six exec functions are: (a) whether the program file to execute is specified by a filename or a pathname; (b) whether the arguments to the new program are listed one by one or referenced through an array of pointers; and (c) whether the environment of the calling process is passed to the new program or whether a new environment is specified.
+These functions return to the caller only if an error occurs. Otherwise, control passes to the start of the new program, normally the main function.
+Normally, only execve is a system call within the kernel and the other five are library functions that call execve.
+
+
+wait, waitpid
+
+exit
+
+fgetc, fgets, getc, getchar, ungetc
+
+fputc, fputs, putc, putchar, puts
