@@ -1,4 +1,14 @@
-# Git
+# 常用命令
+```shell
+git init
+git pull
+git add
+git commit -m "first commit"
+git push
+git status
+git diff
+git log
+```
 
 ## git remote
 
@@ -6,7 +16,7 @@
 # 添加仓库，将其命名为origin
 git remote add origin git@github.com:candvert/Schedule.git
 # 删除仓库
-git remote remote origin
+git remote remove origin
 # 显示已添加仓库
 git remote
 ```
@@ -31,7 +41,7 @@ git branch -M ok
 # 可以省略远程和分支名称
 # 将远程的main分支和本地的master分支关联起来
 git push -u origin master:main
-# 将远程的main分支与远程分支关联起来
+# 将远程的main分支和本地的main分支关联起来
 git push -u origin main
 ```
 

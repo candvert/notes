@@ -152,5 +152,129 @@ int main() {
 ```
 ## 多线程
 ```cpp
+// t.join()函数阻塞主线程，直到t线程完成
+#include <iostream>
+#include <thread>
 
+void print_hello() {
+    std::cout << "Hello from thread!" << std::endl;
+}
+
+int main() {
+    std::thread t(print_hello);  // 创建一个线程并启动
+    t.join();  // 等待线程结束
+    return 0;
+}
+
+
+
+
+// 互斥锁
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+std::mutex mtx;
+
+void print_hello(int id) {
+    std::lock_guard<std::mutex> lock(mtx);  // 自动加锁，作用域结束时自动释放锁
+    std::cout << "Hello from thread " << id << std::endl;
+}
+
+int main() {
+    std::thread t1(print_hello, 1);
+    std::thread t2(print_hello, 2);
+    
+    t1.join();
+    t2.join();
+    
+    return 0;
+}
+
+
+
+
+// 条件变量
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+std::mutex mtx;
+std::condition_variable cv;
+bool ready = false;
+
+void print_id(int id) {
+    std::unique_lock<std::mutex> lock(mtx);
+    while (!ready) {
+        cv.wait(lock);  // 等待条件满足
+    }
+    std::cout << "Thread " << id << '\n';
+}
+
+void go() {
+    std::unique_lock<std::mutex> lock(mtx);
+    ready = true;
+    cv.notify_all();  // 通知所有等待的线程
+}
+
+int main() {
+    std::thread threads[10];
+    for (int i = 0; i < 10; ++i) {
+        threads[i] = std::thread(print_id, i);
+    }
+    
+    std::cout << "10 threads ready to race...\n";
+    go();  // 激活线程
+    
+    for (auto& t : threads) {
+        t.join();
+    }
+    
+    return 0;
+}
+
+
+
+
+// 原子操作
+#include <iostream>
+#include <thread>
+#include <atomic>
+
+std::atomic<int> counter(0);
+
+void increase() {
+    for (int i = 0; i < 1000; ++i) {
+        counter.fetch_add(1, std::memory_order_relaxed);  // 原子递增
+    }
+}
+
+int main() {
+    std::thread t1(increase);
+    std::thread t2(increase);
+    
+    t1.join();
+    t2.join();
+    
+    std::cout << "Counter: " << counter.load() << std::endl;  // 获取原子变量的值
+    return 0;
+}
+
+
+
+
+// 通过std::async和std::future实现异步执行
+#include <iostream>
+#include <future>
+
+int square(int x) {
+    return x * x;
+}
+
+int main() {
+    std::future<int> result = std::async(std::launch::async, square, 5);
+    std::cout << "Square of 5 is: " << result.get() << std::endl;  // 获取返回结果
+    return 0;
+}
 ```
