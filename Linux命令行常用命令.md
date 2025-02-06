@@ -1,3 +1,4 @@
+```
 date (print or set the system date and time)
 cal, ncal (displays a calendar)
 df (report file system disk space usage)
@@ -420,3 +421,17 @@ fmt (simple optimal text formatter)
 pr (coonvert text files for printing)
 printf (format and print data)
 groff (a document formatting system)
+```
+## 设置bash终端提示符颜色
+```
+vim ~/.bashrc
+在文件末尾添加：
+PS1='\[\e[1;31m\]\u@\h \[\e[0;32m\]\w \[\e[0m\]\$ '
+其中：
+\e[1;31m：红色高亮（1表示高亮，31为红色）
+\u@\h：用户名@主机名
+\e[0;32m：绿色普通亮度（0重置样式，32为绿色）
+\w：当前工作目录
+\e[0m：重置所有样式
+\[\]：包裹ANSI转义码，避免Bash计算错误提示符长度
+```
