@@ -151,6 +151,8 @@ int main() {
 }
 ```
 ## 多线程
+C++11标准中引入了5个头文件来支持多线程编程，如下图所示：
+![](images/cplusplus_201.png)
 ```cpp
 // t.join()函数阻塞主线程，直到t线程完成
 #include <iostream>
