@@ -1,7 +1,3 @@
-# vscode快捷键
-
-
-
 ## ctrl + D逐个选中相同的符号
 
 ## ctrl + shift + L选中所有相同的符号

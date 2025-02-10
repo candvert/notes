@@ -1,7 +1,8 @@
-# Chrome扩展
+- [唯一必须的文件是manifest.json](#唯一必须的文件是manifest.json)
+- [在service worker中运行的chrome api](#在service worker中运行的chrome api)
+- [chrome-api](#chrome api)
 
 ## 唯一必须的文件是manifest.json
-
 ```js
 // manifest.json中的manifest_version，name，version是必须的
 // 修改manifest.json、Service Worker、content scripts后需要重新加载插件
@@ -106,9 +107,7 @@
   "matches": ["http://*/*", "https://*/*", "file:///*"]
 }]
 ```
-
 ## 在service worker中运行的chrome api
-
 ```js
 chrome.runtime.onInstalled.addListener(() => {
   chrome.action.setBadgeText({
@@ -116,9 +115,7 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 ```
-
 ## chrome api
-
 ```js
 chrome.runtime.getURL("settings.html")		// 返回string
 
@@ -164,4 +161,3 @@ chrome.action.setIcon({
     }
 });
 ```
-

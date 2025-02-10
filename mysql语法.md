@@ -3,7 +3,6 @@
 - [Windows上使用](#Windows上使用)
 	- [MySQL Shell](#MySQL Shell)
 	- [MySQL Command Line Client](#MySQL Command Line Client)
-
 - [数据库相关知识](#数据库相关知识)
 
 # mysql语法

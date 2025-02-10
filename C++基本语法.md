@@ -64,7 +64,6 @@
 - [C语言一些知识点](#C语言一些知识点)
 	- [预定义宏](#预定义宏)
 
-
 # C++中的预定义宏
 ```cpp
 // 参考网址：https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html
@@ -74,9 +73,7 @@ __func__
 __FUNCTION__    // 编译器提供该宏，g++和msvc都提供该宏
 ```
 # C++基本语法
-
 ## 引用
-
 ```cpp
 int val = 1024;
 int &refVal = val;
@@ -96,25 +93,19 @@ const int &r2 = 42;		// 正确：r2是一个常量引用
 const int &r3 = r1 * 2;	// 正确：r3是一个常量引用
 int &r4 = r1 * 2;		// 错误：r4是一个普通的非常量引用
 ```
-
 ## 指针
-
 ```cpp
 // 指针的类型必须与其所指对象的类型一致，但是有两个例外。第一种例外情况是允许令一个指向常量的指针指向一个非常量对象
 int i = 42;
 const int *ptr = &i;
 ```
-
 ## 定义指针的引用
-
 ```cpp
 int i = 0;
 int *ptr = &i;
 int *&r = ptr;   // r为指针ptr的引用
 ```
-
 ## const限定符
-
 ```cpp
 // const对象必须初始化
 
@@ -130,9 +121,7 @@ const int &r = i;		// 底层const，即r所引用的对象是一个常量，毕�
 // 默认情况下，const对象被设定为仅在文件内有效。当多个文件中出现了同名的const变量时，其实等同于在不同文件中分别定义了独立的变量
 // 如果想在多个文件之间共享const对象，必须在变量的定义之前添加extern关键字
 ```
-
 ## constexpr和常量表达式
-
 ```cpp
 // 常量表达式（const expression）是指值不会改变并且在编译过程就能得到计算结果的表达式。显然，字面值属于常量表达式，用常量表达
 // 式初始化的const对象也是常量表达式
@@ -150,9 +139,7 @@ constexpr int i = 42;
 constexpr int *p = nullptr;		// p是一个指向整数的常量指针
 constexpr const int *q = &i;	// q是常量指针，指向整型常量i
 ```
-
 ## 类型别名
-
 ```cpp
 // 第一种方式
 typedef double wages;
@@ -164,9 +151,7 @@ typedef char *pstring;
 const pstring cstr = 0;		// cstr是指向char的常量指针
 const char *cstr2 = 0;		// cstr2是一个指向const char的指针，与上句不同的原因是*成为了声明符的一部分
 ```
-
 ## auto类型说明符
-
 ```cpp
 // auto一般会忽略掉顶层const，同时底层const则会保留下来
 int i;
@@ -182,9 +167,7 @@ auto &g = ci;			// g是一个整形常量引用，绑定到ci
 auto &h = 42;			// 错误：不能为非常量引用绑定字面值
 const auto &j = 42;		// 正确：可以为常量引用绑定字面值
 ```
-
 ## decltype类型说明符
-
 ```cpp
 // decltype处理顶层const和引用的方式与auto有些许不同。如果decltype使用的表达式是一个变量，则decltype返回该变量的类型（包
 // 括顶层const和引用在内）
@@ -210,18 +193,14 @@ decltype(i) e;			// 正确：e是一个（未初始化的）int
 // decltype((variable))（注意是双层括号）的结果永远是引用，而decltype(variable)结果只有当variable本身就是一个引用时才是
 // 引用
 ```
-
 ## 多维数组
-
 ```cpp
 // 因为多维数组实际上是数组的数组，所以有多维数组名转化得来的指针实际上是指向第一个内层数组的指针
 int ia[3][4];		// 大小为3的数组，每个元素是含有4个整数的数组
 int (*p)[4] = ia;	// p指向含有4个整数的数组
 p = &ia[2];			// p指向ia的尾元素
 ```
-
 ## 强制类型转换
-
 ```cpp
 // static_cast
 // 只要不包含底层const，就可以使用static_cast
@@ -255,9 +234,7 @@ int main() {
 int *ip;
 char *pc = reinterpret_cast<char*>(ip);	// reinterpret_cast实现了旧式的(char*)ip类型转换，这种转换上面这两种无法实现
 ```
-
 ## `.*`和`->*`操作符
-
 ```cpp
 // 示例代码
 #include <iostream>
@@ -290,9 +267,7 @@ MyClass* obj = new MyClass(42);
 int MyClass::*ptr_to_member = &MyClass::value;
 obj->*ptr_to_member = 100;
 ```
-
 ## switch语句
-
 ```cpp
 int i = 42;
 switch (i) {
@@ -319,9 +294,7 @@ switch (i) {
         break;
 }
 ```
-
 ## 可变数量形参
-
 ```cpp
 // 第一种方法，initializer_list，要求全部实参类型都相同，initializer_list对象中的元素永远是常量值，无法改变它们的值
 // initializer_list是一种标准库类型，定义在同名的头文件中
@@ -350,15 +323,11 @@ void foo(int count, ...) {
 // va_arg: 用于访问可变参数。需要指定要获取的参数类型
 // va_end: 清理va_list，结束可变参数的访问
 ```
-
 ## 尾置返回类型
-
 ```cpp
 auto func(int i) -> int (*)[10];	// 需要在本该出现返回类型的地方放置一个auto
 ```
-
 ## assert预处理宏
-
 ```cpp
 arrert(expr);	// assert使用一个表达式作为它的条件，其定义在cassert头文件中
 #define NDEBUG	//默认状态下没有定义NDEBUG，assert会执行，如果定义了NDEBUG，assert什么也不做
@@ -373,9 +342,7 @@ void print() {
 // __TIME__ 存放文件编译时间的字符串字面值
 // __DATE__ 存放文件编译日期的字符串字面值
 ```
-
 ## 内联函数和constexpr函数
-
 ```cpp
 // 内联函数和constexpr函数可以在程序中多次定义，多个定义必须完全一致
 // constexpr函数被隐式的指定为内联函数
@@ -385,26 +352,20 @@ void print() {
 inline void func() {}
 constexpr int func() {return 0;}
 ```
-
 ## this
-
 ```cpp
 // this是额外的隐式参数，当调用一个成员函数时，用请求该函数的对象地址初始化this。比如stu.eat()，可以等价的认为编译器将该
 // 调用重写成立如下的形式：Student::eat(&stu)
 // 默认情况下，this的类型是指向类类型非常量版本的常量指针，比如Student *const，所以不允许改变this中保存的地址
 // 不能在一个常量对象上调用普通的成员函数，但可以调用常量成员函数，比如void eat() const;是Student类中的常量成员函数
 ```
-
 ## 构造函数
-
 ```cpp
 // 只有当类没有声明任何构造函数时，编译器才会自动地生成默认构造函数
 // 可以通过=default来要求编译器生成构造函数，和其他函数一样，如果=default在类的内部，则默认构造函数是内联的，如何在类的外部，
 // 则该成员默认情况下不是内联的
 ```
-
 ## 友元
-
 ```cpp
 // 类可以允许其他类或函数访问它的非公有成员，方法是令其他类或者函数成为它的友元（friend）
 // 如果类想把一个函数作为它的友元，只需要增加一条以friend关键字开始的函数声明语句即可
@@ -416,9 +377,7 @@ class Student {
   friend void Teacher::eat();  
 };
 ```
-
 ## 类型成员
-
 ```cpp
 class Student {
 public:
@@ -427,9 +386,7 @@ public:
 // 由类定义的类型名字和其他成员一样存在访问限制
 // 用来定义类型的成员必须先定义后使用，因此，类型成员通常出现在类开始的地方
 ```
-
 ## 可变数据成员
-
 ```cpp
 // 一个可变数据成员永远不会是const，即使它是const对象的成员。因此，一个const成员函数可以改变一个可变成员的值
 class Student {
@@ -439,9 +396,7 @@ private:
     mutable int age;
 };
 ```
-
 ## 类内初始值
-
 ```cpp
 // 当提供一个类内初始值时，必须以符号=或者花括号表示
 class Student {
@@ -452,9 +407,7 @@ private:
     int age = {10};	// 正确
 };
 ```
-
 ## 类类型的转换
-
 ```cpp
 // 类类型能定义有编译器自动执行的转换，不过编译器每次只能执行一种类类型的转换
 class A {
@@ -473,9 +426,7 @@ int main() {
     B b("hello");	// 错误，编译器每次只能执行一种类类型的转换
 }
 ```
-
 ## explicit
-
 ```cpp
 // 关键字explicit只对一个实参的构造函数有效，需要多个实参的构造函数不能用于执行隐式转换，所以无须将这些构造函数指定为explicit
 // explicit关键字只允许出现在类内的构造函数声明处
@@ -490,15 +441,11 @@ string s = "hello";
 A a(s);		// 正确，直接初始化
 A b = s;	// 错误，不能将explicit构造函数用于拷贝形式的初始化过程
 ```
-
 ## 类的静态成员
-
 ```cpp
 // 在类的外部定义静态成员时，不能重复static关键字，该关键字只出现在类内部的声明语句
 ```
-
 ## lambda表达式
-
 ```cpp
 // lambda表达式会被编译器翻译成一个未命名类的未命名对象，lambda产生的类中含有一个重载的函数调用运算符
 // lambda不能有默认参数
@@ -508,19 +455,13 @@ A b = s;	// 错误，不能将explicit构造函数用于拷贝形式的初始化
 // 可以忽略参数列表和返回类型，但必须永远包含捕获列表和函数体
 auto f = [] { return 42; };
 ```
-
-
 # 标准库
-
 ## 常用库
-
 ```cpp
 // io库
 iostream		fstream		sstream
 ```
-
 ## 常用函数
-
 ```cpp
 // getline()
 #include <string>
@@ -530,9 +471,7 @@ getline(cin, s);
 // swap()交换两个容器
 swap(a, b)
 ```
-
 ## bind函数
-
 ```cpp
 // bind函数定义在头文件functional中，可以将bind函数看作一个通用的函数适配器，它接受一个可调用对象，生成一个新的可调用对象来“适
 // 应”原对象的参数列表
@@ -544,9 +483,7 @@ bool b = check6(s);
 // ref函数定义在头文件functional中，返回一个引用
 ref(os);
 ```
-
 ## io库
-
 ```cpp
 // 一个流一旦发生错误，其上后续的IO操作都会失败
 // 到达文件结束位置，eofbit和failbit都会被置位
@@ -611,9 +548,7 @@ ostringstream strm(s);		// strm是一个ostringstream对象，保存string s的�
 strm.str()					// 返回strm所保存的string的拷贝
 strm.str(S)					// 将string s拷贝到strm中，返回void
 ```
-
 ## 顺序容器
-
 ```cpp
 // 顺序容器类型
 vector、	deque、list、forward_list、array、string
@@ -629,22 +564,15 @@ names.assign(oldstyle.cbegin(), oldstyle.cend());
 list<string> slist1(1);		// 1个元素，为空string
 slist1.assign(10, "Hiya!");	// 10个元素，每个都是"Hiya!"
 ```
-
 ![](images/cplusplus_1.png)
-
 ![](images/cplusplus_2.png)
-
 ![](images/cplusplus_3.png)
-
 ## vector
-
 ```cpp
 // 只有在执行insert操作时size与capacity相等，或者调用resize或reserve时给定的大小超过当前capacity，vector才可能重新分配内
 // 存空间。会分配多少超过给定容量的额外空间，取决于具体实现
 ```
-
 ## string
-
 ```cpp
 // 
 s.substr(pos, n);
@@ -668,30 +596,21 @@ stof();
 stod();
 stold();
 ```
-
 ## array
-
 ```cpp
 // array大小固定，不支持添加或删除元素的操作
 array<int, 10> arr;
 ```
-
 ## deque
-
 ```cpp
 // deque支持在容器头尾位置的快速插入和删除，而且在两端插入和删除元素都不会导致重新分配空间
 ```
-
 ## forward_list中插入或删除元素
-
 ```cpp
 // forward_list不支持push_back()、pop_back()、back()
 ```
-
 ![](images/cplusplus_4.png)
-
 ## 容器适配器
-
 ```cpp
 // 顺序容器适配器：stack、queue、priority_queue
 // 默认情况下，stack和queue是基于deque实现的，priority_queue是在vector之上实现的
@@ -716,17 +635,13 @@ q.top();
 q.push(item);
 q.emplace(args);
 ```
-
 ## 获取内置数组迭代器
-
 ```cppp
 #include <iostream>
 int arr[] = {1, 2, 3};
 find(begin(arr), end(arr), 2);
 ```
-
 ## 泛型算法
-
 ```cpp
 // 泛型算法运行于迭代器之上而不会执行容器操作的特性带来了一个令人惊讶但非常必要的编程假定：算法永远不会改变底层容器的大小
 // 但给插入器赋值时，它们会在底层的容器上执行插入操作，当算法操作一个这样的迭代器，迭代器可以完成向容器添加元素的效果，但算法自身
@@ -806,9 +721,7 @@ set_intersection();		// 求两个容器的交集
 set_union();			// 求两个容器的并集
 set_difference();		// 求两个容器的差集
 ```
-
 ## 迭代器
-
 ```cpp
 // 在头文件iterator中定义了额外几种迭代器
 // 插入迭代器、流迭代器、反向迭代器、移动迭代器
@@ -825,9 +738,7 @@ set_difference();		// 求两个容器的差集
 // 流迭代器
 // istream_iterator、ostream_iterator
 ```
-
 ## 关联容器
-
 ```cpp
 // 类型有map、set、multimap、multiset、unordered_map、unordered_set、unordered_multimap、unordered_multiset
 // 类型map和multimap定义在头文件map中，set和multiset定义在头文件set中，无序容器则定义在头文件unordered_map和unordered_s
@@ -837,23 +748,14 @@ set_difference();		// 求两个容器的差集
 
 // pair类型定义在头文件utility中
 ```
-
 ![](images/cplusplus_5.png)
-
 ![](images/cplusplus_6.png)
-
 ![](images/cplusplus_7.png)
-
 ![](images/cplusplus_8.png)
-
 ![](images/cplusplus_9.png)
-
 ![](images/cplusplus_10.png)
-
 ![](images/cplusplus_11.png)
-
 ## 共享指针
-
 ```cpp
 // shared_ptr、unique_ptr、weak_ptr都定义在头文件memory中
 // 使用new动态分配的对象是默认初始化的
@@ -870,37 +772,24 @@ const int *pci = new const int(1024);
 int *p1 = new int;					// 如果分配失败，new抛出std::bad_alloc
 int *p2 = new (nothrow) int;		// 如果分配失败，new返回一个空指针
 ```
-
 ![](images/cplusplus_12.png)
-
 ![](images/cplusplus_13.png)
-
 ![](images/cplusplus_14.png)
-
 ![](images/cplusplus_15.png)
-
 ## allocator类
-
 ![](images/cplusplus_16.png)
-
 ![](images/cplusplus_17.png)
-
 ## 拷贝构造函数
-
 ```cpp
 // 如果一个构造函数的第一个参数是自身类类型的引用，且任何额外参数都有默认值，则此构造函数是拷贝构造函数
 // 即使定义了其他构造函数，编译器也合成一个拷贝构造函数
 ```
-
 ## 析构函数
-
 ```cpp
 // 析构函数不接受参数，因此也不能被重载。对一个给定类，只会有唯一一个析构函数
 // 析构函数首先执行函数体，然后销毁成员，成员按初始化顺序的逆序销毁
 ```
-
 ## 右值引用
-
 ```cpp
 // 不能将一个右值引用直接绑定到一个左值上
 int &&rr = 42;
@@ -911,21 +800,15 @@ int &&rr = 42;
 int i = 42;
 int &&rr = std::move(i);
 ```
-
 ## 移动构造函数和移动赋值运算符
-
 ```cpp
 // 不抛出异常的移动构造函数和移动赋值运算符必须标记为noexcept
 ```
-
 ## noexcept
-
 ```cpp
 // 必须在类头文件的声明中和定义中（如果定义在类外的话）都指定noexcept
 ```
-
 ## 引用限定符
-
 ```cpp
 // 被&限定的函数只能用于左值，被&&限定的函数只能用于右值
 class Foo {
@@ -936,9 +819,7 @@ private:
     vector<int> data;
 };
 ```
-
 ## 重载运算符
-
 ```cpp
 // 除了重载的函数调用运算符operator()之外，其他重载运算符不能含有默认实参
 // 对于一个运算符函数来说，它或者是类的成员，或者至少含有一个类类型的参数
@@ -957,9 +838,7 @@ Foo a, b;
 a + b;
 operator+(a, b);
 ```
-
 ## 类型转换运算符
-
 ```cpp
 // 一个类型转换函数必须是类的成员函数；它不能声明返回类型，形参列表也必须为空。类型转换函数通常应该是const
 operator int() const { return 42; }
@@ -969,9 +848,7 @@ operator int() const { return 42; }
 // 这是因为类定义向bool的类型转换是比较普遍的现象，但bool是一种算术类型，这样的类型转换可能引发意想不到的后果
 explicit operator int() const { return 42; }
 ```
-
 ## 继承
-
 ```cpp
 // 派生类必须使用基类的构造函数来初始化它的基类部分
 // 通过使用using声明改变派生类继承的某个名字的访问级别
@@ -984,9 +861,7 @@ public:
     using A::i;
 };
 ```
-
 ## 虚函数
-
 ```cpp
 // 虚函数可以有默认实参。如果某次函数调用使用了默认实参，则该实参值由本次调用的静态类型决定
 // 派生类中虚函数的返回类型必须与基类函数匹配，该规则存在一个例外，当类中的虚函数返回类型是类本身的指针或引用时，上述规则无效
@@ -1003,9 +878,7 @@ B b;
 A *a = &b;
 a->A::eat();
 ```
-
 ## 模板
-
 ```cpp
 // 模板定义以关键字template开始，后跟一个模板参数列表，模板参数列表不能为空
 // 模板的实例化发生在编译时期
@@ -1072,7 +945,6 @@ template<typename T> class A {
 template<typename T>
 void A<T>::eat() {}
 ```
-
 ## 类模板和友元
 ```cpp
 // 一对一友好关系
@@ -1175,9 +1047,7 @@ int ia[] = {0, 1, 2};
 Blob<int> a(begin(ia), end(ia));
 ```
 # C语言一些知识点
-
 ## 预定义宏
-
 ```cpp
 // 参考网址：https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html
 __func__
@@ -1190,4 +1060,3 @@ __STDC_VERSION__    // 表示当前使用的C标准版本
 
 __FUNCTION__    // 编译器提供该宏，gcc提供该宏
 ```
-

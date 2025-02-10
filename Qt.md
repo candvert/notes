@@ -81,9 +81,7 @@
 	- [打包成exe](#打包成exe)
 
 # Qt
-
 ## 关键概念
-
 ```cpp
 // 1. 对象树
 // 当一个控件删除时，它包含的所有子控件被删除
@@ -99,9 +97,7 @@ QPushButton *btn = qobject_cast<QPushButton*>(sender());
 
 // QMetaObject::propertyCount()返回元对象描述的类中定义的属性个数，但是其中不包括对象的动态属性
 ```
-
 ## QStringLiteral
-
 ```cpp
 // 这样需要在运行时分配内存
 this->setWindowIcon(QIcon(":/background-1.png"));
@@ -109,9 +105,7 @@ this->setWindowIcon(QIcon(":/background-1.png"));
 // 这样在编译时就分配了内存，可以提高效率
 this->setWindowIcon(QIcon(QStringLiteral(":/background-1.png"));
 ```
-
 ## QStackedWidget实现局部界面变换
-
 ```cpp
 // 最好将QStackWidget放在一个布局里，不然内容会显示不全
 QStackedWidget *s = new QStackedWidget();
@@ -123,9 +117,7 @@ s->currentWidget();
 s->setCurrentIndex(0);
 s->setCurrentWidget(widget);
 ```
-
 ## QSplitter分隔左右或上下界面
-
 ```cpp
 // QSplitter可以分隔任何数量的控件
 QSplitter *splitter = new QSplitter(Qt::Horizontal); // 水平分隔
@@ -146,9 +138,7 @@ splitter->setCollapsible(1, false);
 // setHandleWidth(int)函数设置分割条的宽度
 splitter->setHandleWidth(20);
 ```
-
 ## QScrollArea创建可以滚动的区域
-
 ```cpp
 QScrollArea *scroll = new QScrollArea(this);
 // 关闭水平滚动条
@@ -187,9 +177,7 @@ QScrollBar::add-page:vertical {
 用上面的qss后的样式
 
 ![用上面的qss后的样式](images/qt_1.png)
-
 ## QWidget的constMenuEvent函数创建右键菜单
-
 ```cpp
 void contextMenuEvent(QContextMenuEvent *event) override {
 	QMenu menu(this);
@@ -211,9 +199,7 @@ void contextMenuEvent(QContextMenuEvent *event) override {
 	menu.exec(event->globalPos());
 }
 ```
-
 ## QTreeWidget实现展开折叠效果
-
 ```cpp
 // 创建 QTreeWidget
 QTreeWidget treeWidget;
@@ -252,9 +238,7 @@ treeWidget.setWindowTitle("Top Artists");
 treeWidget.resize(300, 200);
 treeWidget.show();
 ```
-
 ## 悬停显示图片等复杂信息
-
 ```cpp
 #include <QApplication>
 #include <QListWidget>
@@ -328,9 +312,7 @@ int main(int argc, char *argv[]) {
     return app.exec();
 }
 ```
-
 ## 设置界面固定大小和去掉界面标题栏
-
 ```cpp
 // 设置界面固定大小
 this->setFixedSize(width, height);
@@ -339,9 +321,7 @@ this->setFixedSize(QSize(width, height));
 // 去掉界面标题栏
 this->setWindowFlag(Qt::FramelessWindowHint);
 ```
-
 ## 下拉框
-
 ```cpp
 comboBox = new QComboBox;
 // 获得当前index
@@ -351,9 +331,7 @@ void QComboBox::addItem(const QIcon &icon, const QString &text, const QVariant &
 // 获得当前item的data
 QVariant QComboBox::itemData(int index, int role = Qt::UserRole) const;
 ```
-
 ## 更改应用标题和应用图标
-
 ```cpp
 // 更改应用标题
 this->setWindowTitle("cc");
@@ -361,9 +339,7 @@ this->setWindowTitle("cc");
 // 更改应用图标
 this->setWindowIcon(QIcon(":/background-1.png"));
 ```
-
 ## 设置应用的作者和应用显示的名字
-
 ```cpp
 // 设置应用的作者
 QCoreApplication::setOrganizationName("NotepadNext");
@@ -377,38 +353,28 @@ QCoreApplication::setApplicationVersion(ZEAL_VERSION);
 QCoreApplication::setOrganizationDomain(QStringLiteral("zealdocs.org"));
 QCoreApplication::setOrganizationName(QStringLiteral("Zeal"));
 ```
-
 ## 输出操作系统和版本号
-
 ```cpp
 // 输出例如"Windows 11 Version 23H2"
 QSysInfo::prettyProductName();	// 返回QString
 ```
-
 ## 设置应用主题
-
 ```cpp
 // 应用中的所有控件都为黑色
 QApplication app(argc, argv);
 app.setPalette(QPalette(QColor("#000000")));
 ```
-
 ## 设置鼠标事件追踪
-
 ```cpp
 // 如果不设置，则控件只会收到至少按下一个键并移动鼠标的事件，设置后没有按键按下也会收到事件
 this->setMouseTracking(true);
 ```
-
 ## 返回qt内置icon
-
 ```cpp
 // style()是QWidget的一个函数，返回QStyle，下面代码返回QIcon
 style()->standardIcon(QStyle::SP_MessageBoxInformation);
 ```
-
 ## 设置文件
-
 ```cpp
 // 设置默认的配置文件格式为 INI 格式
 QSettings::setDefaultFormat(QSettings::IniFormat);
@@ -423,9 +389,7 @@ password=1234
 QSettings settings("config.ini", QSettings::IniFormat);
 settings.setValue("General/username", "admin");
 ```
-
 ## 系统托盘
-
 ```cpp
 QSystemTrayIcon::isSystemTrayAvailable();	// 系统托盘是否可用
 QApplication::setQuitOnLastWindowClosed(false);		// 设置窗口都关闭后应用在后台运行
@@ -451,22 +415,16 @@ void Window::iconActivated(QSystemTrayIcon::ActivationReason reason)
 enum MessageIcon { NoIcon, Information, Warning, Critical };
 QSystemTrayIcon::MessageIcon(1)
 ```
-
 ## 预定义宏
-
 ```cpp
 // 命令行输出当前函数的声明
 qInfo(Q_FUNC_INFO);
 ```
-
 ## 智能指针
-
 ```cpp
 QScopedPointer<QPushButton> qapp(new QPushButton("hello"));
 ```
-
 ## 容器类
-
 ```cpp
 // 顺序容器类有QList、QVector、QStack、QQueue
 // 在Qt6中QVector是QList的别名，QList底层和c++的vector相似，QStack和QQueue是QList的子类
@@ -477,9 +435,7 @@ list.append("world");
 
 // 关联容器类QSet、QMap、QMultiMap、QHash、QMultiHash
 ```
-
 ## QVariant类
-
 ```cpp
 QFont font;
 QVariant var = font;						// 赋值给一个QVariant变量
@@ -487,33 +443,24 @@ QVariant var = font;						// 赋值给一个QVariant变量
 // var.setValue(QFont());
 QFont font2 = var.value<QFont>();			// 转换为QFont类型
 ```
-
 ## QRandomGenerator生成随机数
-
 ## 获取当前时间
-
 ```cpp
 QDateTime::currentDateTime();
 ```
-
 ## QChar
-
 ```cpp
 // QChar使用的是UTF-16编码，一个字符包含2字节数据
 // QString存储的是QChar类型
 ```
-
 ## 设置互斥QAction
-
 ```cpp
 QActionGroup *actionGroup = new QActionGroup(this);
 actionGroup->addAction(ui->action1);
 actionGroup->addAction(ui->action2);
 actionGroup->setExclusive(true);
 ```
-
 ## 动态属性
-
 ```cpp
 // 函数QObject::setProperty()设置属性值时，如果属性名称不存在，就会为对象定义一个新的属性并设置属性值，这时定义的属性称为动
 // 态属性
@@ -532,16 +479,12 @@ Q_PROPERTY(int score MEMBER m_score)
 // classInfo.name();
 // classInfo.value();
 ```
-
 ## 创建默认右键菜单
-
 ```cpp
 // 创建有复制粘贴的功能的菜单，在QLineEdit、QTextEdit和QPlainTextEdit等可以输入文字的控件上生效
 this->createPopupMenu();
 ```
-
 ## 鼠标左键拖动
-
 ```cpp
 // 重写mousePressEvent、mouseMoveEvent、mouseReleaseEvent三种事件
 void Widget::mousePressEvent(QMouseEvent *event)
@@ -566,9 +509,7 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
     mousePress = false;
 }
 ```
-
 ## QString用来表示c++中的String
-
 ```cpp
 QString s = "hello";
 // 将整数类型转换为字符串
@@ -577,18 +518,14 @@ QString::number(235);
 QString("%1,%2").arg(23).arg("ok");
 QString::asprintf("value=%i", value);
 ```
-
 ## qDebug()打印消息
-
 ```cpp
 qDebug() << "hello";
 // 可以直接打印QObject对象
 QWidget widget;
 qDebug() << widget;
 ```
-
 ## QWidget
-
 ```cpp
 // 调整窗口大小
 void resize(const QSize&);
@@ -603,9 +540,7 @@ void setGeometry(int x, int y, int w, int h);
 void move(const QSize &);
 void move(int x, int y);
 ```
-
 ## QObject
-
 ```cpp
 QObject* parent() const;
 QString objectName() const;
@@ -624,9 +559,7 @@ virtual bool eventFilter(QObject *watched, QEvent *event);
 protected:
 	virtual void timerEvent(QTimerEvent *event);
 ```
-
 ## 信号与槽
-
 ```cpp
 // 信号可以连接到槽，也可以连接到信号
 // 信号与槽可以一对一，一对多，多对一，多对多
@@ -651,9 +584,7 @@ emit hide(5);
 // 在槽函数里可以调用sender()函数，返回发出信号的QObject
 QObject *QObject::sender() const;
 ```
-
 ## connect和disconnect
-
 ```cpp
 // 不要连接多次，最好在构造函数中调用，保证只连接一次
 // 示例，返回值是QMetaObject::Connection，可以用于调用后续的disconnect函数
@@ -681,9 +612,7 @@ myObject->disconnect(myReceiver);						//成员函数形式
 // 4.解除特定的一个信号与槽的连接
 disconnect(lineEdit, &QLineEdit::textChanged, label, &QLabel::setText);			// 静态函数形式
 ```
-
 ## 事件
-
 ```cpp
 // 当事件发生，Qt会创建一个event对象代表它，并调用QObject的event函数
 // 常见事件：QMouseEvent, QKeyEvent, QPaintEvent, QResizeEvent, QCloseEvent
@@ -733,9 +662,7 @@ void Widget::paintEvent(QPaintEvent *event)
     painter.drawPixmap(0, 0, QPixmap(":/ok.png"));
 }
 ```
-
 ## 自定义控件
-
 ```cpp
 // task.h
 #ifndef TASK_H
@@ -824,9 +751,7 @@ void Task::mousePressEvent(QMouseEvent *event)
     }
 }
 ```
-
 ## QSS(Qt Style Sheet)
-
 ```cpp
 // 语法和css相似，组件也是盒子模型，即padding，border，margin
 // 当和除QSS设置的样式冲突时，会优先使用QSS，即保证QSS是有效的
@@ -917,13 +842,9 @@ QPushButton {
     min-height: 64px;
 }
 ```
-
 ![](images/qss_1.png)
-
 ![](images/qss_2.png)
-
 ## 布局
-
 ```cpp
 QVBoxLayout *todayLayout = new QVBoxLayout();
 QLabel *todayLabel1 = new QLabel("learning");
@@ -936,9 +857,7 @@ todayLayout->setAlignment(Qt::AlignHCenter);
 todayLayout->setAlignment(Qt::AlignTop);
 todayLayout->setAlignment(todayLabel1, Qt::AlignLeft);
 ```
-
 ## Json处理
-
 ```cpp
 // 创建一个JSON对象
 QJsonObject jsonObj;
@@ -989,9 +908,7 @@ QJsonValue value = obj["name"];
 QString s = value.toString();
 qDebug() << s;				// 简便写法qDebug() << QJsonDocument::fromJson(arr).object()["name"].toString();
 ```
-
 ## 网络
-
 ```cpp
 QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 connect(manager, &QNetworkAccessManager::finished, [](QNetworkReply *reply){
@@ -1007,9 +924,7 @@ QUrl url("https://baidu.com");
 QNetworkRequest request(url);
 manager->get(request);
 ```
-
 ## QFile操作文件
-
 ```cpp
 QFile file("D:\\qt");
 file.open(QIODevice::ReadWrite);
@@ -1019,9 +934,7 @@ file.close();
 file.open(QIODevice::ReadOnly);
 QByteArray arr = file.readAll();
 ```
-
 ## 数据库
-
 ```cpp
 // 示例
 void Widget::deleteTask(QString title)
@@ -1094,16 +1007,12 @@ while (query.next()) {
     qDebug() << name << salary;
 }
 ```
-
 ## QProcess打开其他程序
-
 ```cpp
 QProcess *myProcess = new QProcess(this);
 myProcess->start(program);
 ```
-
 ## QObject定时器
-
 ```cpp
 // 启动定时器
 timerid = this->startTimer(1000);
@@ -1114,9 +1023,7 @@ virtual void timerEvent(QTimerEvent *event) override {
     }
 }
 ```
-
 ## QTimer定时器
-
 ```cpp
 QTimer::singleShot(1000, []{qDebug() << "hello";});		// 只触发一次
 
@@ -1130,31 +1037,23 @@ timer->setInterval(1000);
 timer->setSingleShot(true);
 timer->isSingleShot(true);
 ```
-
 ## QElapsedTimer
-
 ```cpp
 QElapsedTimer timer;
 timer.start();
 int time = timer.elapsed();
 ```
-
 ## QPixmap保存图片
-
 ```cpp
 QPixmap pix("D:\\a.png");
 ```
-
 ## QFileDialog打开资源管理器
-
 ```cpp
 QString fileName = QFileDialog::getOpenFileName(this, "Open File", "C:\\home", "*.txt");
 QString fileName = QFileDialog::getSaveFileName(this, "文件", QCoreApplication::applicationFilePath());
 fileName.isEmpty();
 ```
-
 ## 设置命令行输出的格式
-
 ```cpp
 qSetMessagePattern();
 // 下面的可能输出[     1.998] D: 
@@ -1174,7 +1073,6 @@ qSetMessagePattern("[%{time process}] %{if-debug}D%{endif}%{if-info}I%{endif}%{i
 
 
 ## QTcpSocket
-
 ```cpp
 QTcpSocket socket;
 QString ip = "", port = "";
@@ -1184,9 +1082,7 @@ connect(socket, &QTcpSocket::connected, [this](){});
 // 连接断开，会发出信号
 connect(socket, QTcpSocket::disconnected, [this](){});
 ```
-
 ## QTcpServer
-
 ```cpp
 QTcpServer server;
 server.listen(QHostAddress::AnyIPv4, 8000);
@@ -1198,16 +1094,12 @@ connect(server, &QTcpServer::newConnection, this, [](){
     socket->peerPort();
 });
 ```
-
 ## QThread线程
-
 ```cpp
 myThread *t = new myThread;
 t->start();			// 需要重写run函数
 ```
-
 ## QMenuBar
-
 ```cpp
 // 最多一个
 QMenuBar *bar = new QMenuBar(this);
@@ -1216,32 +1108,24 @@ QMenu *fileMenu = bar->addMenu("文件");
 fileMenu->addAction("新建");
 fileMenu->addSeparator();
 ```
-
 ## QToolBar
-
 ```cpp
 // 可以有多个
 QToolBar *bar = new QToolBar(this);
 addToolBar(bar);
 ```
-
 ## QStatusBar
-
 ```cpp
 // 最多一个
 QStatusBar *bar = new QStatusBar(this);
 setStatusBar(bar);
 bar->addWidget(label);
 ```
-
 ## QDockWidget
-
 ```cpp
 // 可以有多个
 ```
-
 ## QDialog对话框
-
 ```cpp
 // 模态对话框，打开后不能对其他窗口进行操作
 QDialog d(this);
@@ -1251,22 +1135,15 @@ QDialog *d = new QDialog(this);
 d.show();
 d->setAttribute(Qt::WA_DeleteOnClose);
 ```
-
 ## QMessageBox对话框
-
 ```cpp
 // 有四种类型，分别为错误，信息，提问，警告
 QMessageBox::about(this, "ok");
 ```
-
 ## QColorDialog::getColor()
-
 ## QFileDialog::getOpenFileName()
-
 ## QFontDialog::getFont()
-
 ## QPainter绘图
-
 ```cpp
 // 需要重写绘图事件 paintEvent
 QPainter *p = new QPainter(this);
@@ -1275,22 +1152,15 @@ p.tranlate(100, 100);					  // 移动坐标系
 p.drawPixmap(x, y, QPixmap("D:\\a.png"));
 p.drawPixmap(x, y, width, height, QPixmap("D:\\a.png"));
 ```
-
 ## QPen
-
 ## QBrush
-
 ## QPalette
-
 ```cpp
 QPalette plet;
 plet.setColor(QPalette::Text, Qt::blue);
 ```
-
 ## QFileInfo
-
 ## QFont
-
 ```cpp
 QFont font;
 font.setUnderline(true);
@@ -1298,11 +1168,8 @@ font.setItalic(true);
 font.setBold(true);
 font.setPointSize(20);
 ```
-
 ## QPlainTextEdit
-
 ## QProgressBar
-
 ```cpp
 QProgressBar *bar = new QProgressBar();
 bar->setValue(20);
@@ -1310,15 +1177,9 @@ bar->setTextVisible(true);
 bar->setInvertedAppearance(true);
 bar->setFormat("%p");
 ```
-
-
-
 ## QSlider
-
 ## QButtonGroup用于单选按钮
-
 ## QComboBox
-
 ```cpp
 QComboBox *box;
 box->addItem(QIcon().addFile("a.ico"), "hello");
@@ -1327,9 +1188,8 @@ box->setEditable();
 box->currentText();
 box->currentData().toString();
 ```
-
 ## 打包成exe
-
+```
 windeployqt exe文件
-
 需要先把exe移到一个空文件夹下，运行命令后会在当前目录下生成exe启动所需的所有文件
+```

@@ -27,6 +27,7 @@
 - [`__file__`等双下划线变量](#`__file__`等双下划线变量)
 - [使用切片将列表传入函数以实现拷贝而非引用](#使用切片将列表传入函数以实现拷贝而非引用)
 - [内置函数](#内置函数)
+
 # Python基本语法
 
 python中一切皆是对象，包括函数、类、模块都是对象
@@ -40,7 +41,6 @@ record = ('Dave', 'dave@example.com', '773-555-1212', '847-555-1212')
 name, email, *phone_numbers = record
 ```
 ## 定义变量
-
 ```python
 # 定义变量a为5
 a=5
@@ -48,13 +48,11 @@ a, b = 2, 3		# a的值为2，b的值为3
 # python中没有常量类型，通常使用大写字母表示常量	MAX_NUM = 10
 ```
 ## 输入输出函数
-
 ```python
 input()  # 可以加入提示信息，比如input("hello")
 print(value..., seq=' ', end='\n', file=None)
 ```
 ## 注释
-
 ```python
 # 单行注释
 
@@ -68,14 +66,12 @@ print(value..., seq=' ', end='\n', file=None)
 """
 ```
 ## 关键字列表
-
 ```python
 import keyword
 
 print(keyword.kwlist)
 ```
 ## 字符串操作
-
 ```python
 str = "你好"
 print(str + str)  # 你好你好
@@ -95,7 +91,6 @@ print(str.index("o"))  # 4
 print(str.count("l"))  # 2
 ```
 ## 数据类型和类型转换
-
 ```python
 # python中的类型：str, int, float, complex, list, tuple, dict, set, bool
 
@@ -103,7 +98,6 @@ a = int("38")
 print(a)  # 38
 ```
 ## 算数运算和逻辑运算符
-
 ```python
 a = 10//3  # //代表整除，因为python中/返回的是浮点数，所以用//代表c++中的整数相除
 print(a)  # 3
@@ -116,7 +110,6 @@ print(True or False)  # True，or相当于c++中||
 print(not True)  # False，not相当于c++中!
 ```
 ## if语句
-
 ```python
 # 不像c++中的if，python中if后的条件不用加括号
 a = 2
@@ -128,7 +121,6 @@ else:
     print("3")
 ```
 ## match语句(c++中的switch)
-
 ```python
 # case _相当于c++中的default
 a = 2
@@ -143,7 +135,6 @@ match a:
         print("nopo")
 ```
 ## for语句
-
 ```python
 # range的范围是左闭右开
 sum = 0
@@ -152,20 +143,17 @@ for i in range(1,4):
 print(sum)  # 6
 ```
 ## while语句
-
 ```python
 while True:
     print("hello")
 ```
 ## pass语句
-
 ```python
 # pass起到占位符的作用
 while True:
     pass
 ```
 ## 列表
-
 ```python
 list = ["hello", 89, 78.3]
 del list[1]  # 删除一个元素
@@ -185,25 +173,21 @@ list.reverse()
 list.copy()
 ```
 ## 列表生成式
-
 ```python
 li = [item * item for item in range(0, 10) if item%2 == 0]
 print(list)  # [0, 4, 16, 36, 64]
 ```
 ## 元组
-
 ```python
 tuple = ("hello", 18, 87.45)
 print(tuple)  # ('hello', 18, 87.45)
 ```
 ## 字典
-
 ```python
 dict = {"cc": "dd", 87: "cd"}
 print(dict)  # {'cc': 'dd', 87: 'cd'}
 ```
 ## 集合
-
 ```python
 arr = {10, 20, 30}
 arr2 = {15, 20, 25}
@@ -216,7 +200,6 @@ arr.remove()
 arr.clear()
 ```
 ## 格式化输出
-
 ```python
 name = "John"
 age = 18
@@ -225,7 +208,6 @@ print(f"name={name},age={age}")				# name=John,age=18
 print("name={0},age={1}".format(name,age))	# name=John,age=18
 ```
 ## 异常处理
-
 ```python
 # 打印hello
 try:
@@ -270,7 +252,6 @@ except (ZeroDivisionError, RuntimeError) as e:
     pass
 ```
 ## 函数
-
 ```python
 def calculate(num1, num2):
     return num1 + num2
@@ -296,7 +277,6 @@ a = lambda name, age: name + age
 b = lambda: print('hi')		# 没有参数
 ```
 ## 类
-
 ```python
 class Teacher():
     pass
@@ -366,13 +346,11 @@ class MyWindow(QMainWindow):
 		b = 11    # 正确，可以访问b
 ```
 ## assert
-
 ```python
 # assert关键字后跟表达式，条件为False抛出AssertionError
 assert 10 < 1
 ```
 ## 模块
-
 ```python
 # 导入语法
 import 模块名
@@ -390,7 +368,6 @@ from 模块名 import 功能名 as 别名
 #   -cal.py
 ```
 ## 工具函数
-
 ```python
 # 文件操作
 # 打开文件，open(name, mode=None, buffering=None)
@@ -434,19 +411,16 @@ a = random.random()			# [0, 1)
 import re
 ```
 ## 判断是否是main
-
 ```python
 if __name__ == '__main__':
     pass
 ```
 ## 打包程序
-
 ```python
 # 使用pyinstaller打包程序
 pip install pyinstaller
 ```
 ## `__file__`等双下划线变量
-
 ```python
 # 常见的双下划线变量
 # 	1. __file__:
@@ -462,7 +436,6 @@ pip install pyinstaller
 ```
 ## 使用切片将列表传入函数以实现拷贝而非引用
 ## 内置函数
-
 ```python
 num = 42
 # id返回唯一标识符，通常是内存地址
@@ -476,4 +449,3 @@ format(1.23, '0.1f')	# '1.2'
 'value is {:0.1f}'.format(1.23)
 hex(1234)				# '0x4d2'
 ```
-

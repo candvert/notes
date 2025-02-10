@@ -33,11 +33,8 @@
 		- [firebase](#firebase)
 
 # javascript基本语法
-
 关于worker、异步等不熟悉的主题可以在[mozilla](https://developer.mozilla.org/en-US/docs/Learn/JavaScript)上学习
-
 ## 编写地方
-
 ```html
 <!--在html中直接编写js语句，下面这句通常放在</body>前-->
 <script> alert("ok") </script>
@@ -45,9 +42,7 @@
 <!--单独编写一个js文件，再通过下面语句引入到html中，下面这句通常放在<head>标签中-->
 <script type="module" src="script.js"></script>
 ```
-
 ## 输入输出
-
 ```js
 // javascript的输入输出是相对于网页来说的，输入输出会显示在网页上
 // 输入
@@ -57,9 +52,7 @@ document.write("<h1>ok</h1>")
 alert("ok")
 console.log("ok")
 ```
-
 ## 变量
-
 ```js
 var grade = 10	// var是遗留的，不建议使用
 grade = 10	// 不加关键字，和python一样，这是由于var可以先初始化再声明，但是这会造成代码混乱
@@ -70,9 +63,7 @@ let name = 'hello', age = 20	// 新标准的写法，推荐使用
 console.log(typeof name)	// 使用typeof关键字来判断类型
 let a = Number(name)		// 使用Number()来进行显式类型转换
 ```
-
 ## 数组
-
 ```js
 let arr = ['hello', 'world', 42, "end"]
 let arr = new Array("hello", "world", 42, 'end')
@@ -83,31 +74,23 @@ arr.unshift("ok")	// 添加到首部，返回数组新的长度
 arr.pop()			// 删除尾部元素，返回被删除的元素
 arr.shift()			// 删除首部元素，返回被删除的元素
 ```
-
 ## 常量
-
 ```js
 const i = 42
 ```
-
 ## 字符串模板
-
 ```js
 let a = "hello"				// 字符串可以用单引号或双引号或反引号括起来，反引号中可以使用字符串模板
 alert("hello" + "world")	// 字符串可以通过+号拼接
 alert("hello" + a)			// 字符串可以通过+号拼接
 alert(`this is ${a} world`)	// 字符串模板${a}，使用反引号会包括换行符，也就是说多行不需要像在单引号和双引号中那样使用\n
 ```
-
 ## 比较
-
 ```js
 console.log(2 == '2')		// 结果为true，==只测试值是否相同，而不判断数据类型是否相同
 console.log(2 === '2')		// 结果为false，比较推荐用===或!==
 ```
-
 ## 添加和循环语句
-
 ```js
 // if语句，switch语句，while语句，for语句，do...while语句和c++中的相同
 // 但范围for语句和c++中的不同
@@ -116,39 +99,27 @@ for (num of nums) {}	// num为每个元素值
 for (index in nums) {}	// index为每个元素下标
 // js中也有三元运算符 ? :
 ```
-
 ## ...扩展运算符
-
 ```js
 // ...是扩展运算符，用于将可迭代对象（如数组或字符串）展开为单个元素
 ```
-
 ## ?.
-
 ```js
 // ?.在JavaScript中如果调用对象是null，则返回undefined
 ```
-
 ## ??空值合并运算符
-
 ```js
 // ??是空值合并运算符（Nullish Coalescing Operator）。它的作用是返回其左侧操作数，如果左侧操作数为null或undefined，则返回右侧操作数
 ```
-
 ## 调试
-
 ```js
 // js的调试是在浏览器中进行的，通过F12调出的窗口有和ide相似的调试功能
 ```
-
 ## typeof判断类型
-
 ```js
 console.log(typeof 'hi')				// string
 ```
-
 ## 函数
-
 ```js
 // 形参过多，会自动为undefined
 // 实参过多，多余的实参被忽略
@@ -171,9 +142,7 @@ a()
 (function(){})()
 (function(){}())
 ```
-
 ## 对象
-
 ```js
 // 对象便是json(JavaScript Object Notation)
 let 对象名 = {
@@ -281,9 +250,7 @@ for (a in Person) {			// a为属性名，类型是字符串，比如name属性�
     console.log(Person[a])	// 通过Person[a]访问属性对应的值
 }
 ```
-
 ## import
-
 ```js
 // 文件中包含import或export语句，则该文件被视为模块，模块导入<script type="module" src="a.js"></script>要有type属性
 // import的文件中需要有export，比如math.js中有export const PI = 3.14，则main.js才可以导入math.js中的PI
@@ -307,9 +274,7 @@ import('./module.js')
         console.error('Error loading module:', err);
     });
 ```
-
 ## 处理json
-
 ```js
 // 只包含属性，不包含方法
 // JSON 要求在字符串和属性名称周围使用双引号。除了围绕整个 JSON 字符串之外，单引号无效
@@ -317,9 +282,7 @@ import('./module.js')
 JSON.parse()		// 接受 JSON 字符串作为参数，并返回相应的 JavaScript 对象
 JSON.stringify()	// 接受一个对象作为参数，并返回等效的 JSON 字符串
 ```
-
 ## 绑定事件和取消事件
-
 ```html
 <!-- 通过html属性进行绑定，不建议 -->
 <button onclick="click_event()">点击事件</button>
@@ -363,9 +326,7 @@ JSON.stringify()	// 接受一个对象作为参数，并返回等效的 JSON 字
     controller.abort(); /* removes any/all event handlers associated with this controller */
 </script>
 ```
-
 ## DOM
-
 ```js
 // 获取DOM元素
 const body = document.querySelector('body')		//参数为css选择器，推荐使用
@@ -386,9 +347,7 @@ document.location.reload();
 // 强制从服务器重新加载页面
 document.location.reload(true);
 ```
-
 ## window对象
-
 ```js
 // window包含DOM
 window.document		// 返回DOM
@@ -396,9 +355,7 @@ window.document		// 返回DOM
 // 打开一个新tab
 window.open("URL")
 ```
-
 ## 事件
-
 ```js
 // 取消浏览器提交表单时刷新页面的默认行为
 // 使用preventDefalut()
@@ -420,9 +377,7 @@ btn.addEventListener("click", () => {}, { capture: true })
 
 // event.target.tagName可以获取触发事件的标签名，event.currentTarget.tagName可以获取正在处理事件的标签名
 ```
-
 ## worker
-
 ```js
 // main.js
 // Create a new worker, giving it the code in "generate.js"
@@ -491,9 +446,7 @@ function generatePrimes(quota) {
   postMessage(primes.length);
 }
 ```
-
 ## 异步
-
 ```js
 // js中调用异步函数会立即返回一个Promise对象
 // 使用Promise.then(() => {})会在异步函数调用成功时调用传进的函数
@@ -567,13 +520,8 @@ function alarm(person, delay) {
 }
 alarm('John', 500).then(() => {}).catch(() => {})
 ```
-
-
-
 # dom相关
-
 ## 操控video
-
 ```js
 const video = document.querySelector('video')
 
@@ -590,13 +538,8 @@ video.play()
 // 调整音量（范围为[0, 1]）
 video.volume = 0.6 
 ```
-
-
-
 # api和框架
-
 ## 内置api
-
 ```js
 // 关于数字类型Number
 2 ** 4							  // js自带指数运算符，也可以使用Math.pow(2, 4)
@@ -657,9 +600,7 @@ setTimeout(() => {}, 5000)
 // 查看DOM元素的详细信息，显示其所有属性和方法
 console.dir(document.querySelector('button'))
 ```
-
 ## 浏览器api
-
 ```js
 // localStorage在用户的浏览器中存储数据，数据可以永久保留，直到显式删除
 // 存储数据
@@ -681,9 +622,7 @@ sessionStorage.removeItem('key');
 // 清空所有数据
 sessionStorage.clear();
 ```
-
 ## Node.js
-
 ```js
 // require()函数在node中用于导入模块，或导入json文件内容
 const path = require('path')
@@ -784,9 +723,7 @@ response.setHeader('Connection', 'keep-Alive')
 response.write('hello')
 response.end('hello')
 ```
-
 ## electron
-
 ```js
 // 示例
 const { app, BrowserWindow } = require('electron')
@@ -803,13 +740,8 @@ app.on('ready', createWindow)
 // 用webContents来操纵DOM
 mainWin.webContents.on('did-finish-load', ()=>{})
 ```
-
-
-
 ## 第三方api
-
 ### firebase
-
 ```js
 import { initializeApp } from 'firebase/app'
 import {
@@ -968,9 +900,7 @@ unsubButton.addEventListener('click', () => {
   unsubAuth()
 })
 ```
-
 ## DOM的api
-
 ```js
 // 有Window、Navigator、Document三种对象
 
@@ -1043,9 +973,7 @@ arr.cloneNode(true)
 arr.insertBefore(node, child)
 arr.childElementCount
 ```
-
 ## fetch的api
-
 ```js
 fetch(url).then().catch()
 ```

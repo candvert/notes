@@ -1,7 +1,5 @@
-# react(version 18)
-
+# React(version 18)
 ## 起始工作
-
 ```react
 // 创建项目
 // npx create-react-app local
@@ -29,9 +27,7 @@ import App from './App';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 ```
-
 ## JSX语法
-
 ```react
 // react使用的语法叫JSX
 // 将JSX编译为js的工具为Babel
@@ -83,9 +79,7 @@ const listItems = products.map(product =>
   </li>
 );
 ```
-
 ## 标签
-
 ```js
 // input
 const [value, setValue] = useState('')
@@ -95,8 +89,6 @@ const [value, setValue] = useState('')
 	onChange={(e) => setValue(e.target.value)}
 />
 ```
-
-
 
 ```react
 npx json-server --watch data/db.json --port 8000
@@ -227,9 +219,7 @@ const [value, setValue] = useState('');
     onChange={ (e) => setValue(e.target.value) }
 />
 ```
-
 ## 打包并发布到Github Pages
-
 ```js
 // 1. 安装 gh-pages 插件
 npm install gh-pages --save-dev
@@ -243,9 +233,7 @@ npm install gh-pages --save-dev
 // 4. 执行部署命令
 npm run deploy
 ```
-
 ## 库
-
 ```js
 // lodash
 // classnames

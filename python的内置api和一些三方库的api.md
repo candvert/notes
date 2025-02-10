@@ -17,9 +17,7 @@
 	- [网络库requests](#网络库requests)
 
 # python的内置api和一些三方库的api
-
 ## 列表
-
 ```py
 name = ['john', 'smith', 83.4, 'joey', 42]		# name的类型为name: list[str | float | int]
 
@@ -64,15 +62,11 @@ li = [item * item for item in range(0, 10) if item%2 == 0]
 name[ : ]
 name[ : : ]
 ```
-
 ## 元组
-
 ```py
 words = ('good', 42, 'human', 'profit')		# words类型为words: tuple[str, int, str, str]，因为元组不变，所以类型固定
 ```
-
 ## 字典
-
 ```py
 config = {'name': 'John', 'age': 18, 1.0: 'one'}	# config的类型为config: dict[str | float, str | int]
 
@@ -94,9 +88,7 @@ for key in config.keys():
 for value in config.values():
     print(value)
 ```
-
 ## 集合
-
 ```py
 # 集合不像列表和字典，集合不会以特定的顺序存储元素
 words = {'good', 42, 'human', 'profit'}		# words的类型为words: set[str | int]
@@ -104,18 +96,14 @@ config = {'name': 'John', 'age': 18, 1.0: 'one'}
 words = set(config.keys())
 words = set(config.values())
 ```
-
 ## enumerate进行遍历
-
 ```py
 name = ['john', 'joey']
 for index, value in enumerate(name):	# enumerate()返回下标和对应的值
     print(index)
     print(value)
 ```
-
 ## json
-
 ```py
 # json.dump()将字典保存到文件中
 import json
@@ -140,9 +128,7 @@ config = {'name': 'John', 'age': 18, 1.0: 'one'}
 a = json.dumps(config)		# 返回值/str
 b = json.loads(a)			# 返回值/Any
 ```
-
 ## unittest测试（内置测试框架）
-
 ```py
 # 测试用例是通过继承 unittest.TestCase 类创建的。你可以在类中定义多个测试方法，测试方法的名称必须以 test_ 开头
 # 在 unittest 框架中，setUp 方法用于在每个测试方法执行之前设置测试环境。它可以用于初始化测试中需要的资源、创建对象、打开文件
@@ -162,9 +148,7 @@ class EatTestCase(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 ```
-
 ## 文件操作
-
 ```py
 # 打开文件，open(name, mode=None, buffering=None)
 file = open('D:\\file', 'r', encoding='utf-8')
@@ -179,9 +163,7 @@ with open('D:\\file', 'r', encoding='utf-8') as f:
 # 写入内容
 file.wirte('hello')
 ```
-
 ## 获取时间和sleep函数
-
 ```py
 # 获取当前时间
 from datetime import datetime
@@ -194,17 +176,13 @@ print(b)	# 2024-10-02 19:15:38.149608
 from time import sleep
 sleep(2)	# 休眠2秒
 ```
-
 ## 随机数
-
 ```py
 import random
 a = random.randint(1, 10)	# [1, 10]
 a = random.random()			# [0, 1)
 ```
-
 ## 多线程
-
 ```py
 # threading.Lock()创建锁，threading.Thread(target=函数, args=(参数))创建线程
 import threading
@@ -226,18 +204,14 @@ for i in range(5):
 for thread in threads:
     thread.join()  # 等待所有线程完成
 ```
-
 ## 正则表达式
-
 ```py
 # 使用re.match(pattern, string)进行匹配
 import re
 
 res = re.match('h.s', 'his you')
 ```
-
 ## 网络socket
-
 ```py
 # 服务器端
 import socket
@@ -280,9 +254,7 @@ print(response.decode('utf-8'))  # 解码并打印响应
 
 client_socket.close()
 ```
-
 ## sqlite
-
 ```py
 # 简短示例
 import sqlite3
@@ -346,9 +318,7 @@ conn.commit()
 cursor.close()
 conn.close()
 ```
-
 ## mysql
-
 ```py
 from pymysql.connections import Connection
 
@@ -364,9 +334,7 @@ cursor.execute('SELECT * FROM table')	# 执行sql语句
 results: tuple = cursor.fetchall()	# 获取结果
 conn.close()
 ```
-
 ## 网络库requests
-
 ```py
 r = requests.get('https://api.github.com/events')
 r = requests.post('https://httpbin.org/post', data={'key': 'value'})
@@ -404,6 +372,3 @@ r = requests.get('https://baidu.com')
 with open('D:\\py.json', 'w', encoding='utf-8') as file:
     json.dump(dict(r.headers), file, indent=4)
 ```
-
-
-

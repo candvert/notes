@@ -41,8 +41,8 @@
 - [CheckBox](#CheckBox)
 - [Text](#Text)
 - [Timer](#Timer)
-## 基本语法
 
+## 基本语法
 ```css
 /* 和css不同的是属性值后可以加分号，也可以不加，通常不加分号 */
 Window {
@@ -227,7 +227,6 @@ Window {
 }
 ```
 ## 导入
-
 ```css
 /* 导入有三种类型，分别为模块、文件夹、javascript文件 */
 /* 示例 */
@@ -245,10 +244,10 @@ import QtQuick.Layouts    /* 布局 */
 import * as MathFunctions from "factorial.mjs";
 ```
 ## 注释
-
+```
 和javascript的注释一样，用//或/**/
+```
 ## 属性类型
-
 ```css
 有下面几种
 	id属性
@@ -260,11 +259,11 @@ import * as MathFunctions from "factorial.mjs";
 	enumeration属性
 ```
 ## id属性
-
+```
 每个QML对象类型只有一个id属性
 id值只能以小写字母或下划线开头，并且只能包含字母，数字，下划线
+```
 ## property属性
-
 ```css
 /* property的名字只能以小写字母开头，并且只能包含字母，数字，下划线 */
 /* 一个自定义的property隐式创建了一个随该property值改变的signal，和一个signal handler叫on<PropertyName>Changed，
@@ -333,7 +332,6 @@ readonly property int someNumber: 10
 required property int someNumber
 ```
 ## signal属性
-
 ```css
 /* 信号处理程序必须在发出信号的对象的定义内声明，并且处理程序应包含要执行的JavaScript代码块 */
 Item {
@@ -356,7 +354,6 @@ Item {
 }
 ```
 ## method属性
-
 ```css
 import QtQuick
 Rectangle {
@@ -371,7 +368,6 @@ Rectangle {
 }
 ```
 ## enumeration属性
-
 ```css
 /* 枚举类型和值都需要首字母大写，比如下面的TextType，Normal */
 Text {
@@ -387,7 +383,6 @@ Text {
 }
 ```
 ## 属性绑定
-
 ```css
 /* 即绑定到另一个属性，并随着它的改变而改变，比如下面的height: parent.height */
 Rectangle {

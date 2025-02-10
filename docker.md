@@ -4,6 +4,7 @@
 - [数据卷](#数据卷)
 - [构建镜像](#构建镜像)
 - [Docker Compose](#Docker Compose)
+
 ## 安装
 ```
 2025/2/1按下列步骤成功安装
@@ -25,7 +26,6 @@ https://docs.docker.com/engine/install/ubuntu/
 ```
 ## 基本原理
 ![](images/docker_1.png)
-
 ## 常用命令
 ```shell
 # 从仓库拉取镜像
@@ -90,13 +90,10 @@ docker volume inspect
 docker volume prune
 ```
 ## 构建镜像
-
 ![](images/docker_3.png)
 
 
-
 ![](images/docker_2.png)
-
 ```shell
 # 结尾的.代表Dockfile所在的目录
 docker build -t myImage:1.0 .

@@ -1,5 +1,3 @@
-# TypeScript
-
 ```typescript
 let num: number = 10;
 let num = 10 as number;		// 即类型转换
@@ -43,4 +41,3 @@ function myFn<T>(a: T, b: T): T[] {
 myFn<number>(1, 2)
 myFn(1, 2)
 ```
-

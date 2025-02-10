@@ -16,9 +16,7 @@
 	- [set_target_properties](#set_target_properties)
 
 # cmake
-
 ## 基本语句
-
 ```cmake
 cmake_minimum_required(VERSION 3.10)
 project(ScreenShot)
@@ -37,7 +35,6 @@ project(<PROJECT-NAME>
         [LANGUAGES <language-name>...])
 ```
 ## 命令行
-
 ```shell
 # 使用cmake编译应先在CMakeLists.txt的同级目录创建一个build文件夹，再cd build进入文件夹
 cmake ..
@@ -47,7 +44,6 @@ cmake --build .
 cmake -G "MinGW Makefiles" ..
 ```
 ## 变量
-
 ```cmake
 # 格式为set(变量名 变量值)
 set(cxx 11)
@@ -57,13 +53,11 @@ set(CMAKE_CXX_STANDARD ${cxx})
 add_executable(myproject ${PROJECT_SOURCES})
 ```
 ## 指定c++标准
-
 ```cmake
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ```
 ## 指定头文件目录
-
 ```cmake
 # include_directories可以使用相对路径
 include_directories(ok)
@@ -73,7 +67,6 @@ include_directories(ok)
 target_include_directories(ScreenShot PUBLIC "${PROJECT_BINARY_DIR})")
 ```
 ## 生成一个静态库并添加到项目
-
 ```cmake
 # 比如生成静态库的文件在与CMakeLists.txt同级的MathFunctions目录中
 # 那么先在MathFunctions中添加一个CMakeLists.txt文件，然后写入下面内容
@@ -84,7 +77,6 @@ add_subdirectory(MathFunctions)
 target_link_libraries(ScreenShot PUBLIC MathFunctions)
 ```
 ## 生成动态库
-
 ```cmake
 # 比如生成动态库的文件在与CMakeLists.txt同级的MathFunctions目录中
 # 那么先在MathFunctions中添加一个CMakeLists.txt文件，然后写入下面内容
@@ -96,7 +88,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARAY_DIR}") # .dll .exe
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARAY_DIR}") # .so
 ```
 ## 安装库或文件
-
 ```cmake
 # 格式为install(TARGETS 库或生成的项目文件 DESTINATION 目录)
 # 如果是文件，则install(FILES MathFunctions.h DESTINATION 目录)
@@ -113,15 +104,11 @@ install(TARGETS mytarget
 )
 ```
 ## 链接第三方库
-
 ```cmake
 # 以opencv库为例
 find_package(OpenCV REQUIRED)
 target_link_libraries(ScreenShot ${OpenCV_LIBS})
 ```
-
-
-
 # 常用指令
 ## find_package
 ```cmake

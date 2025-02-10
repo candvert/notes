@@ -22,10 +22,8 @@
 	- [注解](#注解)
 	- [JUnit测试框架](#JUnit测试框架)
 
-
-
 # Java基本语法
-
+```
 java中数组和new出来的对象都是指针
 
 java中有构造函数，无析构函数
@@ -33,9 +31,8 @@ java中有构造函数，无析构函数
 java中所有都是类，不能像c++一样在类外定义函数和变量
 
 java中只能单继承，但可以实现多个接口，也可以单继承的同时实现多个接口
-
+```
 ## main函数
-
 ```java
 import java.lang.System;	// 默认导入
 
@@ -45,23 +42,17 @@ public class Ok {
     }
 }
 ```
-
 ## 基本数据类型
-
 ```java
 char, byte, short, int, long, boolean, float, double
 ```
-
 ## 注释
-
 ```java
 // this is comment
 
 /* this is comment */
 ```
-
 ## 数组
-
 ```java
 // 第一种定义方式
 int[] arr = new int[10];
@@ -72,9 +63,7 @@ int[] arr = new int[]{3, 4};
 // 第三种定义方式
 int[] arr = {3, 4};
 ```
-
 ## try catch和throws
-
 ```java
 // try catch语法
 try {
@@ -97,9 +86,7 @@ try {
     System.out.println("hello");  //此句无论抛不抛出异常都会执行
 }
 ```
-
 ## final
-
 ```java
 // 修饰类表示类不能被继承
 public final class Ok {}
@@ -114,18 +101,14 @@ public class Ok {
     public final int name = 89;
 }
 ```
-
 ## 继承
-
 ```java
 public class A {}
 
 // 继承使用extends关键字
 public class B extends A {}
 ```
-
 ## 重写Override
-
 ```java
 public class A {
     public void method() {}
@@ -137,9 +120,7 @@ public class B extends A {
     public void method() {}
 }
 ```
-
 ## 包和导入
-
 ```java
 // 包就是文件夹
 package com.example;
@@ -147,9 +128,7 @@ package com.example;
 import com.example.OK;			// 导入一个类
 import static java.lang.Math.*; // 导入Math类的所有静态成员
 ```
-
 ## 构造代码块
-
 ```java
 public class A {
     // 构造代码块每次创建对象都会执行，先于构造函数执行
@@ -158,9 +137,7 @@ public class A {
     }
 }
 ```
-
 ## 静态代码块
-
 ```java
 public class A {
     // 无论创建多少对象，只会执行一次，先于构造函数执行
@@ -169,9 +146,7 @@ public class A {
     }
 }
 ```
-
 ## 抽象类
-
 ```java
 // 抽象类不能实例化
 // 抽象类中不一定有抽象方法，有抽象方法的类一定是抽象类
@@ -185,25 +160,19 @@ public abstract class A {
     public abstract void method();
 }
 ```
-
 ## 接口
-
 ```java
 interface Eat {
     int a = 8;
     public void method();
 }
 ```
-
 ## 实现接口
-
 ```java
 interface Eat {}
 public class A implements Eat {}
 ```
-
 ## 匿名类
-
 ```java
 interface Eat {
     public void method();
@@ -218,9 +187,7 @@ public class A {
     };
 }
 ```
-
 ## 包装类
-
 ```java
 char		Character
 byte		Byte
@@ -231,18 +198,14 @@ boolean		Boolean
 float		Float
 double		Double
 ```
-
 ## lambda表达式
-
 ```java
 // 格式
 (int a, int b) -> { return a + b; }
 // 当只有一个参数并且语句只有一条时，可以简化成下述格式
 a -> return a
 ```
-
 ## 泛型
-
 ```java
 // 泛型类
 public class A<E, T> {}
@@ -265,18 +228,14 @@ interface Eat<E> {}
 // 类实现泛型接口
 public class A<E> implements Eat<E> {}
 ```
-
 ## 泛型通配符
-
 ```java
 public class A {
 	// ArrayList<? extends B> arr表示arr中的元素都是B的子类，一般在List、ArrayList等容器类中使用
     public void method(ArrayList<? extends B> arr) {}
 }
 ```
-
 ## 反射
-
 ```java
 public class A {}
 
@@ -302,9 +261,7 @@ Field[] fields = c.getField();  //得到类中所有的成员变量
 
 Method[] methods = c.getMethods();  //得到类中所有的成员方法
 ```
-
 ## 注解
-
 ```java
 // 定义注解
 @Target(ElementType.Type)  // ElementType.Type表示该注解只能使用在类上
@@ -313,9 +270,7 @@ Method[] methods = c.getMethods();  //得到类中所有的成员方法
     String name() default "hello";  // 实际编译成字节码是abstract String name() {};
 }
 ```
-
 ## JUnit测试框架
-
 ```java
 public class TestClass {
     // 测试方法上要加上@Test注解，测试方法必须是公共的，无参，无返回值
@@ -323,4 +278,3 @@ public class TestClass {
     public void TestMethod() {}
 }
 ```
-

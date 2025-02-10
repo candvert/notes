@@ -1,5 +1,4 @@
-# Electron
-
+# 示例
 ```js
 // 示例
 const { app, BrowserWindow } = require('electron')
@@ -18,9 +17,7 @@ app.on('ready', createWindow)
 // 用webContents来操纵DOM
 mainWin.webContents.on('did-finish-load', ()=>{})
 ```
-
 ## 窗口属性
-
 ```js
 let mainWin = new BrowserWindow({
     width: 800,
@@ -30,9 +27,7 @@ let mainWin = new BrowserWindow({
     }
 })
 ```
-
 ## contextBridge连接主进程和渲染进程
-
 ```js
 const { contextBridge } = require('electron')
 
@@ -43,9 +38,7 @@ contextBridge.exposeInMainWorld('versions', {
   // 除函数之外，我们也可以暴露变量
 })
 ```
-
 ## ipcMain.handle和ipcRenderer.invoke进行进程间通信
-
 ```js
 const { contextBridge, ipcRenderer } = require('electron')
 
@@ -57,4 +50,3 @@ contextBridge.exposeInMainWorld('versions', {
   // 除函数之外，我们也可以暴露变量
 })
 ```
-

@@ -1,13 +1,39 @@
+- [GDScript](#GDScript)
+	- [输出](#输出)
+	- [访问子节点](#访问子节点)
+	- [节点的函数](#节点的函数)
+	- [input函数（当有按键按下等会调用）](#input函数（当有按键按下等会调用）)
+	- [变量](#变量)
+	- [get和set](#get和set)
+	- [await](#await)
+	- [数据类型和类型转换](#数据类型和类型转换)
+	- [数组](#数组)
+	- [字典](#字典)
+	- [枚举](#枚举)
+	- [随机数](#随机数)
+	- [条件语句](#条件语句)
+	- [循环](#循环)
+	- [信号](#信号)
+	- [函数](#函数)
+	- [继承](#继承)
+	- [inner class](#inner class)
+- [Godot](#Godot)
+	- [人物scene](#人物scene)
+	- [游戏scene](#游戏scene)
+	- [移动平台scene](#移动平台scene)
+	- [Vector2](#Vector2)
+	- [Input](#Input)
+	- [Node](#Node)
+	- [CharacterBody2D](#CharacterBody2D)
+	- [文件](#文件)
+	- [Json](#Json)
+
 # GDScript
-
-## print
-
+## 输出
 ```py
 print("hello world")
 ```
-
 ## 访问子节点
-
 ```py
 # 比如下列文件结构
 # Node2D
@@ -24,16 +50,12 @@ $Label/Weapon.text = "sword"
 # $是get_node函数的缩写
 @onready var weapon = get_node("Label/Weapon")
 ```
-
 ## 节点的函数
-
 ```py
 @onready var weapon = get_node("Label/Weapon")
 weapon.get_path()		# 绝对路径
 ```
-
-## _input函数（当有按键按下等会调用）
-
+## input函数（当有按键按下等会调用）
 ```py
 # 可以在 项目->项目设置->输入映射 中绑定action和按键
 func _input(event):
@@ -44,9 +66,7 @@ func _input(event):
     if event.is_action_released("action"):
         pass
 ```
-
 ## 变量
-
 ```py
 var name = "john"
 var name := "john"
@@ -74,9 +94,7 @@ func eat(n: Node):
     pass
 eat(self)
 ```
-
 ## get和set
-
 ```py
 var i := 42:
     set(value):
@@ -84,15 +102,11 @@ var i := 42:
     get:
         return i
 ```
-
 ## await
-
 ```py
 await  get_tree().create_timer(0.075).timeout	# 延迟0.075秒
 ```
-
 ## 数据类型和类型转换
-
 ```py
 bool, int, float, String, Array, Dictionary, Vector2, Vector3, Color
 
@@ -106,9 +120,7 @@ var i = int("42")
 # as关键字
 var i = 12.0 as int
 ```
-
 ## 数组
-
 ```py
 var arr = [0, 1, "nihao"]
 var arr: Array = [0, 1, "nihao"]
@@ -121,9 +133,7 @@ arr.pop_front()		# 返回删除的元素
 arr.remove_at(0)
 arr.insert(2, 5)	# 参数1/索引，参数2/元素
 ```
-
 ## 字典
-
 ```py
 var dic = {"name": "john", "age": 18, 0: "zero"}
 dic["name"]
@@ -134,9 +144,7 @@ for item in dic:
     print(dic[item])
 dic.keys()
 ```
-
 ## 枚举
-
 ```py
 # 定义
 enum { ZERO, SECOND, THIRD }
@@ -147,9 +155,7 @@ var color = Colors.RED
 # 使用@export使得godot的inspector面板可以改变该变量
 @export var color : Colors
 ```
-
 ## 随机数
-
 ```py
 var f = randf()					# 范围[0, 1]
 var f = randf_range(2.3, 4,5)	# 范围[2.3, 4.5]
@@ -163,9 +169,7 @@ var i = clampi(speed, 1, 20)	# i为20
 speed = -20
 var i = clampi(speed, 1, 20)	# i为1
 ```
-
 ## 条件语句
-
 ```py
 if 4 > 2:
     pass
@@ -189,9 +193,7 @@ var i = 42
 if i is int:
     pass
 ```
-
 ## 循环
-
 ```py
 for number in range(3):
     pass
@@ -206,9 +208,7 @@ while 4 > 2:
 continue
 break
 ```
-
 ## 信号
-
 ```py
 # 定义信号
 signal eat
@@ -219,9 +219,7 @@ swim.emit("John")
 # 连接信号
 eat.connect(函数)
 ```
-
 ## 函数
-
 ```py
 # 定义
 func run(name):
@@ -256,9 +254,7 @@ func _input(event):
 func _unhandled_input(event):
     pass
 ```
-
 ## 继承
-
 ```py
 # (optional) icon to show in the editor dialogs:
 @icon("res://path/to/optional/icon.svg")
@@ -270,9 +266,7 @@ extends BaseClass		# 继承
 # 上面两句可以写成一行
 class_name Myclass extends BaseClass
 ```
-
 ## inner class
-
 ```py
 extends Node
 
@@ -285,16 +279,14 @@ class Equipment:
     var armor := 10
     var weigth := 5
 ```
-
-
-
 # Godot
-
+```
 queue_free()从游戏中移除当前节点
 
 get_tree().reload_current_scene()重载当前场景，可用于玩家死亡后复活
 
 Engine.time_scale = 0.5让时间变为原来的一半
+```
 
 ```py
 # 可以看作对资源的引用
@@ -307,19 +299,13 @@ var player = PLAYER.instantiate()
 func _process(delta):
     position.x += direction * SPEED * delta
 ```
-
-
-
 ## 人物scene
-
 ```py
 # CharacterBody2D
 # 	- AnimatedSprite2D
 #	- CollisionShape2D
 ```
-
 ## 游戏scene
-
 ```py
 # Node2D
 # 	- CharacterBody2D
@@ -327,31 +313,22 @@ func _process(delta):
 #	- TileMapLayer
 #	- AnimatableBody2D
 ```
-
 ## 移动平台scene
-
 ```py
 # AnimatableBody2D
 # 	- Sprite2D
 #	- CollisionShape2D
+
+
+# StaticBody2D
+
+# AnimationPlayer
 ```
-
-StaticBody2D
-
-AnimationPlayer
-
-
-
-
-
 ## Vector2
-
 ```py
 var pos = Vector2.ZERO
 ```
-
 ## Input
-
 ```py
 # 判断是否某个action被触发
 Input.is_action_just_pressed("action")
@@ -362,9 +339,7 @@ var direction = Input.get_axis("action1", "action2")
 # 通常用于左键减右键，如何左右键同时按下，则direction为0
 var direction = Input.get_action_strength("left") - Input.get_action_strength("left")
 ```
-
 ## Node
-
 ```py
 # 不处理节点
 process_mode = Node.PROCESS_MODE_DISABLED
@@ -375,9 +350,7 @@ process_mode = Node.PROCESS_MODE_DISABLED
 # 方法
 Array[Node] get_children(include_internal: bool = false) const		# 返回所有子节点
 ```
-
 ## CharacterBody2D
-
 ```py
 # 属性
 Vector2 velocity				# 速度，默认Vector2(0, 0)
@@ -386,22 +359,14 @@ Vector2 velocity				# 速度，默认Vector2(0, 0)
 # 方法
 bool move_and_slide()			# 依据velocity移动物体
 ```
-
-
-
-
-
 ## 文件
-
 ```py
 # 打开文件
 var file = FileAccess.open("D://a.json", FileAccess.WRITE)
 # 写入一行
 file.store_line("")
 ```
-
 ## Json
-
 ```py
 # 序列化
 var dic: Dictionary = {"name", "john"}
@@ -413,4 +378,3 @@ var json = JSON.new()
 json.parse(s)
 json.get_data()
 ```
-

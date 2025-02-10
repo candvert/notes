@@ -1,8 +1,8 @@
 - [gcc](#gcc)
-	- [](#)
+	- [静态和动态链接库](#静态和动态链接库)
 - [gdb](#gdb)
 
-## gcc
+# gcc
 ```
 gcc -o <filename> 指定生成的文件名
 gcc -E 生成预处理后文件
@@ -23,7 +23,7 @@ gcc -Werror 将警告当作错误
 gcc -finput-charset=UTF-8 指定源文件编码
 gcc -fexec-charset=GBK 指定运行时编码
 ```
-
+## 静态和动态链接库
 ```
 静态链接库
 	命名 lib<name>.a
@@ -40,7 +40,7 @@ gcc -fexec-charset=GBK 指定运行时编码
 	使用 gcc main.c -L<dir> -l<name>
 		 或gcc main.c <dir>/lib<name>.a
 ```
-## gdb
+# gdb
 ```
 首先要通过gcc或g++的-g选项生成可调试的程序
 gdb的命令

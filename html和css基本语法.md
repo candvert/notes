@@ -17,20 +17,15 @@
 	- [字体](#字体)
 	- [Bootstrap](#Bootstrap)
 
-
 # html
-
 ## 基本结构
-
 ```html
 <html>
     <head></head>
     <body></body>
 </html>
 ```
-
 vscode默认生成的html文件
-
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -44,9 +39,7 @@ vscode默认生成的html文件
 </body>
 </html>
 ```
-
 ## 常用标签
-
 ```html
 <!-- 标题 -->
 <h1> </h1>
@@ -118,16 +111,12 @@ vscode默认生成的html文件
 <aside></aside>
 <footer></footer>
 ```
-
 ## 标签的属性
-
 ```html
 <!-- 下面的src便是img标签的属性 -->
 <img src="URL" />
 ```
-
 ## 图片标签的属性
-
 ```html
 <!-- src图片路径 -->
 <img src="URL" />
@@ -142,18 +131,14 @@ vscode默认生成的html文件
 <!-- border图像的边框 -->
 <img border="20" />
 ```
-
 ## input标签
-
 ```html
 <!-- type的值有email，url，date，time，month，week，number，tel，search，color -->
 <input type="text">
 <!-- value是框内的提示文字 -->
 <input type="text" value="please input">
 ```
-
 ## 超链接标签
-
 ```html
 <!-- 语法 -->
 <a href="跳转地址" target="弹出窗口的方式"> </a>
@@ -171,17 +156,13 @@ vscode默认生成的html文件
 <h1 id="one"> </h1>
 <a href="#one"> </a>
 ```
-
 ## 注释和特殊字符
-
 ```html
 <!-- 这是注释 -->
 <!-- 因为<和>等符号用于表示标签，所以要使用特殊字符，像c++中的转义字符 -->
 <p> &lt; &gt; &nbsp; </p>	<!-- &lt;表示>，&gt;表示<，&nbsp;表示空格，&plus;表示+，&minus表示-，&times;表示X -->
 ```
-
 ## 表格
-
 ```html
 <!-- tr表示一行，th(table head)表示表头单元格，tb(table data)表示一个单元格 -->
 <table>
@@ -229,9 +210,7 @@ vscode默认生成的html文件
     </tr>
 </table>
 ```
-
 ## 列表
-
 ```html
 <!-- 无序列表 -->
 <!-- 下面这段在浏览器的表示为
@@ -265,9 +244,7 @@ ok
     <dd>world</dd>
 </dl>
 ```
-
 ## 表单form
-
 ```html
 <!-- 表单 -->
 <form>
@@ -305,9 +282,7 @@ ok
 <!-- text标签表示多行文本框 -->
 <textarea rows="3" clos="20"> </textarea>
 ```
-
 ## 块元素、行内元素和行内块元素
-
 ```html
 <!-- 块元素 -->
 <!-- 块级元素通常用于组织和布局页面的主要结构和内容，例如段落、标题、列表、表格等。它们用于创建页面的主要部分，将内容分隔
@@ -333,9 +308,7 @@ ok
 	· 常见的行内块元素包括<img/>、<input/>、<td>
 -->
 ```
-
 ## 简便语法(Emmet语法)
-
 ```html
 <!-- 下面的输入之后按tap键 -->
 
@@ -370,11 +343,8 @@ div{$}*3
 <!-- 复合写法 -->
 div{hello}*5
 ```
-
 # css
-
 ## 基本语法
-
 ```html
 <!-- 基本语法
 选择器 {
@@ -386,9 +356,7 @@ div{hello}*5
 
 <!-- 带-webkit-前缀的属性是作用于chrome的，-moz-作用于firefox -->
 ```
-
 ## 引入方式
-
 ```html
 <!-- 行内样式表 -->
 <p style="color: red;">男</p>
@@ -409,9 +377,7 @@ p {
     @import url("https://example.com/styles2.css");
 </style>
 ```
-
 ## 选择器
-
 ```css
 /* 选择器分为基础选择器和复合选择器 */
 /* 基础选择器包括标签选择器，类选择器，id选择器，通配符选择器 */
@@ -523,9 +489,7 @@ display: inline:
 display: inline-block;
 */
 ```
-
 ## css3新增选择器
-
 ```css
 /* 属性选择器，结构伪类选择器，伪元素选择器 */
 
@@ -572,9 +536,7 @@ div li:nth-of-type(n) {}	/* div标签的第一个子元素 */
 /* 创建的元素不存在于文档树上，所以称为伪元素 */
 
 ```
-
 ## 属性
-
 ``` css
 /* 使用谷歌的字体样式表 */
 /* 先在html中的<head>标签中添加下面代码 */
@@ -716,9 +678,7 @@ transition: width 0.2s ease 0.1s;
 transition: all 0.2s linear 0.1s;
 transition: width 0.2s, height 0.1s;	/* 过渡width和height两个属性 */
 ```
-
 ## flex布局
-
 ```css
 display: flex;
 /* 任何容器都可以使用flex布局 */
@@ -744,9 +704,7 @@ align-items: center;
 /* flex-flow复合属性，相当于同时设置flex-direction和flex-wrap */
 flex-flow: row wrap;
 ```
-
 ## 实现弹跳动画效果
-
 ```css
 /* html */
 <img class="is-bottom" src="./message.svg" width="20px" height="20px">
@@ -778,9 +736,7 @@ flex-flow: row wrap;
     */
 }
 ```
-
 ## css的特性
-
 ```css
 /* 继承性 */
 /* 子标签会继承父标签的某些样式，text-, font-, line-开头的可以继承，以及color属性 */
@@ -788,9 +744,7 @@ flex-flow: row wrap;
 	<span>hello</span>
 </div>
 ```
-
 ## Bootstrap
-
 ```html
 // 栅格系统
 <div class="container">
@@ -804,4 +758,3 @@ flex-flow: row wrap;
     </div>
 </div>
 ```
-
