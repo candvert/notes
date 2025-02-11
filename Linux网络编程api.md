@@ -1,7 +1,12 @@
-```
-Linux network programming(api)
+- [套接字函数](#套接字函数)
+- [select等函数](#select等函数)
+- [字节序转换](#字节序转换)
+- [read等函数](#read等函数)
+- [其他函数](#其他函数)
 
-socket, bind, connect, accept, listen, shutdown, getsockname, getpeername
+## 套接字函数
+```c
+// socket, bind, connect, accept, listen, shutdown, getsockname, getpeername
 #include <sys/types.h>
 #include <sys/socket.h>
 int socket(int domain, int type, int protocol);
@@ -9,25 +14,18 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 int listen(int sockfd, int backlog);
-
-htonl, htons, ntohl, ntohs, inet_pton，inet_ntop
-#include <arpa/inet.h>
-uint32_t htonl(uint32_t hostlong);
-uint16_t htons(uint16_t hostshort);
-uint32_t ntohl(uint32_t netlong);
-uint16_t ntohs(uint16_t netshort);
-int inet_pton(int af, const char *src, void *dst); (af : AF_INET, AF_INET6);
-const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
-
-select
+```
+## select等函数
+```c
+// select
 #include <sys/select.h>
 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
 
-poll
+// poll
 #include <poll.h>
 int poll(struct pollfd *fds, nfds_t nfds, int timeout);
 
-epoll
+// epoll
 #include <sys/epoll.h>
 int epoll_create(int size);
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);  (op : EPOLL_CTL_ADD, EPOLL_CTL_MOD, EPOLL_CTL_DEL)
@@ -43,13 +41,28 @@ struct epoll_event {
 }
 (events : EPOLLIN, EPOLLOUT, EPOLLRDHUP, EPOLLPRI, EPOLLERR, EPOLLHUP, EPOLLET, EPOLLONESHOT)
 int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);
-
-close, write, read
+```
+## 字节序转换
+```c
+// htonl, htons, ntohl, ntohs, inet_pton，inet_ntop
+#include <arpa/inet.h>
+uint32_t htonl(uint32_t hostlong);
+uint16_t htons(uint16_t hostshort);
+uint32_t ntohl(uint32_t netlong);
+uint16_t ntohs(uint16_t netshort);
+int inet_pton(int af, const char *src, void *dst); (af : AF_INET, AF_INET6);
+const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
+```
+## read等函数
+```c
+// close, write, read
 #include <unistd.h>
 int close(int fd);
 ssize_t write(int fd, const void *buf, size_t count);
 ssize_t read(int fd, void *buf, size_t count);
-
+```
+## 其他函数
+```
 sprintf, snprintf, sscanf, fgets, fprintf
 
 bzero, bcopy, bcmp
