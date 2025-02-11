@@ -170,8 +170,11 @@ C++11标准中引入了5个头文件来支持多线程编程，如下图所示�
 
 ```cpp
 // std::this_thread::get_id()获得当前线程的id
+// std::thread::hardware_concurrency()返回真正可以并发运行的线程数，如果无法获得此信息，
+// 该函数可能返回0
 // t.detach()函数分离线程
 // t.join()函数阻塞主线程，直到t线程完成
+// t.joinable()返回true或false
 #include <iostream>
 #include <thread>
 
@@ -188,9 +191,40 @@ int main() {
 void hello(int i, string s) { }
 std::thread t(hello, 3, "world");
 
+// std::thread可以与任何可调用类型一起工作
+class backgound_task {
+pubic:
+	void operator()() const {
+		do_something();
+	}
+};
+int main() {
+	background_task f;
+	std::thread my_thread(f);
+}
+
+// 移交所有权
+std::thread t1(some_function);
+std::thread t2 = std::move(t1);
+
+
+
 
 
 // 互斥锁
+// std::lock_guard类在构造时会自动锁定传入的互斥锁，在析构时自动解锁
+// std::lock可以一次性锁定两个或多个互斥锁而无死锁风险，std::lock(mtx1, mtx2);
+// std::adopt_lock参数表明互斥锁已经被锁住，不要试图在构造函数中对互斥锁上锁
+// std::lock_guard<std::mutex> lock(mtx, std::adopt_lock);
+
+// std::scoped_lock结合了std::lock可以锁住多个互斥锁和std::lock_guard自动锁定和解锁的特点，属于c++17新特性，std::scoped_lock guard(mtx1, mtx2);
+
+// std::unique_lock提供了lock()、try_lock()和unlcok()成员函数。这些函数会更新std::unique_lock内部的标志位，可以调用owns_lock()成员函数来查询这个标志位
+// 除非需要转移锁的所有权或者执行其他需要std::unique_lock的操作，否则，最好还是使用std::scoped_lock
+
+// c++14提供std::shared_timed_mutex，c++17提供std::shared_mutex
+
+// 线程休眠，std::this_thread::sleep_for(std::chrono::milliseconds(100));
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -216,6 +250,10 @@ int main() {
 
 
 // 条件变量
+// std::condition_variable c;
+// c.wait(lock)，c.notify_one()，c.notify_all()
+// std::condition_variable仅限于与std::mutex一起使用
+// std::condition_variable_any更加通用，可以与任何满足互斥锁基本条件的对象一起使用
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -286,6 +324,8 @@ int main() {
 
 
 // 通过std::async和std::future实现异步执行
+// c++提供std::future和std::shared_future
+// std::promise
 #include <iostream>
 #include <future>
 
