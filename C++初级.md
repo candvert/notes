@@ -4,7 +4,6 @@
 - [多线程](#多线程)
 
 ## 多进程
-
 ```cpp
 // 父进程返回子进程的PID（>0）
 // 子进程返回0
@@ -38,6 +37,8 @@ int main() {
 ```
 ## 进程间通信
 ```cpp
+// 进程间通信方式有：信号，套接字，管道，共享内存，文件
+
 // 1. 匿名管道（Pipe）
 #include <unistd.h>
 #include <string.h>
@@ -157,21 +158,35 @@ int main() {
 ## 多线程
 C++11标准中引入了5个头文件来支持多线程编程，如下图所示：
 ![](images/cplusplus_201.png)
+```
+两种方式利用并发提高性能
+
+1. 易并行（embarrassingly parallel）算法：
+一个线程执行算法的一部分，另一个线程执行算法的另一个部分
+
+2. 数据并行（data parallelism）：
+每个线程在不同的数据部分上执行相同的操作
+```
+
 ```cpp
+// std::this_thread::get_id()获得当前线程的id
+// t.detach()函数分离线程
 // t.join()函数阻塞主线程，直到t线程完成
 #include <iostream>
 #include <thread>
 
-void print_hello() {
+void hello() {
     std::cout << "Hello from thread!" << std::endl;
 }
 
 int main() {
-    std::thread t(print_hello);  // 创建一个线程并启动
+    std::thread t(hello);  // 创建一个线程并启动
     t.join();  // 等待线程结束
-    return 0;
 }
 
+// 传递参数
+void hello(int i, string s) { }
+std::thread t(hello, 3, "world");
 
 
 
