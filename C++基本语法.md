@@ -1,3 +1,4 @@
+- [C++标准](#C++标准)
 - [C++中的预定义宏](#C++中的预定义宏)
 - [C++基本语法](#C++基本语法)
 	- [引用](#引用)
@@ -64,6 +65,8 @@
 - [C语言一些知识点](#C语言一些知识点)
 	- [预定义宏](#预定义宏)
 
+# C++标准
+![](images/cplusplus_18.png)
 # C++中的预定义宏
 ```cpp
 // 参考网址：https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html
