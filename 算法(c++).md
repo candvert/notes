@@ -14,6 +14,10 @@
 	- [基数排序](#基数排序)
 	- [桶排序](#桶排序)
 	- [计数排序](#计数排序)
+- [常考算法题](#常考算法题)
+	- [最长回文子串](#最长回文子串)
+	- [最长公共子串（KMP算法）](#最长公共子串（KMP算法）)
+	- [最大连续bit数](#最大连续bit数)
 
 ## 命名空间
 ```
@@ -31,6 +35,7 @@ vector数组
 	size()，empty()，clear()
 	begin()，end()，rbegin()，rend()
 string字符串
+	getline(cin, s)
 	substr(start, length)，find(str)，replace(start, count, str)
 	replace(const_iterator first, const_iterator last, const basic_string& str)
 	stoi(str)，stol(str)，to_string(value)
@@ -84,7 +89,12 @@ pair/tuple
 # include <numeric>
 数值运算
 	int sum = accumulate(v.begin(), v.end(), 0);
+	reduce(v.begin(), v.end());（c++17）
 	midpoint(a, b);
+
+
+# include <ctype.h>
+isdigit(c)，isalpha(c)，islower(c)，isupper(c)
 
 
 
@@ -598,4 +608,59 @@ void count_sort(int arr[], int low, int high) {
 }
 
 #endif
+```
+# 常考算法题
+## 最长回文子串
+```cpp
+// leetcode 5
+// 标签：动态规划
+// 思路：
+// 定义一个二维数组，初始化为false。设i<=j，如果s[i]==s[j]并且dp[i+1][j-1]为true，那么dp[i][j]就为true。i等于j即一个字母必为回文串。j-i<=1是为了防止出现遇到dp[i+1][j-1]时i+1=s.size()或j-1=-1的越界行为。
+
+class Solution {
+public:
+	string longestPalindrome(string s) {
+		vector<vector<bool>> dp(s.size(), vector<bool>(s.size(), false));
+		int result = 1;
+		int start = 0;
+		for (int j = 0; j < s.size(); ++j) {
+			for (int i = j; i >= 0; --i) {
+				if (s[i] == s[j] && (j - i <= 1 || dp[i+1][j-1])) {
+					dp[i][j] = true;
+					if(j - i + 1 > result) {
+						result = j - i + 1;
+						start = i;
+					}
+				}
+			}
+		}
+		return s.substr(start, result);
+	}
+};
+```
+## 最长公共子串（KMP算法）
+```cpp
+
+```
+## 最大连续bit数
+```cpp
+// nowcoder HJ86
+// 思路：
+// 如果有连续的1那么每次左移并和原来的数相交，就会消去一个1。如果不存在连续的1，那么则为0。
+// 原来的：10111001
+// 左移后：01110010
+// 相交后：00110000
+// 可以看到两个及以上连续的1相交后减少一个1，单独的不连续的1就消去了
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    while(cin >> n) {
+        int count = 0;
+        for(; n != 0; ++count) n &= n << 1;
+        cout << count << endl;
+    }
+    return 0;
+}
 ```
