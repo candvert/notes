@@ -15,66 +15,103 @@
 	- [桶排序](#桶排序)
 	- [计数排序](#计数排序)
 
+## 命名空间
+```
+三种方法使用c++标准库中的标识符
+1. std::cout
+
+2. 使用using declaration：using std::cout;
+
+3. 使用using directive：using namespace std;
+```
 # 常用函数
 ```
-1. vector数组
+vector数组
 	push_back()，pop_back()
 	size()，empty()，clear()
 	begin()，end()，rbegin()，rend()
-2. string字符串
+string字符串
 	substr(start, length)，find(str)，replace(start, count, str)
 	replace(const_iterator first, const_iterator last, const basic_string& str)
 	stoi(str)，stol(str)，to_string(value)
 	push_back()，pop_back()
 	size()，empty()，clear()
 	begin()，end()，rbegin()，rend()
-3. stack
+stack
 	push()，pop()，top()，empty()，size()
-4. queue
+queue
 	push()，pop()，front()，back()，empty()，size()
-5. priority_queue优先队列（堆）
+priority_queue优先队列（堆）
 	默认大根堆，小根堆：priority_queue<int, vector<int>, greater<>>
-6. deque双端队列
+deque双端队列
 	push_front()，push_back()，pop_front()，pop_back()
 	front()，back()
 	size()，empty()，clear()
 	begin()，end()，rbegin()，rend()
-7. set/map（有序）
+set/map（有序）
 	insert()，erase()，clear()，find(key)，count(key)，lower_bound()，upper_bound()
 	empty()，size()
-8. underered_set/unordered_map（哈希表）
+underered_set/unordered_map（哈希表）
 	insert()，erase()，clear()，find(key)，count(key)
 	empty()，size()
-9. pair/tuple
+pair/tuple
 	pair<int, int> pa;
 	pair.first，pair.second
 
 
 
 #include <algorithm>
-10. 排序和查找
+排序和查找
 	sort(v.begin(), v.end());
 	sort(v.begin(), v.end(), greater<>());
 	auto it = lower_bound(v.begin(), v.end(), x);
 	auto it = upper_bound(v.begin(), v.end(), x);
 	binary_search(v.begin(), v.end(), x);
-11. 最值和交换
-	max(a, b); min(a, b); swap(a, b);
+最值和交换
+	max(a, b); min(a, b); swap(a, b); minmax(a, b);
 	auto max_val = *max_element(v.begin(), v.end());
-12. 数组/容器操作
+数组/容器操作
 	reverse(v.begin(), v.end()); // 反转
 	auto last = unique(v.begin(), v.end()); // 去重相邻重复
 	fill(v.begin(), v.end(), 0); // 填充值
 	rotate(v.begin(), v.begin()+k, v.end()); // 旋转
-13. 排列组合
+排列组合
 	next_permutation(v.begin(), v.end()); // 下一个排列
 	prev_permutation(v.begin(), v.end());
 
 
 
 # include <numeric>
-1. 数值运算
+数值运算
 	int sum = accumulate(v.begin(), v.end(), 0);
+	midpoint(a, b);
+
+
+
+# include <utility>
+std::move，std::forward，std::swap，std::pair，std::make_pair
+
+
+
+# include <functional>
+std::bind
+std::function
+
+
+
+# include <tuple>
+std::tuple，std::make_tuple
+
+
+
+# include <memory>
+std::shared_ptr，std::unique_ptr，std::weak_ptr
+std::make_shared，std::make_unique
+
+
+
+# include <any>（c++17）
+std::any
 ```
 # 排序算法
 ## 用来测试的cpp文件
