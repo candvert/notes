@@ -167,6 +167,49 @@ C++11标准中引入了5个头文件来支持多线程编程，如下图所示�
 2. 数据并行（data parallelism）：
 每个线程在不同的数据部分上执行相同的操作
 ```
+## 示例
+```cpp
+// 实现循环打印1，2
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+using namespace std;
+
+mutex m;
+condition_variable cv;
+int count = 1;
+
+void one() {
+    for (int i = 0; i < 100; ++i) {
+        unique_lock<mutex> lk(m);
+        cv.wait(lk, []{ return count % 2 == 1; }); // 等待奇数
+        cout << 1 << endl;
+        ++count;
+        lk.unlock();
+        cv.notify_one();
+    }
+}
+
+void two() {
+    for (int i = 0; i < 100; ++i) {
+        unique_lock<mutex> lk(m);
+        cv.wait(lk, []{ return count % 2 == 0; }); // 等待偶数
+        cout << 2 << endl;
+        ++count;
+        lk.unlock();
+        cv.notify_one();
+    }
+}
+
+int main() {
+    thread t1(one);
+    thread t2(two);
+    t1.join();
+    t2.join();
+}
+
+```
 
 ```cpp
 // std::this_thread::get_id()获得当前线程的id

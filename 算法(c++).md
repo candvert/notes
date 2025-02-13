@@ -14,9 +14,15 @@
 	- [基数排序](#基数排序)
 	- [桶排序](#桶排序)
 	- [计数排序](#计数排序)
+	- [二分查找](#二分查找)
+- [处理边界条件](#处理边界条件)
+	- [螺旋矩阵II](#螺旋矩阵II)
+- [双指针](#双指针)
+- [滑动窗口](#滑动窗口)
+	- [长度最小的子数组](#长度最小的子数组)
 - [常考算法题](#常考算法题)
 	- [最长回文子串](#最长回文子串)
-	- [最长公共子串（KMP算法）](#最长公共子串（KMP算法）)
+	- [最长公共子串](#最长公共子串)
 	- [最大连续bit数](#最大连续bit数)
 
 ## 命名空间
@@ -606,8 +612,79 @@ void count_sort(int arr[], int low, int high) {
         arr[i] = arr2[i];
     }
 }
-
 #endif
+```
+## 二分查找
+```cpp
+// leetcode 704
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int n = nums.size();
+        int left = 0, right = n - 1;
+        
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (target > nums[mid]) left = mid + 1;
+            else if (target < nums[mid]) right = mid - 1;
+            else return mid;
+        }
+        
+        return -1;
+    }
+};
+```
+# 处理边界条件
+## 螺旋矩阵II
+```cpp
+// leetcode 59
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> vec(n, vector<int>(n));
+        int top = 0, left = 0, bottom = n - 1, right = n - 1;
+        int current = 1;
+
+        while (current <= n * n) {
+            for (int l = left; l <= right; ++l) vec[top][l] = current++;
+            ++top;
+            for (int t = top; t <= bottom; ++t) vec[t][right] = current++;
+            --right;
+            for (int r = right; r >= left; --r) vec[bottom][r] = current++;
+            --bottom;
+            for (int b = bottom; b >= top; --b) vec[b][left] = current++;
+            ++left;
+        }
+
+        return vec;
+    }
+};
+```
+# 双指针
+# 滑动窗口
+## 长度最小的子数组
+```cpp
+// leetcode 209
+// 思路：
+// 如果窗口内所有数的和小于target，那么就移动窗口右边到和大于target。然后比较上次和此次的窗口大小，取小者。接着移动窗口左边到和小于target。循环直到right == nums.size()。
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int left = 0, right = 0;
+        int sum = 0;
+        int result = INT_MAX;
+  
+        while (right < nums.size()) {
+            while (sum < target && right < nums.size()) sum += nums[right++];
+            while (sum >= target) {
+                result = min(result, right - left);
+                sum -= nums[left++];
+            }
+        }
+        
+        return result == INT_MAX ? 0 : result;
+    }
+};
 ```
 # 常考算法题
 ## 最长回文子串
@@ -638,13 +715,47 @@ public:
 	}
 };
 ```
-## 最长公共子串（KMP算法）
+## 最长公共子串
 ```cpp
+// nowcoder HJ75
+// 标签：动态规划
+// 思路：
+// dp[i][j]表示以str1中第i个字符，str2中第j个字符作为公共子串结尾字符时的公共子串的长度。maxlen表示最长公共子串的长度。有以下两种情况：
+// 1. 如果str1中第i和str2中第j个字符相同，则在以i-1和j-1结尾的子串后面加上i、j一位仍然是子串，因此dp[i][j]=dp[i−1][j−1]+1。
+// 2. 如果str1中第i和str2中第j个字符不相同，则以他们结尾的子串不可能相同，dp[i][j]=0。
+// 如果更新后的dp[i][j]比maxlen大，则更新maxlen。
+#include <iostream>
+#include <vector>
+using namespace std;
 
+int main() {
+    string str1, str2;
+    while(cin >> str1 >> str2) {
+        int maxLen = 0;
+        vector<vector<int>> dp(str1.size() + 1, vector<int>(str2.size() + 1, 0));
+        
+        for (int i = 1; i <= str1.size(); ++i) {
+            for (int j = 1; j <= str2.size(); ++j) {
+                if (str1[i - 1] == str2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = 0;
+                }
+                if (maxLen < dp[i][j]) {
+                    maxLen = dp[i][j];
+                }
+            }
+        }
+        
+        cout << maxLen << endl;
+    }
+    return 0;
+}
 ```
 ## 最大连续bit数
 ```cpp
 // nowcoder HJ86
+// 标签：数学
 // 思路：
 // 如果有连续的1那么每次左移并和原来的数相交，就会消去一个1。如果不存在连续的1，那么则为0。
 // 原来的：10111001
