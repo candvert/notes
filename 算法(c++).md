@@ -17,12 +17,18 @@
 	- [二分查找](#二分查找)
 - [处理边界条件](#处理边界条件)
 	- [螺旋矩阵II](#螺旋矩阵II)
+	- [设计链表](#设计链表)
 - [双指针](#双指针)
 - [滑动窗口](#滑动窗口)
 	- [长度最小的子数组](#长度最小的子数组)
+- [哈希表](#哈希表)
+	- [三数之和](#三数之和)
+	- [四数之和](#四数之和)
+	- [四数相加II](#四数相加II)
 - [常考算法题](#常考算法题)
 	- [最长回文子串](#最长回文子串)
 	- [最长公共子串](#最长公共子串)
+	- [环形链表II](#环形链表II)
 	- [最大连续bit数](#最大连续bit数)
 
 ## 命名空间
@@ -72,6 +78,7 @@ pair/tuple
 
 
 #include <algorithm>
+reverse(v.begin(), v.end())
 排序和查找
 	sort(v.begin(), v.end());
 	sort(v.begin(), v.end(), greater<>());
@@ -660,6 +667,64 @@ public:
     }
 };
 ```
+## 设计链表
+```cpp
+// leetcode 707
+class MyLinkedList {
+    struct ListNode {
+        int val;
+        ListNode* next;
+        ListNode(int val) : val(val), next(nullptr) { }
+        ListNode(int val, ListNode* next) : val(val), next(next) { }
+    };
+
+public:
+    MyLinkedList() : dummyhead(new ListNode(0)), size(0) { }
+    int get(int index) {
+        if (index >= size) return -1;
+        ListNode* cur = dummyhead->next;
+        while (index--) cur = cur->next;
+        return cur->val;
+    }
+
+    void addAtHead(int val) {
+        ListNode* head = new ListNode(val, dummyhead->next);
+        dummyhead->next = head;
+        ++size;
+    }
+
+    void addAtTail(int val) {
+        ListNode *cur = dummyhead;
+        while (cur->next) cur = cur->next;
+        ListNode* tmp = new ListNode(val);
+        cur->next = tmp;
+        ++size;
+    }
+
+    void addAtIndex(int index, int val) {
+        if (index > size) return;    // 特别注意，index可以等于size，此时相当于加在末尾
+        ListNode *cur = dummyhead;
+        while(index--) cur = cur->next;
+        ListNode* tmp = new ListNode(val, cur->next);
+        cur->next = tmp;
+        ++size;
+    }
+
+    void deleteAtIndex(int index) {
+        if (index >= size) return;
+        ListNode *cur = dummyhead;
+        while (index--) cur = cur->next;
+        ListNode* toDelete = cur->next;
+        cur->next = cur->next->next;
+        delete toDelete;
+        --size;
+    }
+
+private:
+    ListNode* dummyhead;
+    int size;
+};
+```
 # 双指针
 # 滑动窗口
 ## 长度最小的子数组
@@ -683,6 +748,112 @@ public:
         }
         
         return result == INT_MAX ? 0 : result;
+    }
+};
+```
+# 哈希表
+```
+遇到需要判断一个元素是否出现过的场景应该第一时间想到哈希法
+```
+## 三数之和
+```cpp
+// leetcode 15
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] > 0) {
+                return res;
+            }
+  
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int left = i + 1;
+            int right = nums.size() - 1;
+            while (right > left) {
+                if (nums[i] + nums[left] + nums[right] > 0) right--;
+                else if (nums[i] + nums[left] + nums[right] < 0) left++;
+                else {
+                    res.push_back(vector<int>{nums[i], nums[left], nums[right]});
+                    while (right > left && nums[right] == nums[right - 1]) right--;
+                    while (right > left && nums[left] == nums[left + 1]) left++;
+                    right--;
+                    left++;
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+## 四数之和
+```cpp
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        vector<vector<int>> result;
+        sort(nums.begin(), nums.end());
+        for (int k = 0; k < nums.size(); k++) {
+            if (nums[k] > target && nums[k] >= 0) {
+                break;
+            }
+            if (k > 0 && nums[k] == nums[k - 1]) {
+                continue;
+            }
+            for (int i = k + 1; i < nums.size(); i++) {
+                if (nums[k] + nums[i] > target && nums[k] + nums[i] >= 0) {
+                    break;
+                }
+
+                if (i > k + 1 && nums[i] == nums[i - 1]) {
+                    continue;
+                }
+                int left = i + 1;
+                int right = nums.size() - 1;
+                while (right > left) {
+                    if ((long) nums[k] + nums[i] + nums[left] + nums[right] > target) {
+                        right--;
+                    } else if ((long) nums[k] + nums[i] + nums[left] + nums[right]  < target) {
+                        left++;
+                    } else {
+                        result.push_back(vector<int>{nums[k], nums[i], nums[left], nums[right]});
+                        while (right > left && nums[right] == nums[right - 1]) right--;
+                        while (right > left && nums[left] == nums[left + 1]) left++;
+                        right--;
+                        left++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+## 四数相加II
+```cpp
+// leetcode 454
+class Solution {
+public:
+    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) {
+        unordered_map<int, int> m;
+        int result = 0;
+        for (int a : nums1) {
+            for (int b : nums2) {
+                ++m[a + b];
+            }
+        }
+        
+        for (int c : nums3) {
+            for (int d : nums4) {
+                if (m.find(0 - (c + d)) != m.end()) {
+                    result += m[0 - (c + d)];
+                }
+            }
+        }
+        return result;
     }
 };
 ```
@@ -751,6 +922,34 @@ int main() {
     }
     return 0;
 }
+```
+## 环形链表II
+```cpp
+// leetcode 142
+// 标签：数学
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* fast = head;
+        ListNode* slow = head;
+        
+        while(fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+            if (slow == fast) {
+                ListNode* index1 = fast;
+                ListNode* index2 = head;
+                while (index1 != index2) {
+                    index1 = index1->next;
+                    index2 = index2->next;
+                }
+                return index2;
+            }
+        }
+        
+        return nullptr;
+    }
+};
 ```
 ## 最大连续bit数
 ```cpp
