@@ -1,12 +1,45 @@
 - [流程图](#流程图)
+- [示例](#示例)
+	- [服务器端](#服务器端)
+	- [客户端](#客户端)
 - [套接字函数](#套接字函数)
+- [I/O模型](#I/O模型)
 - [select等函数](#select等函数)
 - [字节序转换](#字节序转换)
 - [read等函数](#read等函数)
+- [字节操纵函数](#字节操纵函数)
 - [其他函数](#其他函数)
 
 ## 流程图
 ![](images/socket_1.png)
+## 示例
+### 服务器端
+```cpp
+int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+
+sockaddr_in servaddr, cliaddr;
+socklen_t clilen;
+bzero(&servaddr, sizeof(servaddr));
+servaddr.sin_family = AF_INET;
+servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+servaddr.sin_port = htons(51453);
+
+bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+listen(listenfd, 5);
+int connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
+```
+### 客户端
+```cpp
+int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+sockaddr_in servaddr;
+bzero(&servaddr, sizeof(servaddr));
+servaddr.sin_family = AF_INET;
+servaddr.sin_port = htons(51453);
+inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+
+connect(fd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+```
 ## 套接字函数
 ```c
 // socket, bind, connect, accept, listen, shutdown, getsockname, getpeername
@@ -18,10 +51,26 @@ int listen(int sockfd, int backlog);
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
+// close函数关闭套接字，成功返回0，出错返回-1
+#include <unistd.h>
+int close(int sockfd);
+
+// sockaddr_in使用，sockaddr_in和socklen_t都定义在<netinet/in.h>中
+#include <netinet/in.h>
+sockaddr_in servaddr;
+bzero(&servaddr, sizeof(servaddr));
+servaddr.sin_family = AF_INET;
+servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+servaddr.sin_port = htons(51453);
+// 通过(struct sockaddr*)&servaddr将sockaddr_in转换为sockaddr
+bind(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+
+
 
 // domain表示协议族，常用值为AF_INET和AF_INET6，分别表示IPv4和IPv6
 // type表示套接字类型，常用值为SOCK_STREAM和SOCK_DGRAM，分别表示字节流和数据报，即TCP和UDP
 // 返回值叫做套接字描述符，因为和文件描述符类似，通常用sockfd表示
+// 一般来说protocol只有一个值与特定domain和type对应，这种情况置为0即可。日常使用该值置0即可
 int socket(int domain, int type, int protocol);
 
 // bind函数把一个本地协议地址赋予一个套接字
@@ -48,6 +97,10 @@ int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 // 第二个、第三个参数分别是一个指向套接字地址结构的指针和该结构的大小
 // 套接字地址结构必须含有服务器的IP地址和端口号
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+```
+## I/O模型
+```cpp
+// Unix下的5种I/O模型：阻塞式I/O，非阻塞式I/O，I/O复用，信号驱动式I/O，异步I/O
 ```
 ## select等函数
 ```c
@@ -84,6 +137,8 @@ uint32_t htonl(uint32_t hostlong);
 uint16_t htons(uint16_t hostshort);
 uint32_t ntohl(uint32_t netlong);
 uint16_t ntohs(uint16_t netshort);
+
+// 推荐使用下面两个函数进行字节序转换
 int inet_pton(int af, const char *src, void *dst); (af : AF_INET, AF_INET6);
 const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 ```
@@ -95,19 +150,33 @@ int close(int fd);
 ssize_t write(int fd, const void *buf, size_t count);
 ssize_t read(int fd, void *buf, size_t count);
 ```
+## 字节操纵函数
+```cpp
+#include <string.h>
+void *memset(void *dest, int c, size_t n);
+void *memcpy(void *dest, const void *src, size_t n);
+int memcmp(const void *ptr1, const void *ptr2, size_t n);
+```
 ## 其他函数
 ```
+getsockname, getpeername
+
 sprintf, snprintf, sscanf, fgets, fprintf
-
-bzero, bcopy, bcmp
-
-memset, memcopy
 
 strcat, substr
 
 getenv
 
-fork
+// fork函数的返回值在子进程中为0，在父进程中为子进程ID，出错则为-1
+#include <unistd.h>
+pid_t fork(void);
+
+// wait，waitpid等待子进程终止
+// 函数wait和waitpid均返回两个值：已终止子进程的进程ID号，以及通过statloc指针返回的子进程终
+// 止状态（一个整数）
+#include <sys/wait.h>
+pid_t wait(int *statloc);
+pid_t waitpid(pid_t pid, int *statloc, int options);
 
 execl, execlp, execle, execv, execvp, execvpe
 这6个exec函数之间的区别在于：（a）待执行的程序文件是由文件名还是由路径名指定；（b）新程序的参数是一一列出还是由一个指针数组来引用；（c）把调用进程的环境传递给新程序还是给新程序指定新的环境。
@@ -134,11 +203,11 @@ perror
 
 getopt
 
+getsockopt
+
 setsockopt
 
 socketpair
-
-getopt
 
 getcwd
 
