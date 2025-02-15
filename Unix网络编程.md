@@ -11,6 +11,8 @@
 - [线程pthread](#线程pthread)
 - [其他函数](#其他函数)
 
+- [进程间通信方式](#进程间通信方式)
+
 ## 流程图
 ![](images/socket_1.png)
 ## 示例
@@ -283,4 +285,28 @@ getcwd
 calloc
 
 sem_init
+```
+## 进程间通信方式
+```
+4种不同的进程间通信形式：
+（1）消息传递（管道、FIFO、消息队列）
+（2）同步（互斥锁、条件变量、读写锁、文件和记录锁、信号量）
+（3）共享内存（匿名的和具名的）
+（4）远程过程调用（RPC）
+```
+
+```cpp
+// 管道
+// 该函数返回两个文件描述符：fd[0]和fd[1]。前者打开来读，后者打开来写。
+#include <unistd.h>
+int pipe(int fd[2]);
+
+// FIFO
+// 每个FIFO有一个路径名与之关联，FIFO也称为有名管道
+// 成功返回0，出错返回-1
+// pathname是一个普通的Unix路径名，它是该FIFO的名字
+// mode参数指定文件权限位
+#include <sys/types.h>
+#include <sys/stat.h>
+int mkfifo(const char *pathname, mode_t mode);
 ```
