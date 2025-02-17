@@ -14,13 +14,17 @@
 	- [基数排序](#基数排序)
 	- [桶排序](#桶排序)
 	- [计数排序](#计数排序)
-	- [二分查找](#二分查找)
+- [二分查找](#二分查找)
 - [处理边界条件](#处理边界条件)
 	- [螺旋矩阵II](#螺旋矩阵II)
 	- [设计链表](#设计链表)
+	- [反转字符串中的单词](#反转字符串中的单词)
 - [双指针](#双指针)
+- [字符串](#字符串)
+	- [重复的子字符串](#重复的子字符串)
 - [滑动窗口](#滑动窗口)
 	- [长度最小的子数组](#长度最小的子数组)
+	- [滑动窗口最大值](#滑动窗口最大值)
 - [哈希表](#哈希表)
 	- [三数之和](#三数之和)
 	- [四数之和](#四数之和)
@@ -28,6 +32,7 @@
 - [常考算法题](#常考算法题)
 	- [最长回文子串](#最长回文子串)
 	- [最长公共子串](#最长公共子串)
+	- [找出字符串中第一个匹配项的下标（KMP算法）](#找出字符串中第一个匹配项的下标（KMP算法）)
 	- [环形链表II](#环形链表II)
 	- [最大连续bit数](#最大连续bit数)
 
@@ -59,6 +64,7 @@ stack
 queue
 	push()，pop()，front()，back()，empty()，size()
 priority_queue优先队列（堆）
+	top()，empty()，size()，push()，pop()
 	默认大根堆，小根堆：priority_queue<int, vector<int>, greater<>>
 deque双端队列
 	push_front()，push_back()，pop_front()，pop_back()
@@ -725,7 +731,45 @@ private:
     int size;
 };
 ```
+## 反转字符串中的单词
+```cpp
+// leetcode 151
+// 标签：双指针
+class Solution {
+public:
+    string reverseWords(string s) {
+        int fast = 0, slow = 0;
+        while (fast < s.size()) {
+            while (fast < s.size() && s[fast] == ' ') ++fast;
+            if (fast == s.size()) break;
+            while (fast < s.size() && s[fast] != ' ') s[slow++] = s[fast++];
+            s[slow++] = ' ';
+        }
+        s.resize(slow - 1);
+        
+        fast = 0;
+        while (fast <= s.size()) {
+            slow = fast;
+            while (fast <= s.size() && s[fast++] != ' ');
+            reverse(s.begin() + slow, s.begin() + fast - 1);
+        }
+        reverse(s.begin(), s.end());
+        return s;
+    }
+};
+```
 # 双指针
+# 字符串
+## 重复的子字符串
+```cpp
+// leetcode 459
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        return (s + s).find(s, 1) != s.size();
+    }
+};
+```
 # 滑动窗口
 ## 长度最小的子数组
 ```cpp
@@ -748,6 +792,51 @@ public:
         }
         
         return result == INT_MAX ? 0 : result;
+    }
+};
+```
+## 滑动窗口最大值
+```cpp
+// leetcode 239
+class Solution {
+private:
+    class MyQueue { //单调队列（从大到小）
+    public:
+        deque<int> que; // 使用deque来实现单调队列
+        // 每次弹出的时候，比较当前要弹出的数值是否等于队列出口元素的数值，如果相等则弹出。
+        // 同时pop之前判断队列当前是否为空。
+        void pop(int value) {
+            if (!que.empty() && value == que.front()) {
+                que.pop_front();
+            }
+        }
+        // 如果push的数值大于入口元素的数值，那么就将队列后端的数值弹出，直到push的数值小于等于队列入口元素的数值为止。
+        // 这样就保持了队列里的数值是单调从大到小的了。
+        void push(int value) {
+            while (!que.empty() && value > que.back()) {
+                que.pop_back();
+            }
+            que.push_back(value);
+        }
+        // 查询当前队列里的最大值 直接返回队列前端也就是front就可以了。
+        int front() {
+            return que.front();
+        }
+    };
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        MyQueue que;
+        vector<int> result;
+        for (int i = 0; i < k; i++) { // 先将前k的元素放进队列
+            que.push(nums[i]);
+        }
+        result.push_back(que.front()); // result 记录前k的元素的最大值
+        for (int i = k; i < nums.size(); i++) {
+            que.pop(nums[i - k]); // 滑动窗口移除最前面元素
+            que.push(nums[i]); // 滑动窗口前加入最后面的元素
+            result.push_back(que.front()); // 记录对应的最大值
+        }
+        return result;
     }
 };
 ```
@@ -922,6 +1011,34 @@ int main() {
     }
     return 0;
 }
+```
+## 找出字符串中第一个匹配项的下标（KMP算法）
+```cpp
+// leetcode 28
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int n = haystack.size(), m = needle.size();
+        if(m == 0) return 0;
+        //设置哨兵
+        haystack.insert(haystack.begin(),' ');
+        needle.insert(needle.begin(),' ');
+        vector<int> next(m + 1);
+        //预处理next数组
+        for(int i = 2, j = 0; i <= m; i++){
+            while(j and needle[i] != needle[j + 1]) j = next[j];
+            if(needle[i] == needle[j + 1]) j++;
+            next[i] = j;
+        }
+        //匹配过程
+        for(int i = 1, j = 0; i <= n; i++){
+            while(j and haystack[i] != needle[j + 1]) j = next[j];
+            if(haystack[i] == needle[j + 1]) j++;
+            if(j == m) return i - m;
+        }
+        return -1;
+    }
+};
 ```
 ## 环形链表II
 ```cpp
