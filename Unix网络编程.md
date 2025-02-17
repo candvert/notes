@@ -9,6 +9,7 @@
 - [read等函数](#read等函数)
 - [字节操纵函数](#字节操纵函数)
 - [线程pthread](#线程pthread)
+- [POSIX信号处理](#POSIX信号处理)
 - [其他函数](#其他函数)
 
 - [进程间通信方式](#进程间通信方式)
@@ -58,7 +59,14 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 #include <unistd.h>
 int close(int sockfd);
 
+// shutdown函数关闭套接字，成功返回0，出错返回-1
+#include <sys/socket.h>
+int shutdown(int sockfd, int howto);
+
 // sockaddr_in使用，sockaddr_in和socklen_t都定义在<netinet/in.h>中
+// 作为IPv6套接字API的一部分而定义的新的通用套接字地址结构克服了现有struct sockaddr的一些缺
+// 点。不像struct sockaddr，新的struct sockaddr_storage足以容纳系统所支持的任何套接字地址
+// 结构。sockaddr_storage结构在<netinet/in.h>头文件中定义。
 #include <netinet/in.h>
 sockaddr_in servaddr;
 bzero(&servaddr, sizeof(servaddr));
@@ -142,6 +150,7 @@ uint32_t ntohl(uint32_t netlong);
 uint16_t ntohs(uint16_t netshort);
 
 // 推荐使用下面两个函数进行字节序转换
+// 这两个函数是随IPv6出现的新函数，对于IPv4地址和IPv6地址都适用
 int inet_pton(int af, const char *src, void *dst); (af : AF_INET, AF_INET6);
 const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 ```
@@ -226,15 +235,28 @@ int pthread_cond_broadcast(pthread_cond_t *cptr);
 int pthread_cond_timedwait(pthread_cond_t *cptr, pthread_mutex_t *mptr,
 						   const struct timespec *abstime);
 ```
+## POSIX信号处理
+```
+#include <signal.h>
+int sigaction(int signum, const struct sigaction act, struct sigaction oldact);
+```
 ## 其他函数
 ```
-getsockname, getpeername
+// 成功返回0，出错返回-1
+#include <sys/socket.h>
+int getsockname(int sockfd, struct sockaddr *localaddr, socklen_t *addrlen);
+int getpeername(int sockfd, struct sockaddr *peeraddr, socklen_t *addrlen);
 
-sprintf, snprintf, sscanf, fgets, fprintf
+sprintf, snprintf, sscanf, fprintf
 
 strcat, substr
 
 getenv
+
+// 常使用fcntl函数将描述符设置为非阻塞
+// 出错返回-1
+#include <fcntl.h>
+int fcntl(int fd, int cmd, ... /* int arg */);
 
 // fork函数的返回值在子进程中为0，在父进程中为子进程ID，出错则为-1
 #include <unistd.h>
@@ -247,14 +269,11 @@ pid_t fork(void);
 pid_t wait(int *statloc);
 pid_t waitpid(pid_t pid, int *statloc, int options);
 
-getpid
+getpid, getppid
 
 execl, execlp, execle, execv, execvp, execvpe
 这6个exec函数之间的区别在于：（a）待执行的程序文件是由文件名还是由路径名指定；（b）新程序的参数是一一列出还是由一个指针数组来引用；（c）把调用进程的环境传递给新程序还是给新程序指定新的环境。
 这些函数只在出错时才返回到调用者。否则，控制将被传递给新程序的起始点，通常就是main函数。一般来说，只有execve是内核中的系统调用，其他5个都是调用execve的库函数。
-
-
-wait, waitpid
 
 exit
 
@@ -266,17 +285,17 @@ lseek
 
 fileno
 
-gethostbyname
-
 pthread_create, 
 
 perror
 
 getopt
 
-getsockopt
-
-setsockopt
+// 获取和设置套接字的选项
+// 成功返回0，出错返回-1
+#include <sys/socket.h>
+int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen);
+int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t *optlen);
 
 socketpair
 
