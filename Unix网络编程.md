@@ -189,14 +189,15 @@ uint16_t ntohs(uint16_t netshort);
 
 // 推荐使用下面两个函数进行字节序转换
 // 这两个函数是随IPv6出现的新函数，对于IPv4地址和IPv6地址都适用
+// 成功返回1，若输入不是有效的表达式则返回0，出错返回-1
 int inet_pton(int af, const char *src, void *dst); (af : AF_INET, AF_INET6);
+// 成功返回指向结果的指针，出错返回NULL
 const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 ```
 ## read等函数
 ```c
 // close, write, read
 #include <unistd.h>
-int close(int fd);
 ssize_t write(int fd, const void *buf, size_t count);
 ssize_t read(int fd, void *buf, size_t count);
 ```
@@ -208,6 +209,9 @@ void bzero(void *dest, size_t n);
 #include <string.h>
 void *memset(void *dest, int c, size_t n);
 void *memcpy(void *dest, const void *src, size_t n);
+// memcmp函数比较前n个字节（每个字节被视为unsigned char）
+// 如果相等返回0，ptr1小则返回值小于0，否则返回值大于0
+// 如果n为0，返回值为0
 int memcmp(const void *ptr1, const void *ptr2, size_t n);
 ```
 ## 进程fork
