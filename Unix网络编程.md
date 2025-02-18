@@ -8,6 +8,7 @@
 - [字节序转换](#字节序转换)
 - [read等函数](#read等函数)
 - [字节操纵函数](#字节操纵函数)
+- [进程fork](#进程fork)
 - [线程pthread](#线程pthread)
 - [POSIX信号处理](#POSIX信号处理)
 - [其他函数](#其他函数)
@@ -19,34 +20,62 @@
 ## 示例
 ### 服务器端
 ```cpp
-int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <strings.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <stdio.h>
 
-sockaddr_in servaddr, cliaddr;
-socklen_t clilen;
-bzero(&servaddr, sizeof(servaddr));
-servaddr.sin_family = AF_INET;
-servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-servaddr.sin_port = htons(51453);
+int main() {
+    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
-bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
-listen(listenfd, 5);
-int connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
+    sockaddr_in servaddr, cliaddr;
+    socklen_t clilen;
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(59999);
+
+    bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+    listen(listenfd, 5);
+    int connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
+
+    char buf[20];
+    read(connfd, buf, sizeof(buf));
+    printf("%s\n", buf);
+    buf[5] = ' '; buf[6] = 'u'; buf[7] = '\0';
+    write(connfd, buf, 8);
+}
 ```
 ### 客户端
 ```cpp
-int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <strings.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <stdio.h>
 
-sockaddr_in servaddr;
-bzero(&servaddr, sizeof(servaddr));
-servaddr.sin_family = AF_INET;
-servaddr.sin_port = htons(51453);
-inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+int main() {
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-connect(fd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+    sockaddr_in servaddr;
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(59999);
+    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);
+
+    connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+    
+    char buf[20] = "hello";
+    write(sockfd, buf, 6);
+    read(sockfd, buf, sizeof(buf));
+    printf("%s\n", buf);
+}
 ```
 ## 套接字函数
 ```c
-// socket, bind, connect, accept, listen, shutdown, getsockname, getpeername
 #include <sys/types.h>
 #include <sys/socket.h>
 int socket(int domain, int type, int protocol);
@@ -54,14 +83,15 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 int listen(int sockfd, int backlog);
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+int shutdown(int sockfd, int howto);
 
-// close函数关闭套接字，成功返回0，出错返回-1
+
+// 成功返回0，出错返回-1
+// close函数关闭套接字
 #include <unistd.h>
 int close(int sockfd);
 
-// shutdown函数关闭套接字，成功返回0，出错返回-1
-#include <sys/socket.h>
-int shutdown(int sockfd, int howto);
+
 
 // sockaddr_in使用，sockaddr_in和socklen_t都定义在<netinet/in.h>中
 // 作为IPv6套接字API的一部分而定义的新的通用套接字地址结构克服了现有struct sockaddr的一些缺
@@ -78,15 +108,18 @@ bind(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
 
 
 
+// 成功返回非负描述符，出错返回-1
 // domain表示协议族，常用值为AF_INET和AF_INET6，分别表示IPv4和IPv6
 // type表示套接字类型，常用值为SOCK_STREAM和SOCK_DGRAM，分别表示字节流和数据报，即TCP和UDP
 // 返回值叫做套接字描述符，因为和文件描述符类似，通常用sockfd表示
 // 一般来说protocol只有一个值与特定domain和type对应，这种情况置为0即可。日常使用该值置0即可
 int socket(int domain, int type, int protocol);
 
+// 成功返回0，出错返回-1
 // bind函数把一个本地协议地址赋予一个套接字
 int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
+// 成功返回0，出错返回-1
 // 当socket函数创建一个套接字时，它被假设为一个主动套接字，也就是说，它是一个将调用connect发
 // 起连接的客户套接字。listen函数把一个未连接的套接字转换为一个被动套接字，指示内核应接受指向
 // 该套接字的连接请求。
@@ -94,6 +127,7 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 // accept的队列长度，而不是未完成连接请求的数量
 int listen(int sockfd, int backlog);
 
+// 成功返回非负描述符，出错返回-1
 // accept函数由TCP服务器调用，用于从已完成连接队列队头返回下一个已完成连接。如果已完成连接队
 // 列为空，那么进程被投入睡眠（假定套接字为默认的阻塞方式）。
 // 参数addr和addrlen用来返回已连接的对端进程（客户）的协议地址。addrlen是值-结果参数：调用
@@ -105,9 +139,13 @@ int listen(int sockfd, int backlog);
 // 如果我们对返回客户协议地址不感兴趣，那么可以把addr和addrlen均置为空指针。
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 
+// 成功返回0，出错返回-1
 // 第二个、第三个参数分别是一个指向套接字地址结构的指针和该结构的大小
 // 套接字地址结构必须含有服务器的IP地址和端口号
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+
+// shutdown函数关闭套接字，成功返回0，出错返回-1
+int shutdown(int sockfd, int howto);
 ```
 ## I/O模型
 ```cpp
@@ -164,10 +202,39 @@ ssize_t read(int fd, void *buf, size_t count);
 ```
 ## 字节操纵函数
 ```cpp
+#include <strings.h>
+void bzero(void *dest, size_t n);
+
 #include <string.h>
 void *memset(void *dest, int c, size_t n);
 void *memcpy(void *dest, const void *src, size_t n);
 int memcmp(const void *ptr1, const void *ptr2, size_t n);
+```
+## 进程fork
+```cpp
+// 返回值在子进程中为0，在父进程中为子进程ID，出错则为-1
+#include <unistd.h>
+pid_t fork(void);
+
+#include <unistd.h>
+pid_t getpid(void);
+pid_t getppid(void);
+
+// wait，waitpid等待子进程终止
+// 函数wait和waitpid均返回两个值：已终止子进程的进程ID号，以及通过wstatus指针返回的子进程终止状态（一个整数）
+#include <sys/wait.h>
+pid_t wait(int *wstatus);
+pid_t waitpid(pid_t pid, int *wstatus, int options);
+
+// 成功则不返回，出错返回-1
+// execl, execv, execle, execve, execlp, execvp
+// 这6个exec函数之间的区别在于：（a）待执行的程序文件是由文件名还是由路径名指定；（b）新程序的参数是一一列出还是由一个指针数组来引用；（c）把调用进程的环境传递给新程序还是给新程序指定新的环境。
+// 这些函数只在出错时才返回到调用者。否则，控制将被传递给新程序的起始点，通常就是main函数。一般来说，只有execve是内核中的系统调用，其他5个都是调用execve的库函数。
+int execl(const char *pathname, const char *arg, ... /*, (char *) NULL */);
+
+
+#include <stdlib.h>
+void exit(int status);
 ```
 ## 线程pthread
 ```
@@ -257,25 +324,6 @@ getenv
 // 出错返回-1
 #include <fcntl.h>
 int fcntl(int fd, int cmd, ... /* int arg */);
-
-// fork函数的返回值在子进程中为0，在父进程中为子进程ID，出错则为-1
-#include <unistd.h>
-pid_t fork(void);
-
-// wait，waitpid等待子进程终止
-// 函数wait和waitpid均返回两个值：已终止子进程的进程ID号，以及通过statloc指针返回的子进程终
-// 止状态（一个整数）
-#include <sys/wait.h>
-pid_t wait(int *statloc);
-pid_t waitpid(pid_t pid, int *statloc, int options);
-
-getpid, getppid
-
-execl, execlp, execle, execv, execvp, execvpe
-这6个exec函数之间的区别在于：（a）待执行的程序文件是由文件名还是由路径名指定；（b）新程序的参数是一一列出还是由一个指针数组来引用；（c）把调用进程的环境传递给新程序还是给新程序指定新的环境。
-这些函数只在出错时才返回到调用者。否则，控制将被传递给新程序的起始点，通常就是main函数。一般来说，只有execve是内核中的系统调用，其他5个都是调用execve的库函数。
-
-exit
 
 fgetc, fgets, getc, getchar, ungetc
 

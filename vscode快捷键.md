@@ -1,14 +1,14 @@
-## ctrl + D逐个选中相同的符号
+## 逐个选中相同的符号：ctrl + D
 
-## ctrl + shift + L选中所有相同的符号
+## 选中所有相同的符号：ctrl + shift + L
 
-## ctrl + enter在当前行下方新增一行并将光标移到新的一行
+## 在当前行下方新增一行并将光标移到新的一行：ctrl + enter
 
-## ctrl + shift + k删除光标所在行
+## 删除光标所在行：ctrl + shift + k
 
-## ctrl + shift + u显示/隐藏下方的输出面板
+## 显示/隐藏下方的输出面板：ctrl + shift + u
 
-## shift + alt + downarrow复制当前行为下一行
+## 复制当前行为下一行：shift + alt + downarrow
 
 
 

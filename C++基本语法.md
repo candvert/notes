@@ -62,6 +62,7 @@
 	- [类模板的类型成员](#类模板的类型成员)
 	- [默认模板实参](#默认模板实参)
 	- [类模板的成员模板](#类模板的成员模板)
+- [C++的其他知识点](#C++的其他知识点)
 - [C语言一些知识点](#C语言一些知识点)
 	- [预定义宏](#预定义宏)
 
@@ -1048,6 +1049,26 @@ template <typename It>    // 构造函数的参数类型
 
 int ia[] = {0, 1, 2};
 Blob<int> a(begin(ia), end(ia));
+```
+# C++的其他知识点
+```cpp
+// 使用sort排序，传入自定义比较函数
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+bool cmp(const pair<char, int>& a, const pair<char, int>& b) {
+    return a.second < b.second;
+}
+
+int main() {
+    vector<pair<char, int>> vec = { {'a', 3}, {'b', 1}, {'c', 2} };
+	sort(vec.begin(), vec.end(), cmp);
+    for (const auto& p : vec) {
+        cout << p.first << " " << p.second << endl;
+    }
+}
 ```
 # C语言一些知识点
 ## 预定义宏
