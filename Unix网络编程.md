@@ -332,7 +332,7 @@ int sigaction(int signum, const struct sigaction act, struct sigaction oldact);
 int getsockname(int sockfd, struct sockaddr *localaddr, socklen_t *addrlen);
 int getpeername(int sockfd, struct sockaddr *peeraddr, socklen_t *addrlen);
 
-sprintf, snprintf, sscanf, fprintf
+sprintf, snprintf, fprintf, sscanf
 
 strcat, substr
 
@@ -351,8 +351,6 @@ lseek
 
 fileno
 
-pthread_create, 
-
 perror
 
 getopt
@@ -368,8 +366,6 @@ socketpair
 getcwd
 
 calloc
-
-sem_init
 ```
 ## 进程间通信方式
 ```
