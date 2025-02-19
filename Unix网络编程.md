@@ -292,10 +292,12 @@ void pthread_exit(void *status);
 
 
 // 互斥锁
-// 如果试图上锁已被另外某个线程锁住的一个互斥锁，本线程将被阻塞，直到该互斥锁被解锁为止。
 // 成功返回0，出错返回正的Exxx值
 #include <pthread.h>
+// pthread_mutex_lock将阻塞到该互斥锁解锁为止。
 int pthread_mutex_lock(pthread_mutex_t *mptr);
+// pthread_mutex_trylock是对应的非阻塞函数，如果该互斥锁已锁住，它就返回一个EBUSY错误
+int pthread_mutex_trylock(pthread_mutex_t *mptr);
 int pthread_mutex_unlock(pthread_mutex_t *mptr);
 
 // 条件变量
@@ -308,6 +310,15 @@ int pthread_cond_signal(pthread_cond_t *cptr);
 int pthread_cond_broadcast(pthread_cond_t *cptr);
 int pthread_cond_timedwait(pthread_cond_t *cptr, pthread_mutex_t *mptr,
 						   const struct timespec *abstime);
+
+
+
+// 成功返回0，出错返回正的Exxx值
+#include <pthread.h>
+int pthread_mutex_init(pthread_mutex_t *mptr, const pthread_mutexattr_t *attr);
+int pthread_mutex_destroy(pthread_mutex_t *mptr);
+int pthread_cond_init(pthread_cond_t *cptr, const pthread_condattr_t *attr);
+int pthread_cond_destroy(pthread_cond_t *cptr);
 ```
 ## POSIX信号处理
 ```cpp
@@ -383,4 +394,82 @@ int pipe(int fd[2]);
 #include <sys/types.h>
 #include <sys/stat.h>
 int mkfifo(const char *pathname, mode_t mode);
+
+// 消息队列
+// 成功返回消息队列描述符，出错则为-1
+// mq_open函数创建一个新的消息队列或打开一个已存在的消息队列
+#include <mqueue.h>
+mqd_t mq_open(const char *name, int oflag, ... / * mode_t mode, struct mq_attr *attr */ );
+// 已打开的消息队列是由mq_close关闭的
+// 成功返回0，出错返回-1
+int mq_close(mqd_t mqdes);
+// 要从系统中删除用作mq_open第一个参数的某个name，必须调用mq_unlink
+// 成功返回0，出错返回-1
+int mq_unlink(const char *name);
+// 成功返回0，出错返回-1
+int mq_getattr(mqd_t mqdes, struct mq_attr *attr);
+int mq_setattr(mqd_t mqdes, const struct mq_attr *attr, struct mq_attr *oattr);
+// 成功返回0，出错返回-1
+int mq_send(mqd_t mqdes, const char *ptr, size_t len, unsigned int prio);
+// 成功返回消息中字节数，出错返回-1
+ssize_t mq_receive(mqd_t mqdes, char *ptr, size_t len unsigned int *priop);
+// 成功返回0，出错返回-1
+int mq_notify(mqd_t mqdes, const struct sigevent *notification);
+
+
+// 信号量
+#include <semaphore.h>
+// 成功返回指向信号量的指针，出错返回SEM_FAILED
+// 函数sem_open创建一个新的有名信号量或打开一个已存在的有名信号量。有名信号量总是既可用于线程间的同步，又可用于进程间的同步
+sem_t *sem_open(const char *name, int oflag, ... /* mode_t mode, unsigned int value */);
+// 成功返回0，出错返回-1
+// 使用sem_open打开的有名信号量，使用sem_close将其关闭
+int sem_close(sem_t *sem);
+// 成功返回0，出错返回-1
+// 有名信号量使用sem_unlink从系统中删除
+int sem_unlink(const char *name);
+// 成功返回0，出错返回-1
+// sem_wait函数测试所指定信号量的值，如果该值大于0，那就将它减1并立即返回。如果该值等于0，调用线程就被投入睡眠中，直到该值变为大于0，这时再将它减1，函数随后返回。
+// sem_wait和sem_trywait的差别是：当所指定信号量的值已经是0时，后者并不将调用线程投入睡眠。相反，它返回一个EAGAIN错误。
+// 如果被某个信号中断，sem_wait就可能过早地返回，所返回的错误为EINTR。
+int sem_wait(sem_t *sem);
+int sem_trywait(sem_t *sem);
+// 成功返回0，出错返回-1
+int sem_post(sem_t *sem);
+int sem_getvalue(sem_t *sem, int *valp);
+// 出错返回-1
+int sem_init(sem_t *sem, int shared, unsigned int value);
+// 成功返回0，出错返回-1
+int sem_destroy(sem_t *sem);
+
+
+// 共享内存
+// Posix共享内存区涉及以下两个步骤要求
+// 1. 指定一个名字参数调用shm_open，以创建一个新的共享内存区对象或打开一个已存在的共享内存区对象
+// 2. 调用mmap把这个共享内存区映射到调用进程的地址空间
+// mmap函数把一个文件或一个Posix共享内存区对象映射到调用进程的地址空间。使用该函数有三个目的：
+// 1. 使用普通文件以提供内存映射I/O
+// 2. 使用特殊文件以提供匿名内存映射
+// 3. 使用shm_open以提供无亲缘关系进程间的Posix共享内存区
+#include <sys/mman.h>
+// 成功返回被映射区的起始地址，出错返回MAP_FAILED
+void *mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
+// 成功返回0，出错返回-1
+// munmap从某个进程的地址空间删除一个映射关系
+int munmap(void *addr, size_t len);
+// 成功返回0，出错返回-1
+int msync(void *addr, size_t len, int flags);
+// 成功返回非负描述符，出错返回-1
+int shm_open(const char *name, int oflag, mode_t mode);
+// 成功返回0，出错返回-1
+int shm_unlink(const char *name);
+// 成功返回0，出错返回-1
+// 处理mmap的时候，普通文件或共享内存区对象的大小都可以通过调用ftruncate修改
+#include <unistd.h>
+int ftruncate(int fd, off_t length);
+// 成功返回0，出错返回-1
+// 当打开一个已存在的共享内存区对象时，我们可调用fstat来获取有关该对象的信息
+#include <sys/types.h>
+#include <sys/stat.h>
+int fstat(int fd, struct stat *buf);
 ```
