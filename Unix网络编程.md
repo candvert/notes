@@ -39,6 +39,7 @@ int main() {
 
     bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
     listen(listenfd, 5);
+    clilen = sizeof(cliaddr);
     int connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
 
     char buf[20];
@@ -198,7 +199,9 @@ const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
 ```c
 // close, write, read
 #include <unistd.h>
+// 成功返回写入的字节数，出错返回-1
 ssize_t write(int fd, const void *buf, size_t count);
+// 成功返回读取的字节数，出错返回-1，读取到文件末尾返回0
 ssize_t read(int fd, void *buf, size_t count);
 ```
 ## 字节操纵函数
@@ -307,7 +310,7 @@ int pthread_cond_timedwait(pthread_cond_t *cptr, pthread_mutex_t *mptr,
 						   const struct timespec *abstime);
 ```
 ## POSIX信号处理
-```
+```cpp
 #include <signal.h>
 int sigaction(int signum, const struct sigaction act, struct sigaction oldact);
 ```
