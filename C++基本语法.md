@@ -63,8 +63,6 @@
 	- [默认模板实参](#默认模板实参)
 	- [类模板的成员模板](#类模板的成员模板)
 - [C++的其他知识点](#C++的其他知识点)
-- [C语言一些知识点](#C语言一些知识点)
-	- [预定义宏](#预定义宏)
 
 # C++标准变化
 ![](images/cplusplus_18.png)
@@ -74,7 +72,13 @@
 __cplusplus    // 表示当前使用的C++标准版本
 __func__
 
-__FUNCTION__    // 编译器提供该宏，g++和msvc都提供该宏
+__FUNCTION__    // 由编译器提供，未由语言定义，g++和msvc都提供该宏
+__FILE__
+__LINE__
+__DATE__
+__TIME__
+__STDC__    // 如果编译器遵循ISO标准，则被定义为1
+__STDC_VERSION__    // 表示当前使用的C标准版本
 ```
 # C++基本语法
 ## 引用
@@ -1069,18 +1073,4 @@ int main() {
         cout << p.first << " " << p.second << endl;
     }
 }
-```
-# C语言一些知识点
-## 预定义宏
-```cpp
-// 参考网址：https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html
-__func__
-__FILE__
-__LINE__
-__DATE__
-__TIME__
-__STDC__    // 如果编译器遵循ISO标准，则被定义为1
-__STDC_VERSION__    // 表示当前使用的C标准版本
-
-__FUNCTION__    // 编译器提供该宏，gcc提供该宏
 ```
