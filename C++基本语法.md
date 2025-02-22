@@ -482,8 +482,7 @@ swap(a, b)
 ```
 ## bind函数
 ```cpp
-// bind函数定义在头文件functional中，可以将bind函数看作一个通用的函数适配器，它接受一个可调用对象，生成一个新的可调用对象来“适
-// 应”原对象的参数列表
+// bind函数定义在头文件functional中，可以将bind函数看作一个通用的函数适配器，它接受一个可调用对象，生成一个新的可调用对象来“适应”原对象的参数列表
 // bind参数列表中形如_n的参数是“占位符”
 auto check6 = bind(check_size, std::placeholders::_1, 6);
 string s = "hello";
@@ -560,7 +559,7 @@ strm.str(S)					// 将string s拷贝到strm中，返回void
 ## 顺序容器
 ```cpp
 // 顺序容器类型
-vector、	deque、list、forward_list、array、string
+vector、deque、list、forward_list、array、string
     
 // 顺序容器（array除外）还定义了一个名为assign的成员，允许我们从一个不同但相容的类型赋值，或者从容器的一个子序列赋值
 list<string> names;
