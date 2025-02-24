@@ -1,5 +1,6 @@
 - [mysql语法](#mysql语法)
 	- [基本语法](#基本语法)
+	- [mysql命令](#mysql命令)
 - [Windows上使用](#Windows上使用)
 	- [MySQL Command Line Client](#MySQL Command Line Client)
 	- [MySQL Shell](#MySQL Shell)
@@ -97,16 +98,22 @@ DCL语句：	CREATE USER '用户名'@'主机名' IDENTIFIED BY '密码';
 ## mysql命令
 ```
 MySQL用户账号和信息存储在名为mysql的数据库中。mysql数据库有一个名为user的表，它包含所有用户账号。
+
 创建用户账号：
 CREATE USER ben IDENTIFIED BY 'password';
+
 重命名用户账号：
 RENAME USER ben TO john;
+
 删除用户账号：
 DROP USER ben;
+
 查看用户账号权限：
 SHOW GRANTS FOR ben;
+
 允许用户在crashcourse.*（crashcourse数据库的所有表）上使用SELECT：
 GRANT SELECT ON crashcourse.* TO ben;
+
 撤销权限：
 REVOKE SELECT ON crashcourse.* FROM ben;
 ```
@@ -131,12 +138,15 @@ MySQL Shell可以使用js、python和sql语言，切换语言命令为\js或\py�
 ```
 默认安装完成后自动启动
 sudo apt install mysql-server
-登录mysql。先输入sudo命令需要的密码，再按enter即可
-sudo mysql -u root -p
+
 查看安装后默认生成的用户名和密码
 sudo cat /etc/mysql/debian.cnf
+
+登录mysql。先输入sudo命令需要的root密码，再按enter即可
+sudo mysql -u root -p
+
 修改root用户密码
-ALTER USER 'root'@'localhost' IDENTIFIED with mysql_native_password by '11';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '11';
 FLUSH PRIVILEGES;
 ```
 # 数据库相关知识
