@@ -319,6 +319,32 @@ int pthread_mutex_init(pthread_mutex_t *mptr, const pthread_mutexattr_t *attr);
 int pthread_mutex_destroy(pthread_mutex_t *mptr);
 int pthread_cond_init(pthread_cond_t *cptr, const pthread_condattr_t *attr);
 int pthread_cond_destroy(pthread_cond_t *cptr);
+
+
+// 信号量
+#include <semaphore.h>
+// 成功返回指向信号量的指针，出错返回SEM_FAILED
+// 函数sem_open创建一个新的有名信号量或打开一个已存在的有名信号量。有名信号量总是既可用于线程间的同步，又可用于进程间的同步
+sem_t *sem_open(const char *name, int oflag, ... /* mode_t mode, unsigned int value */);
+// 成功返回0，出错返回-1
+// 使用sem_open打开的有名信号量，使用sem_close将其关闭
+int sem_close(sem_t *sem);
+// 成功返回0，出错返回-1
+// 有名信号量使用sem_unlink从系统中删除
+int sem_unlink(const char *name);
+// 成功返回0，出错返回-1
+// sem_wait函数测试所指定信号量的值，如果该值大于0，那就将它减1并立即返回。如果该值等于0，调用线程就被投入睡眠中，直到该值变为大于0，这时再将它减1，函数随后返回。
+// sem_wait和sem_trywait的差别是：当所指定信号量的值已经是0时，后者并不将调用线程投入睡眠。相反，它返回一个EAGAIN错误。
+// 如果被某个信号中断，sem_wait就可能过早地返回，所返回的错误为EINTR。
+int sem_wait(sem_t *sem);
+int sem_trywait(sem_t *sem);
+// 成功返回0，出错返回-1
+int sem_post(sem_t *sem);
+int sem_getvalue(sem_t *sem, int *valp);
+// 出错返回-1
+int sem_init(sem_t *sem, int shared, unsigned int value);
+// 成功返回0，出错返回-1
+int sem_destroy(sem_t *sem);
 ```
 ## POSIX信号处理
 ```cpp
@@ -411,6 +437,38 @@ int mq_send(mqd_t mqdes, const char *ptr, size_t len, unsigned int prio);
 ssize_t mq_receive(mqd_t mqdes, char *ptr, size_t len unsigned int *priop);
 // 成功返回0，出错返回-1
 int mq_notify(mqd_t mqdes, const struct sigevent *notification);
+
+
+// 读写锁
+// pthread_rwlock_rdlock获取一个读出锁，如果对应的读写锁已由某个写入者持有，那就阻塞调用线程。pthread_rwlock_wrlock获取一个写入锁，如果对应的读写锁已由另一个写入者持有，或者已由一个或多个读出者持有，那就阻塞调用线程。pthread_rwlock_unlock释放一个读出锁或写入锁。
+// 成功返回0，出错返回正的Exxx值
+#include <pthread.h>
+int pthread_rwlock_rdlock(pthread_rwlock_t *rwptr);
+int pthread_rwlock_wrlock(pthread_rwlock_t *rwptr);
+int pthread_rwlock_unlock(pthread_rwlock_t *rwptr);
+// 下面两个函数尝试获取一个读出锁或写入锁，但是如果该锁不能马上取得，那就返回一个EBUSY错误，而不是把调用线程投入睡眠。
+// 成功返回0，出错返回正的Exxx值
+int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwptr);
+int pthread_rwlock_trywrlock(pthread_rwlock_t *rwptr);
+// 成功返回0，出错返回正的Exxx值
+int pthread_rwlock_init(pthread_rwlock_t *rwptr, const pthread_rwlockattr_t *attr);
+int pthread_rwlock_destroy(pthread_rwlock_t *rwptr);
+//初始化某个读写锁时，如果attr是个空指针，那就使用默认属性。要赋予它非默认的属性，需使用下面两个函数。
+// 成功返回0，出错返回正的Exxx值
+int pthread_rwlockattr_init(pthread_rwlockattr_t *attr);
+int pthread_rwlockattr_destroy(pthread_rwlockattr_t *attr);
+// 成功返回0，出错返回正的Exxx值
+int pthread_rwlockattr_getpshared(const pthread_rwlockattr_t *attr, int *valptr);
+int pthread_rwlockattr_setpshared(pthread_rwlockattr_t *attr, int value);
+// 成功返回0，出错返回正的Exxx值
+int pthread_cancel(pthread_t tid);
+// 这些处理程序就是发生以下情况时被调用的函数：
+// 1. 调用线程被取消（由某个线程调用pthread_cancel完成）
+// 2. 调用线程自愿终止（或者通过调用pthread_exit，或者从自己的线程起始函数返回）
+// 清理处理程序可以恢复任何需要恢复的状态，例如给调用线程当前持有的任何互斥锁或信号量解锁。
+// pthread_cleanup_push的function参数是调用线程被取消时所调用的函数的地址，arg是它的单个参数。pthread_cleanup_pop总是删除调用线程的取消清理栈中位于栈顶的函数，而且如果execute不为0，那就调用该函数。
+void pthread_cleanup_push(void (*function)(void *), void *arg);
+void pthread_cleanup_pop(int execute);
 
 
 // 信号量

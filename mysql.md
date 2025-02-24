@@ -1,8 +1,9 @@
 - [mysql语法](#mysql语法)
 	- [基本语法](#基本语法)
 - [Windows上使用](#Windows上使用)
-	- [MySQL Shell](#MySQL Shell)
 	- [MySQL Command Line Client](#MySQL Command Line Client)
+	- [MySQL Shell](#MySQL Shell)
+- [Ubuntu上使用](#Ubuntu上使用)
 - [数据库相关知识](#数据库相关知识)
 
 # mysql语法
@@ -93,25 +94,52 @@ DCL语句：	CREATE USER '用户名'@'主机名' IDENTIFIED BY '密码';
 	事务隔离级别
 	READ UNCOMMITED, READ COMMITED, REPEATABLE READ, SERIAILIZABLE
 ```
-
+## mysql命令
+```
+MySQL用户账号和信息存储在名为mysql的数据库中。mysql数据库有一个名为user的表，它包含所有用户账号。
+创建用户账号：
+CREATE USER ben IDENTIFIED BY 'password';
+重命名用户账号：
+RENAME USER ben TO john;
+删除用户账号：
+DROP USER ben;
+查看用户账号权限：
+SHOW GRANTS FOR ben;
+允许用户在crashcourse.*（crashcourse数据库的所有表）上使用SELECT：
+GRANT SELECT ON crashcourse.* TO ben;
+撤销权限：
+REVOKE SELECT ON crashcourse.* FROM ben;
+```
 # Windows上使用
+## MySQL Command Line Client
+```
+在Windows上安装mysql，会自动安装MySQL Command Line Client和MySQL Shell，可以启动MySQL Command Line Client连接并操作数据库。
+```
+![](images/mysql_2.png)
 ## MySQL Shell
 ```
-在Windows上安装mysql后，可以启动mysql shell来编写和运行一些代码。
-mysql shell中的命令都以\开头。
-mysql shell可以使用js、python和sql语言，切换语言命令为\js或\py或\sql。
+可以启动MySQL Shell来编写和运行一些代码。
+MySQL Shell中的命令都以\开头。
+MySQL Shell可以使用js、python和sql语言，切换语言命令为\js或\py或\sql。
 ```
 ![](images/mysql_1.png)
 ```
 连接本地数据库：
 \connect root@localhost
 ```
-## MySQL Command Line Client
+# Ubuntu上使用
 ```
-在Windows上安装mysql后，可以启动MySQL Command Line Client以连接并操作数据库。
+默认安装完成后自动启动
+sudo apt install mysql-server
+登录mysql。先输入sudo命令需要的密码，再按enter即可
+sudo mysql -u root -p
+查看安装后默认生成的用户名和密码
+sudo cat /etc/mysql/debian.cnf
+修改root用户密码
+ALTER USER 'root'@'localhost' IDENTIFIED with mysql_native_password by '11';
+FLUSH PRIVILEGES;
 ```
-![](images/mysql_2.png)
-## 数据库相关知识
+# 数据库相关知识
 保证数据一致性是对数据库的最基本的要求。
 ## 事务的概念
 ```
