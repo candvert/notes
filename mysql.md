@@ -2,6 +2,7 @@
 	- [基本语法](#基本语法)
 	- [mysql命令](#mysql命令)
 - [Windows上使用](#Windows上使用)
+	- [下载](#下载)
 	- [MySQL Command Line Client](#MySQL Command Line Client)
 	- [MySQL Shell](#MySQL Shell)
 - [Ubuntu上使用](#Ubuntu上使用)
@@ -118,6 +119,10 @@ GRANT SELECT ON crashcourse.* TO ben;
 REVOKE SELECT ON crashcourse.* FROM ben;
 ```
 # Windows上使用
+## 下载
+```
+https://dev.mysql.com/downloads/installer
+```
 ## MySQL Command Line Client
 ```
 在Windows上安装mysql，会自动安装MySQL Command Line Client和MySQL Shell，可以启动MySQL Command Line Client连接并操作数据库。

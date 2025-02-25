@@ -43,7 +43,6 @@ gcc -fexec-charset=GBK 指定运行时编码
 # gdb
 ```
 首先要通过gcc或g++的-g选项生成可调试的程序
-gdb的命令
 b 打断点，可以b 函数名，b 行号
 r 运行
 n 单步执行，即next
