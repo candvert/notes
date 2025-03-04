@@ -1,9 +1,17 @@
+- [初始配置](#初始配置)
 - [常用指令](#常用指令)
 - [git remote](#git remote)
 - [git branch](#git branch)
 - [git push](#git push)
 - [.gitignore](#.gitignore)
 
+# 初始配置
+```
+git config --global user.name "candvert"
+git config --global user.email leiyue159@gmail.com
+
+ssh-keygen -t rsa -b 4096 -C "leiyue159@gmail.com"
+```
 # 常用命令
 ```shell
 git init

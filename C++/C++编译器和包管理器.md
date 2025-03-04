@@ -1,6 +1,7 @@
 - [gcc](#gcc)
 	- [静态和动态链接库](#静态和动态链接库)
 - [gdb](#gdb)
+- [vcpkg](#vcpkg)
 
 # gcc
 ```
@@ -56,4 +57,26 @@ d 删除断点，后面加上info b看到的断点编号
 bt 函数调用栈，即backtrace
 watch 跟踪变量，watch 变量
 info r查看寄存器的值
+```
+# vcpkg
+```
+Windows上安装：
+git clone git@github.com:microsoft/vcpkg.git
+执行克隆的仓库里的bootstrap-vcpkg.bat，然后目录下会出现vcpkg.exe
+接着在命令行输入./vcpkg integrate install
+此时在Visual Studio的属性中便可看到vcpkg
+```
+![](images/cpp_compiler_1.png)
+```
+比如vcpkg所在目录为D:/Apps/vcpkg/vcpkg.exe，则
+cmake的项目要有-DCMAKE_TOOLCHAIN_FILE=D:/Apps/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+vcpkg integrate remove    移除集成
+vcpkg install <package-name>:x64-windows    安装库
+vcpkg install <package-name>:x86-windows    安装库
+vcpkg install <package-name>:x64-windows-static    安装库
+vcpkg remove <package-name>    卸载库
+vcpkg list    显示所有已安装的库
+vcpkg search <package-name>    搜索库
+vcpkg update <package-name>    更新库
 ```

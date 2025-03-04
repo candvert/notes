@@ -31,6 +31,5 @@ int main()
     Mat img = imread("D:/a.jpg");
     imshow("Display window", img);
     waitKey(0);
-    return 0;
 }
 ```
