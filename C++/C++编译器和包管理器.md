@@ -65,6 +65,10 @@ git clone git@github.com:microsoft/vcpkg.git
 执行克隆的仓库里的bootstrap-vcpkg.bat，然后目录下会出现vcpkg.exe
 接着在命令行输入./vcpkg integrate install
 此时在Visual Studio的属性中便可看到vcpkg
+需要安装库在命令行中使用vcpkg命令即可
+
+使用vcpkg安装库后，visual studio会自动链接动态/静态库，但是使用opencv库时头文件包含目录仍需手动在属性中设置（可能是bug）
+若vcpkg所在目录为D:/Apps/vcpkg/vcpkg.exe，则安装的库（包括opencv）的头文件在D:\Apps\vcpkg\installed\x64-windows\include
 ```
 ![](images/cpp_compiler_1.png)
 ```

@@ -1,5 +1,6 @@
 - [uWebSockets](#uWebSockets)
 - [cpp-httplib](#cpp-httplib)
+- [nlohmann-json](#nlohmann-json)
 
 ## uWebSockets
 ```
@@ -70,4 +71,73 @@ int main() {
 	std::cout << res->status << std::endl;
 	std::cout << res->body << std::endl;
 }
+```
+## nlohmann-json
+```cpp
+// 包含头文件和使用类型别名
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+
+// 从文件中读取json
+std::ifstream f("example.json");
+json data = json::parse(f);
+
+
+// 创建json对象的几种方法
+// 第一种
+json j;
+j["pi"] = 3.141;
+j["happy"] = true;
+j["name"] = "Niels";
+j["nothing"] = nullptr;
+j["answer"]["everything"] = 42;
+j["list"] = { 1, 0, 2 };
+j["object"] = { {"currency", "USD"}, {"value", 42.99} };
+// 或者写成这样
+json j2 = {
+  {"pi", 3.141},
+  {"happy", true},
+  {"name", "Niels"},
+  {"nothing", nullptr},
+  {"answer", {
+    {"everything", 42}
+  }},
+  {"list", {1, 0, 2}},
+  {"object", {
+    {"currency", "USD"},
+    {"value", 42.99}
+  }}
+};
+// 使用原始字符串字面值和json::parse()函数
+json ex1 = json::parse(R"(
+  {
+    "pi": 3.141,
+    "happy": true
+  }
+)");
+// 使用用户自定义字符串字面值
+using namespace nlohmann::literals;
+json ex2 = R"(
+  {
+    "pi": 3.141,
+    "happy": true
+  }
+)"_json;
+// 使用初始化列表
+json ex3 = {
+  {"happy", true},
+  {"pi", 3.141},
+};
+
+
+// 序列化
+std::string s = j.dump();    // {"happy":true,"pi":3.141}
+
+// pretty printing
+std::cout << j.dump(4) << std::endl;
+// {
+//     "happy": true,
+//     "pi": 3.141
+// }
 ```

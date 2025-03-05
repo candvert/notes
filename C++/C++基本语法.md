@@ -35,6 +35,8 @@
 	- [explicit](#explicit)
 	- [类的静态成员](#类的静态成员)
 	- [lambda表达式](#lambda表达式)
+	- [用户自定义字面量](#用户自定义字面量)
+	- [原始字符串字面量](#原始字符串字面量)
 - [标准库](#标准库)
 	- [常用库](#常用库)
 	- [常用函数](#常用函数)
@@ -566,6 +568,39 @@ int A::i = 1023;
 [capture list] (parameter list) -> return type { function body }
 // 可以忽略参数列表和返回类型，但必须永远包含捕获列表和函数体
 auto f = [] { return 42; };
+```
+## 用户自定义字面量
+```cpp
+// 用户自定义字面量（User-Defined Literals, UDLs）是C++11引入的特性，允许开发者通过定义后缀运算符，将字面量转换为自定义类型或特定表示形式。
+
+// 用户自定义字面量通过定义后缀运算符实现，语法形式为：
+ReturnType operator"" _suffix(Parameters);
+// _suffix是自定义后缀（必须以下划线开头，避免与标准库字面量冲突）
+// Parameters的类型取决于处理的字面量类型（如整数、浮点数、字符串等）
+// 必须严格匹配字面量类型（如整数字面量只能用unsigned long long）
+
+// 示例：
+struct Meter { double value; };
+Meter operator"" _m(long double val) {
+    return Meter{static_cast<double>(val)};
+}
+Meter distance = 3.14_m; // 转换为米
+```
+## 原始字符串字面量
+```cpp
+// 特性：
+// 无需转义字符
+// 支持多行字符串，保留换行和缩进格式
+const char* str = R"(Hello, "World"!\nThis is a raw string.)";
+// 输出内容：
+// Hello, "World"!\nThis is a raw string.
+auto config = R"(
+  {
+    "debug": false,
+    "port": 8080,
+    "paths": ["/usr/bin", "/tmp"]
+  }
+)"_json;
 ```
 # 标准库
 ## 常用库
