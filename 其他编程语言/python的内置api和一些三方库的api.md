@@ -1,3 +1,4 @@
+- [python创建用于测试的http服务器](#python创建用于测试的http服务器)
 - [python的内置api和一些三方库的api](#python的内置api和一些三方库的api)
 	- [列表](#列表)
 	- [元组](#元组)
@@ -16,6 +17,12 @@
 	- [mysql](#mysql)
 	- [网络库requests](#网络库requests)
 
+# python创建用于测试的http服务器
+```
+mkdir test_server && cd test_server
+echo {"good": true} >> ok.json
+python3 -m http.server 8000
+```
 # python的内置api和一些三方库的api
 ## 列表
 ```py

@@ -6,19 +6,19 @@
 ## cpp-httplib
 ```
 Github仓库：https://github.com/yhirose/cpp-httplib
-简介：使用C++11编写的跨平台HTTP/HTTPS服务器/客户端库，使用阻塞套接字I/O，只需一个头文件
+简介：使用C++11编写的跨平台HTTP/HTTPS服务器/客户端库，使用阻塞套接字I/O，只需一个头文件。但是如果使用https，则还需要openssl库
 ```
 ## 示例
 ```cpp
 // 如果要进行https连接，需要有#define CPPHTTPLIB_OPENSSL_SUPPORT并链接OpenSSL库
 
-#include "httplib.h"
+#include <httplib.h>
 #include <iostream>
 
 int main() {
-	httplib::Client cli("http://baidu.com");
+	httplib::Client cli("http://127.0.0.1:8000");
 
-	auto res = cli.Get("/");
+	auto res = cli.Get("/test.json");
 	std::cout << res->status << std::endl;
 	std::cout << res->body << std::endl;
 }
