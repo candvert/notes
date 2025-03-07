@@ -68,7 +68,7 @@ git clone git@github.com:microsoft/vcpkg.git
 需要安装库在命令行中使用vcpkg命令即可
 
 使用vcpkg安装库后，visual studio会自动链接动态/静态库，但是使用opencv库时头文件包含目录仍需手动在属性中设置（可能是bug）
-若vcpkg所在目录为D:/Apps/vcpkg/vcpkg.exe，则安装的库（包括opencv）的头文件在D:\Apps\vcpkg\installed\x64-windows\include
+若vcpkg所在目录为D:/Apps/vcpkg/vcpkg.exe，则安装的库（包括opencv）的头文件在D:\Apps\vcpkg\installed\x64-windows\include\opencv4
 ```
 ![](images/cpp_compiler_1.png)
 ```
