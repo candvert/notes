@@ -32,11 +32,35 @@ int main()
     waitKey(0);
 }
 ```
+## 理论知识
+![](images/opencv_8.png)
 ## Mat - 基本图像容器
-```
-Mat img = imread("D:/a.jpg");
-Mat new_image = Mat::zeros(image.size(), image.type());
-saturate_cast<uchar>(859);
+```cpp
+// 如果无法读取图像（由于文件丢失、权限不正确或格式不受支持/无效），该函数将返回一个空矩阵。
+// 如果设置IMREAD_UNCHANGED，则按原样返回已加载的图像（带有alpha通道）
+// 如果设置IMREAD_GRAYSCALE，则始终将图像转换为单通道灰度图像
+// 如果设置IMREAD_COLOR_BGR或IMREAD_COLOR，则始终将图像转换为 3 通道 BGR 彩色图像
+// 如果设置IMREAD_COLOR_RGB，则始终将图像转换为 3 通道 RGB 彩色图像
+Mat cv::imread(const String& filename, int flags = IMREAD_COLOR_BGR);
+
+Mat new_image = Mat::zeros(image.size(), image.type());    // 所有元素值为0
+
+saturate_cast<uchar>(859);    // 对于uchar类型返回值范围为[0,255]，即saturate_cast<uchar>(859);返回255，saturate_cast<uchar>(-239);返回0，而saturate_cast<uchar>(212);返回212
+
+// 创建一个窗口。如果已经存在同名的窗口，该函数不执行任何操作。
+// 常用flags：WINDOW_AUTOSIZE、WINDOW_NORMAL、WINDOW_FULLSCREEN、WINDOW_KEEPRATIO
+void cv::namedWindow(const String& winname, int flags = WINDOW_AUTOSIZE);
+
+void cv::imshow(const String& winname, InputArray mat);
+
+// delay表示延迟多少毫秒，值为0表示无限等待
+// 返回值的用法：int k = waitKey(); if (k == 's') cout << "good" << endl;
+int cv::waitKey(int delay = 0);
+
+Mat类常用的函数：
+	int channels() const;    // 返回通道的个数
+	int depth() const;    // 返回矩阵元素的深度，比如CV_8U
+	int type() const;    // 返回矩阵元素的类型，比如CV_8UC3
 
 Mat类的所有公共属性：
 	MatAllocator* allocator;
@@ -606,3 +630,27 @@ Normalize：
                                             // viewable image form (float between values 0 and 1).
 ```
 ## 使用 XML/YAML/JSON 文件进行文件输入和输出
+```cpp
+// XML/YAML/JSON 文件打开和关闭（FileStorage::WRITE、FileStorage::READ、FileStorage::APPEND）
+FileStorage fs(filename, FileStorage::WRITE);
+FileStorage fs;
+fs.open(filename, FileStorage::WRITE);
+// 文件名中指定的扩展名还决定了将使用的输出格式。
+// 当 cv::FileStorage 对象被销毁时，文件会自动关闭。但是，你可以使用 release 函数明确调用此方法：
+fs.release();                                       // explicit close
+
+// 文本和数字的输入和输出。
+fs << "iterationNr" << 100;
+int itNr;
+//fs["iterationNr"] >> itNr;
+itNr = (int) fs["iterationNr"];
+```
+## 如何使用OpenCV的parallel_for_来并行化你的代码
+```
+第一个先决条件是使用并行框架构建 OpenCV。在 OpenCV 4.5 中，按以下顺序提供并行框架：
+Intel 线程构建模块（第三方库，应明确启用）
+OpenMP（集成到编译器，应明确启用）
+Windows RT 并发性（系统范围，自动使用（仅限 Windows RT））
+Windows 并发（运行时的一部分，自动使用（仅限 Windows - MSVC++ >= 10））
+Pthreads
+```
