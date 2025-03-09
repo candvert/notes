@@ -57,10 +57,34 @@ void cv::imshow(const String& winname, InputArray mat);
 // 返回值的用法：int k = waitKey(); if (k == 's') cout << "good" << endl;
 int cv::waitKey(int delay = 0);
 
+// 图像操作
+Mat src1, src2, dst;
+add(src1, src2, dst);
+subtract(src1, src2, dst);
+multiply(src1, src2, dst);
+divide(src1, src2, dst);
+bitwise_and();
+bitwise_or();
+bitwise_not(src, dst);
+
+// 最大最小值
+double min_val, max_val; Point minloc, maxloc;
+minMaxLoc(src, &min_val, &max_val, &minloc, &maxloc);
+// 均值
+Scalar s = mean(src);
+// 均值方差
+meanStdDev(src, mm, mstd);
+// 绝对值
+abs(a - b);
+
+// 线性混合（linear blending）：g(x) = (1 - 𝛼)A(x) + 𝛼B(x)
+addWeighted(src1, 1 - 𝛼, src2, 𝛼, 0.0, dst);
+
 Mat类常用的函数：
 	int channels() const;    // 返回通道的个数
 	int depth() const;    // 返回矩阵元素的深度，比如CV_8U
 	int type() const;    // 返回矩阵元素的类型，比如CV_8UC3
+	bool empty() const;
 
 Mat类的所有公共属性：
 	MatAllocator* allocator;
@@ -75,6 +99,44 @@ Mat类的所有公共属性：
 	MatSize size;
 	MatStep step;
 	UMatData* u;
+
+创建Mat：
+	Mat M(256, 256, CV_8UC3);
+	M = Scalar(0, 0, 255);    // 将所有每个像素值赋值为(0, 0, 255)
+
+	Mat M(2,2, CV_8UC3, Scalar(0,0,255));
+
+	Mat X = Mat::zeros(M.size(), M.type());
+
+	Mat X(M.size(), M.type());
+
+	Mat O = Mat::ones(2, 2, CV_32F);
+
+	Mat Z = Mat::zeros(3,3, CV_8UC1);
+
+	Mat C = (Mat_<double>(3,3) << 0, -1, 0, -1, 5, -1, 0, -1, 0);
+
+遍历Mat的方式：
+第一种：
+Mat M(256, 256, CV_8UC3);
+for (int i = 0; i < M.rows; ++i) {
+	uchar* curr_row = M.ptr<uchar>(i);
+	for (int j = 0; j < M.cols; ++j) {
+		*current_row++ = 25;
+		*current_row++ = 100;
+		*current_row++ = 200;
+	}
+}
+第二种：
+Mat M(256, 256, CV_8UC3);
+for (int i = 0; i < M.rows; ++i) {
+	for (int j = 0; j < M.cols; ++j) {
+		Vec3b pixel = M.at<Vec3b>(i, j);
+		M.at<Vec3b>(i, j)[0] = 25;
+		M.at<Vec3b>(i, j)[0] = 100;
+		M.at<Vec3b>(i, j)[0] = 200;
+	}
+}
 ```
 
 ```
@@ -160,10 +222,11 @@ std::vector of points：
 对于RGB图像，可以形成1600万种颜色。处理如此多的颜色可能会严重影响我们的算法性能。然而，有时只需处理一小部分就足以获得相同的结果。
 在这种情况下，我们通常会进行色彩空间缩减（color space reduction）。意味着我们将色彩空间当前值除以一个输入值，最终得到更少的颜色。例如，0到9之间的每个值都取新值0，10到19之间的每个值都为10，依此类推。
 
-对于较大的图像，最好使用查找表，查找表是简单的数组（具有一个或多个维度），其中每个元素对应于输入像素值的一个映射值。它的优势在于我们不需要进行计算，只需读取结果即可。
-查找表是一个长度为256的一维数组（针对8位图像，即像素值范围[0, 255]）。
-索引i对应输入像素值，查找表中的值lut[i]是该像素值的映射结果。
-例如，若lut[100] = 200，则输入图像中所有值为100的像素都会被替换为200。
+对于较大的图像，最好使用查找表，查找表是简单的数组（具有一个或多个维度），其中每个元素对应于输入像素值的一个映射值。优势在于提前计算结果，使用时查找，而不是对图像的每个像素都进行计算。
+查找表是一个长度为256的一维数组（即[0, 255]）。
+索引i：输入值
+lut[i]：映射值
+例如，若lut[100] = 200，则输入图像中所有值为100的元素都会被替换为200。
 若需对不同的颜色通道应用不同的查找表，需手动拆分通道后单独处理。
 
 OpenCV提供了两个简单的函数来测量时间cv::getTickCount()和cv::getTickFrequency()。第一个返回从某个事件（比如自启动系统以来）开始的系统CPU的tick数。第二个返回CPU一秒钟tick的次数。因此，测量两个操作之间经过的时间非常简单：
@@ -251,14 +314,14 @@ Mat& ScanImageAndReduceIterator(Mat& I, const uchar* const table)
 ```
 在图像处理中，将给定图像的所有值修改为其他值是很常见的。OpenCV提供了修改图像值的函数，不需要自己写图像的扫描逻辑，我们使用core模块的cv::LUT()函数，首先我们建立一个Mat类型的查找表：
 ```cpp
-    Mat lookUpTable(1, 256, CV_8U);
-    uchar* p = lookUpTable.ptr();
-    for( int i = 0; i < 256; ++i)
-        p[i] = table[i];
+Mat lookUpTable(1, 256, CV_8U);
+uchar* p = lookUpTable.ptr();
+for( int i = 0; i < 256; ++i)
+	p[i] = table[i];
 ```
 最后调用函数（I是我们的输入图像，J是输出图像）：
 ```cpp
-        LUT(I, lookUpTable, J);
+LUT(I, lookUpTable, J);
 ```
 如果可能的话，使用OpenCV的现有函数（而不是重新发明这些函数）。最快的方法是LUT函数。这是因为OpenCV库通过英特尔线程构建块启用了多线程。但是，如果您需要编写一个简单的图像扫描，最好使用指针方法。迭代器是更安全的选择，但速度较慢。
 ## 矩阵的掩码运算
@@ -267,81 +330,81 @@ Mat& ScanImageAndReduceIterator(Mat& I, const uchar* const table)
 ```
 在图像处理中，应用此类过滤器非常常见，因此OpenCV中有一个函数负责应用掩码（在某些地方也称为内核）。为此，您首先需要定义一个保存掩码的对象：
 ```cpp
-    Mat kernel = (Mat_<char>(3,3) <<  0, -1,  0,
-                                   -1,  5, -1,
-                                    0, -1,  0);
+Mat kernel = (Mat_<char>(3,3) <<  0, -1,  0,
+							   -1,  5, -1,
+								0, -1,  0);
 ```
 然后调用filter2D()函数指定要使用的输入、输出图像和内核：
 ```cpp
-    filter2D( src, dst1, src.depth(), kernel );
+filter2D( src, dst1, src.depth(), kernel );
 ```
 该函数甚至有第五个可选参数来指定内核的中心，第六个参数用于在将过滤后的像素存储到K中之前为其添加一个可选值，第七个参数用于确定在操作未定义的区域（边界）中要执行的操作。
 ## 图像的基本操作
 ```cpp
 // 从文件加载图像：
-        Mat img = imread(filename);
+Mat img = imread(filename);
 // 如果读取 jpg 文件，则默认会创建 3 通道图像。如果需要灰度图像，请使用：
-        Mat img = imread(filename, IMREAD_GRAYSCALE);
+Mat img = imread(filename, IMREAD_GRAYSCALE);
 // 输入文件的格式由其内容（前几个字节）决定。
 // 要将图像保存到文件：
-        imwrite(filename, img);
+imwrite(filename, img);
 // 输出文件的格式由其扩展名决定。
 // 使用 cv::imdecode 和 cv::imencode 从内存而不是文件读取和写入图像。
 
 // 为了获取像素强度值，您必须知道图像的类型和通道数。以下是单通道灰度图像（类型 8UC1）和像素坐标 x 和 y 的示例：
-            Scalar intensity = img.at<uchar>(y, x);
+Scalar intensity = img.at<uchar>(y, x);
 // 或者，您可以使用以下符号（仅限 C++）：
-            Scalar intensity = img.at<uchar>(Point(x, y));
+Scalar intensity = img.at<uchar>(Point(x, y));
 // 现在让我们考虑具有 BGR 颜色排序的 3 通道图像（imread 返回的默认格式）：
-            Vec3b intensity = img.at<Vec3b>(y, x);
-            uchar blue = intensity.val[0];
-            uchar green = intensity.val[1];
-            uchar red = intensity.val[2];
+Vec3b intensity = img.at<Vec3b>(y, x);
+uchar blue = intensity.val[0];
+uchar green = intensity.val[1];
+uchar red = intensity.val[2];
 // 您可以对浮点图像使用相同的方法（例如，您可以通过在 3 通道图像上运行 Sobel 来获得这样的图像）（仅限 C++）：
-            Vec3f intensity = img.at<Vec3f>(y, x);
-            float blue = intensity.val[0];
-            float green = intensity.val[1];
-            float red = intensity.val[2];
+Vec3f intensity = img.at<Vec3f>(y, x);
+float blue = intensity.val[0];
+float green = intensity.val[1];
+float red = intensity.val[2];
 // 可以使用相同的方法来改变像素强度：
-            img.at<uchar>(y, x) = 128;
+img.at<uchar>(y, x) = 128;
 // 可以为每个函数提供一个空的输出 Mat。每个实现都调用 Mat::create 来获取目标矩阵。如果矩阵为空，则此方法会为矩阵分配数据。如果矩阵不为空且大小和类型正确，则此方法不执行任何操作。但是，如果大小或类型与输入参数不同，则数据将被释放（并丢失），并分配新数据。例如：
-        Mat img = imread("image.jpg");
-        Mat sobelx;
-        Sobel(img, sobelx, CV_32F, 1, 0);
+Mat img = imread("image.jpg");
+Mat sobelx;
+Sobel(img, sobelx, CV_32F, 1, 0);
 
 
 // 矩阵上定义了许多方便的运算符。例如，下面介绍如何从现有的灰度图像 img 制作黑色图像
-            img = Scalar(0);
+img = Scalar(0);
 // 选择感兴趣的区域：
-            Rect r(10, 10, 100, 100);
-            Mat smallImg = img(r);
+Rect r(10, 10, 100, 100);
+Mat smallImg = img(r);
 // 从彩色到灰度的转换：
-        Mat img = imread("image.jpg"); // loading a 8UC3 image
-        Mat grey;
-        cvtColor(img, grey, COLOR_BGR2GRAY);
+Mat img = imread("image.jpg"); // loading a 8UC3 image
+Mat grey;
+cvtColor(img, grey, COLOR_BGR2GRAY);
 // 将图像类型从 8UC1 更改为 32FC1：
-        src.convertTo(dst, CV_32F);
+src.convertTo(dst, CV_32F);
 ```
 
 ```cpp
 // 在开发过程中查看算法的中间结果非常有用。OpenCV 提供了一种可视化图像的便捷方式。可以使用以下方式显示 8U 图像：
-        Mat img = imread("image.jpg");
-        namedWindow("image", WINDOW_AUTOSIZE);
-        imshow("image", img);
-        waitKey();
+Mat img = imread("image.jpg");
+namedWindow("image", WINDOW_AUTOSIZE);
+imshow("image", img);
+waitKey();
 // 调用 waitKey() 会启动一个消息传递循环，等待“图像”窗口中的按键。32F 图像需要转换为 8U 类型。例如：
-        Mat img = imread("image.jpg");
-        Mat grey;
-        cvtColor(img, grey, COLOR_BGR2GRAY);
-        Mat sobelx;
-        Sobel(grey, sobelx, CV_32F, 1, 0);
-        double minVal, maxVal;
-        minMaxLoc(sobelx, &minVal, &maxVal); //find minimum and maximum intensities
-        Mat draw;
-        sobelx.convertTo(draw, CV_8U, 255.0/(maxVal - minVal), -minVal * 255.0/(maxVal - minVal));
-        namedWindow("image", WINDOW_AUTOSIZE);
-        imshow("image", draw);
-        waitKey();
+Mat img = imread("image.jpg");
+Mat grey;
+cvtColor(img, grey, COLOR_BGR2GRAY);
+Mat sobelx;
+Sobel(grey, sobelx, CV_32F, 1, 0);
+double minVal, maxVal;
+minMaxLoc(sobelx, &minVal, &maxVal); //find minimum and maximum intensities
+Mat draw;
+sobelx.convertTo(draw, CV_8U, 255.0/(maxVal - minVal), -minVal * 255.0/(maxVal - minVal));
+namedWindow("image", WINDOW_AUTOSIZE);
+imshow("image", draw);
+waitKey();
 // 这里 cv::namedWindow 不是必需的，因为它后面紧跟着 cv::imshow。不过，它可以用于更改窗口属性，或者在使用 cv::createTrackbar 时使用
 ```
 ## 使用 OpenCV 添加（混合）两幅图像
@@ -471,13 +534,13 @@ image.convertTo(new_image, -1, alpha, beta);
 当 𝛾 < 1 时，原始暗区将变得更亮
 ```cpp
 // 伽马校正
-    Mat lookUpTable(1, 256, CV_8U);
-    uchar* p = lookUpTable.ptr();
-    for( int i = 0; i < 256; ++i)
-        p[i] = saturate_cast<uchar>(pow(i / 255.0, gamma_) * 255.0);
+Mat lookUpTable(1, 256, CV_8U);
+uchar* p = lookUpTable.ptr();
+for( int i = 0; i < 256; ++i)
+	p[i] = saturate_cast<uchar>(pow(i / 255.0, gamma_) * 255.0);
 
-    Mat res = img.clone();
-    LUT(img, lookUpTable, res);
+Mat res = img.clone();
+LUT(img, lookUpTable, res);
 ```
 ## 离散傅里叶变换
 以下是 dft() 的用法示例：
@@ -653,4 +716,59 @@ OpenMP（集成到编译器，应明确启用）
 Windows RT 并发性（系统范围，自动使用（仅限 Windows RT））
 Windows 并发（运行时的一部分，自动使用（仅限 Windows - MSVC++ >= 10））
 Pthreads
+```
+## 图形绘制
+```cpp
+int main() {
+	Mat canvas = Mat::zeros(Size(512,512), CV_8UC3);
+	imshow("canvas", canvas);
+
+	line(canvas, Point(10,10), Point(400,400), Scalar(0,0,255));
+	Rect rect(100, 100, 200, 200);
+	rectangle(canvas, rect, Scalar(255,0,0));
+	circle(canvas, Point(256,256), 100, Scalar(0,255,0));
+	ellipse();    // @todo
+	putText(canvas, "hello", Point(100,50), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 255, 0));
+	imshow("result", canvas);
+}
+```
+## 图像通道合并与分离
+```cpp
+int main() {
+	Mat M("D/other/a.jpg");
+	vector<Mat> vec;
+	split(src, vec);
+	imshow("blue channel", vec[0]);
+	imshow("green channel", vec[1]);
+	imshow("red channel", vec[2]);
+
+	vec[2] = Scalar(0);
+	Mat dst;
+	merge(vec, dst);
+	imshow("result", dst);
+}
+```
+## ROI
+```cpp
+int main() {
+	Mat M("D/other/a.jpg");
+
+	Rect roi;
+	roi.x = 100;
+	roi.y = 100;
+	roi.width = 250;
+	roi.height = 200;
+	// 需要注意的是src和sub指向相同的内存，如果要克隆使用src(roi).clone();
+	Mat sub = src(roi);
+	imshow("roi", sub);
+}
+```
+## 直方图
+```cpp
+calcHist();
+equalizeHist();
+```
+## 查找表
+```cpp
+LUT(I, lookUpTable, J);
 ```
