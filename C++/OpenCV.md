@@ -817,6 +817,16 @@ threshold(... THRESH_BINARY | THRESH_OTSU);
 connectedComponentsWithStats();
 
 findContours();
+drawContours();
 boundingRect();
 minAreaRect();
+
+Moments();
+HuMoments();
+
+approxPolyDP();
+contourArea();
+arcLength();
+fitEllipse();
+RotatedRect rect;
 ```
