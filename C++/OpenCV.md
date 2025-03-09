@@ -336,7 +336,7 @@ Mat kernel = (Mat_<char>(3,3) <<  0, -1,  0,
 ```
 然后调用filter2D()函数指定要使用的输入、输出图像和内核：
 ```cpp
-filter2D( src, dst1, src.depth(), kernel );
+filter2D(src, dst1, src.depth(), kernel);
 ```
 该函数甚至有第五个可选参数来指定内核的中心，第六个参数用于在将过滤后的像素存储到K中之前为其添加一个可选值，第七个参数用于确定在操作未定义的区域（边界）中要执行的操作。
 ## 图像的基本操作
@@ -771,4 +771,52 @@ equalizeHist();
 ## 查找表
 ```cpp
 LUT(I, lookUpTable, J);
+
+// 使用opencv自带的查找表
+applyColorMap(src, dst, COLORMAP_AUTUMN);
+```
+## 图像卷积
+```cpp
+filter2D(src, dst1, src.depth(), kernel);
+convertScaleAbs();
+
+blur(src, dst, Size(3,3));
+copyMakeBorder();
+
+// 高斯模糊
+GaussianBlur();
+// 盒子模糊
+boxFilter();
+
+Sobel();
+Scharr();
+Laplacian();
+
+// 中值滤波
+medianBlur();
+GaussianBlur();
+
+// EPF滤波
+bilateralFilter();
+
+fastNIMeansDenoising();
+fastNIMeansDenoisingColored();
+cvtColor();
+
+// 边缘提取
+Canny();
+createTrackbar();
+
+二值图像：单通道，取值0（黑色）与255（白色）
+threshold();
+
+图像二值化分割，最重要的是计算阈值
+阈值计算方法分为两类，全局阈值与自适应阈值
+threshold(... THRESH_BINARY | THRESH_OTSU);
+
+connectedComponentsWithStats();
+
+findContours();
+boundingRect();
+minAreaRect();
 ```
