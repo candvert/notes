@@ -44,6 +44,8 @@ int main()
 Mat cv::imread(const String& filename, int flags = IMREAD_COLOR_BGR);
 
 Mat new_image = Mat::zeros(image.size(), image.type());    // 所有元素值为0
+Mat new_image = Mat::zeros(512, 512, image.type());
+Mat new_image = Mat::zeros(Size(512, 512), image.type());
 
 saturate_cast<uchar>(859);    // 对于uchar类型返回值范围为[0,255]，即saturate_cast<uchar>(859);返回255，saturate_cast<uchar>(-239);返回0，而saturate_cast<uchar>(212);返回212
 
@@ -145,8 +147,10 @@ Mat基本上是一个包含两个数据部分的类：矩阵头和指向包含�
 OpenCV使用引用计数系统。其思想是每个Mat对象都有自己的标头，但是可以通过让矩阵指针指向同一地址来在两个Mat对象之间共享矩阵。赋值运算符和复制构造函数仅复制标头。
 
 可以创建仅引用完整数据的一部分的标头。例如，要在图像中创建感兴趣的区域 (ROI)，只需创建一个具有新边界的标头：
-Mat D (A, Rect(10, 10, 100, 100) ); // using a rectangle
+Mat A = imread("image.jpg");
+Mat D(A, Rect(10, 10, 100, 100)); // using a rectangle
 Mat E = A(Range::all(), Range(1,3)); // using row and column boundaries
+Mat F = A(Rect(10, 10, 100, 100));
 
 有时您也想复制矩阵本身，因此OpenCV提供了cv::Mat::clone()和cv::Mat::copyTo()函数。
 Mat F = A.clone();
@@ -731,6 +735,17 @@ int main() {
 	putText(canvas, "hello", Point(100,50), FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 255, 0));
 	imshow("result", canvas);
 }
+
+void cv::line(InputOutputArray img, Point pt1, Point pt2, const Scalar& color, int thickness = 1, int lineType = LINE_8, int shift = 0);
+
+void cv::rectangle(InputOutputArray img, Point pt1, Point pt2, const Scalar& color, int thickness = 1, int lineType = LINE_8, int shift = 0);
+void cv::rectangle(InputOutputArray img, Rect rec, const Scalar& color, int thickness = 1, int lineType = LINE_8, int shift = 0);
+
+void cv::circle(InputOutputArray img, Point center, int radius, const Scalar& color, int thickness = 1, int lineType = LINE_8, int shift = 0);
+
+void cv::ellipse(InputOutputArray img, Point center, Size axes, double angle, double startAngle, double endAngle, const Scalar& color, int thickness = 1, int lineType = LINE_8, int shift = 0);
+
+void cv::putText(InputOutputArray img, const String& text, Point org, int fontFace, double fontScale, Scalar color, int thickness = 1, int lineType = LINE_8, bool bottomLeftOrigin = false);
 ```
 ## 图像通道合并与分离
 ```cpp
@@ -748,25 +763,33 @@ int main() {
 	imshow("result", dst);
 }
 ```
-## ROI
-```cpp
-int main() {
-	Mat M("D/other/a.jpg");
-
-	Rect roi;
-	roi.x = 100;
-	roi.y = 100;
-	roi.width = 250;
-	roi.height = 200;
-	// 需要注意的是src和sub指向相同的内存，如果要克隆使用src(roi).clone();
-	Mat sub = src(roi);
-	imshow("roi", sub);
-}
-```
 ## 直方图
 ```cpp
 calcHist();
 equalizeHist();
+normalize();
+calcBackProject();
+cornerHarris();
+convertScaleAbs();
+goodFeaturesToTrack();
+inRange();
+
+// 计算一组数组的直方图
+void cv::calcHist(const Mat* images, int nimages, const int* channels, InputArray mask, OutputArray hist, int dims, const int* histSize, const float** ranges, bool uniform = true, bool accumulate = false);
+
+void cv::equalizeHist(InputArray src, OutputArray dst);
+
+void cv::normalize(InputArray src, InputOutputArray dst, double alpha = 1, double beta = 0, int norm_type = NORM_L2, int dtype = -1, InputArray mask = noArray());
+
+void cv::calcBackProject(const Mat* images, int nimages, const int* channels, InputArray hist, OutputArray backProject, const float** ranges, double scale = 1, bool unifrom = true);
+
+void cv::cornerHarris(InputArray src, OutputArray dst, int blockSize, int ksize, double k, int borderType = BORDER_DEFAULT);
+
+void cv::convertScaleAbs(InputArray src, OutputArray dst, double alpha = 1, double beta = 0);
+
+void cv::goodFeaturesToTrack(InputArray image, OutputArray corners, int maxCorners, double qualityLevel, double minDistance, InputArray mask, int blockSize, int gradientSize, bool useHarrisDetector = false, double k = 0.04);
+
+void cv::inRange(InputArray src, InputArray lowerb, InputArray upperb, OutputArray dst);
 ```
 ## 查找表
 ```cpp
@@ -774,6 +797,9 @@ LUT(I, lookUpTable, J);
 
 // 使用opencv自带的查找表
 applyColorMap(src, dst, COLORMAP_AUTUMN);
+
+void cv::LUT(InputArray src, InputArray lut, OutputArray dst);
+void cv::applyColorMap(InputArray src, OutputArray dst, int colormap);
 ```
 ## 图像卷积
 ```cpp
@@ -794,8 +820,6 @@ Laplacian();
 
 // 中值滤波
 medianBlur();
-GaussianBlur();
-
 // EPF滤波
 bilateralFilter();
 
@@ -829,4 +853,93 @@ contourArea();
 arcLength();
 fitEllipse();
 RotatedRect rect;
+
+HoughLines();
+HoughLinesP();
+HoughCircles();
+
+getStructuringElement();
+erode();
+dilate();
+
+morphologyEx();
+
+VideoCapture capture("D:/images/a.avi");
+capture.get();
+capture.read();
+capture.release();
+VideoWriter writer("D:/test.avi");
+writer.write();
+writer.release();
+
+calcOpticalFlowPyrLK();
+TermCriteria criteria;
+calcOpticalFlowFarneback();
+cartToPolar();
+
+selectROI();
+mixChannels();
+calcBackProject();
+meanShift();
+
+
+void cv::filter2D(InputArray src, OutputArray dst, int ddepth, InputArray kernel, Point anchor = Point(-1,-1), double delta = 0, int borderType = BORDER_DEFAULT);
+
+void cv::convertScaleAbs(InputArray src, OutputArray dst, double alpha = 1, double beta = 0);
+
+void cv::blur(InputArray src, OutputArray dst, Size ksize, Point anchor = Point(-1,-1), int borderType = BORDER_DEFAULT);
+
+void cv::copyMakeBorder(InputArray src, OutputArray dst, int top, int bottom, int left, int right, int borderType, const Scalar& value = Scalar());
+
+void cv::GaussianBlur(InputArray src, OutputArray dst, Size ksize, double sigmaX, double sigmaY = 0, int borderType = BORDER_DEFAULT, AlgorithmHint hint = cv::ALGO_HINT_DEFAULT);
+
+void cv::boxFilter(InputArray src, OutputArray dst, int ddepth, Size ksize, Point anchor = Point(-1,-1), bool normalize = true, int borderType = BORDER_DEFAULT);
+
+void cv::Sobel(InputArray src, OutputArray dst, int ddepth, int dx, int dy, int ksize = 3, double scale = 1, double delta = 0, int borderType = BORDER_DEFAULT);
+
+void cv::Scharr(InputArray src, OutputArray dst, int ddepth, int dx, int dy, int scale = 1, double delta = 0, int borderType = BORDER_DEFAULT);
+
+void cv::Laplacian(InputArray src, OutputArray dst, int ddepth, int ksize = 1, double scale = 1, double delta = 0, int borderType = BORDER_DEFAULT);
+
+void cv::medianBlur(InputArray src, OutputArray dst, int ksize);
+
+void cv::bilateralFilter(InputArray src, OutputArray dst, int d, double sigmaColor, double sigmaSpace, int borderType = BORDER_DEFAULT);
+
+void cv::fastNlMeansDenoising(InputArray src, OutputArray dst, float h = 3, int templateWindowSize = 7, int searchWindowSize = 21);
+
+void cv::fastNlMeansDenoisingColored(InputArray src, OutputArray dst, float h = 3, float hColor = 3, int templateWindowSize = 7, int searchWindowSize = 21);
+
+void cv::cvtColor(InputArray src, OutputArray dst, int code, int dstCn = 0, AlgorithmHint hint = cv::ALGO_HINT_DEFAULT);
+
+void cv::Canny(InputArray dx, InputArray dy, OutputArray edges, double threshold1, double threshold2, bool L2gradient = false);
+
+int cv::createTrackbar(const String& trackbarname, const String& winname, int* value, int count, TrackbarCallback onChange = 0, void* userdata = 0);
+
+double cv::threshold(InputArray src, OutputArray dst, double thresh, double maxval, int type);
+
+int cv::connectedComponentsWithStats(InputArray image, OutputArray labels, OutputArray stats, OutputArray centroids, int connectivity, int ltype, int ccltype);
+
+void cv::findContours(InputArray image, OutputArrayOfArrays contours, int mode, int method, Point offset = Point());
+
+void cv::drawContours(InputOutputArray image, OutputArrayOfArrays contours, int contourldx, const Scalar& color, int thickness = 1, int lineType = LINE_8, InputArray hierarchy = noArray(), int maxLevel = INT_MAX, Point offset = Point());
+
+Rect cv::boundingRect(InputArray array);
+
+RotatedRect cv::minAreaRect(InputArray points);
+
+class Moments();
+
+void cv::HuMoments(const Moments& m, OutputArray hu);
+
+void cv::approxPolyDP(InputArray curve, OutputArray approxCurve, double epsilon bool closed);
+
+double cv::contourArea(InputArray contour, bool oriented = false);
+
+double cv::arcLength(InputArray curve, bool closed);
+
+RotatedRect cv::fitEllipse(InputArray points);
+
+class RotatedRect;
+
+void cv::HoughLines(InputArray image, OutputArray lines, double rho, double theta, int threshold, double srn = 0, double stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false);
 ```
