@@ -879,7 +879,6 @@ cartToPolar();
 
 selectROI();
 mixChannels();
-calcBackProject();
 meanShift();
 
 
@@ -942,4 +941,30 @@ RotatedRect cv::fitEllipse(InputArray points);
 class RotatedRect;
 
 void cv::HoughLines(InputArray image, OutputArray lines, double rho, double theta, int threshold, double srn = 0, double stn = 0, double min_theta = 0, double max_theta = CV_PI, bool use_edgeval = false);
+
+void cv::HoughLinesP(InputArray image, OutputArray lines, double rho, double theta, int threshold, double minLineLength = 0, double maxLineGap = 0);
+
+void cv::HoughCircles(InputArray image, OutputArray circles, int method, double dp, double minDist, double param1 = 100, double param2 = 100, int minRadius = 0, int maxRadius = 0);
+
+Mat cv::getStructuringElement(int shape, Size ksize, Point anchor = Point(-1,-1));
+
+void cv::erode(InputArray src, OutputArray dst, InputArray kernel, Point anchor = Point(-1,-1), int iterations = 1, int borderType = BORDER_CONSTANT, const Scalar& borderValue = morphologyDefaultBorderValue());
+
+void cv::dilate(InputArray src, OutputArray dst, InputArray kernel, Point anchor = Point(-1,-1), int iterations = 1, int borderType = BORDER_CONSTANT, const Scalar& borderValue = morphologyDefaultBorderValue());
+
+void cv::morphologyEx(InputArray src, OutputArray dst, int op, InputArray kernel, Point anchor = Point(-1,-1), int iterations = 1, int borderType = BORDER_CONSTANT, const Scalar& borderValue = morphologyDefaultBorderValue());
+
+void cv::calcOpticalFlowPyrLK(InputArray previmg, InputArray nextimg, InputArray prevPts, InputOutputArray nextPts, OutputArray status, OutputArray err, Size winSize = Size(21,21), int maxLevel = 3, TermCriteria criteria = TermCriteria(TermCriteria::COUNT + TermCriteria::EPS, 30, 0.01), int flags = 0, double minElgThreshold = 1e-4);
+
+class TermCriteria;
+
+void cv::calcOpticalFlowFarneback(InputArray prev, InputArray next, InputOutputArray flow, double pyr_scale, int levels, int winsize, int iterations, int poly_n, double poly_sigma, int flags);
+
+void cv::cartToPolar(InputArray x, InputArray y, OutputArray magnitude, OutputArray angle, bool angleInDegrees = false);
+
+Rect cv::selectROI(InputArray img, bool showCrosshair = true, bool fromCenter = false, bool printNotice = true);
+
+void cv::mixChannels(const Mat* src, size_t nsrcs, Mat* dst, size_t ndsts, const int* fromTo, size_t npairs);
+
+int cv::meanShift(InputArray probImage, Rect& window, TermCriteria criteria);
 ```
