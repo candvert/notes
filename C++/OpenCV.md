@@ -29,7 +29,7 @@ int main()
 {
     Mat img = imread("D:/a.jpg");
     imshow("Display window", img);
-    waitKey(0);
+    waitKey();
 }
 ```
 ## 理论知识
@@ -803,67 +803,6 @@ void cv::applyColorMap(InputArray src, OutputArray dst, int colormap);
 ```
 ## 图像卷积
 ```cpp
-filter2D(src, dst1, src.depth(), kernel);
-convertScaleAbs();
-
-blur(src, dst, Size(3,3));
-copyMakeBorder();
-
-// 高斯模糊
-GaussianBlur();
-// 盒子模糊
-boxFilter();
-
-Sobel();
-Scharr();
-Laplacian();
-
-// 中值滤波
-medianBlur();
-// EPF滤波
-bilateralFilter();
-
-fastNIMeansDenoising();
-fastNIMeansDenoisingColored();
-cvtColor();
-
-// 边缘提取
-Canny();
-createTrackbar();
-
-二值图像：单通道，取值0（黑色）与255（白色）
-threshold();
-
-图像二值化分割，最重要的是计算阈值
-阈值计算方法分为两类，全局阈值与自适应阈值
-threshold(... THRESH_BINARY | THRESH_OTSU);
-
-connectedComponentsWithStats();
-
-findContours();
-drawContours();
-boundingRect();
-minAreaRect();
-
-Moments();
-HuMoments();
-
-approxPolyDP();
-contourArea();
-arcLength();
-fitEllipse();
-RotatedRect rect;
-
-HoughLines();
-HoughLinesP();
-HoughCircles();
-
-getStructuringElement();
-erode();
-dilate();
-
-morphologyEx();
-
 VideoCapture capture("D:/images/a.avi");
 capture.get();
 capture.read();
@@ -871,16 +810,6 @@ capture.release();
 VideoWriter writer("D:/test.avi");
 writer.write();
 writer.release();
-
-calcOpticalFlowPyrLK();
-TermCriteria criteria;
-calcOpticalFlowFarneback();
-cartToPolar();
-
-selectROI();
-mixChannels();
-meanShift();
-
 
 void cv::filter2D(InputArray src, OutputArray dst, int ddepth, InputArray kernel, Point anchor = Point(-1,-1), double delta = 0, int borderType = BORDER_DEFAULT);
 
