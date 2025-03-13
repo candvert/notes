@@ -34,6 +34,7 @@
 	- [类类型的转换](#类类型的转换)
 	- [explicit](#explicit)
 	- [类的静态成员](#类的静态成员)
+	- [关于类的const](#关于类的const)
 	- [lambda表达式](#lambda表达式)
 	- [用户自定义字面量](#用户自定义字面量)
 	- [原始字符串字面量](#原始字符串字面量)
@@ -558,6 +559,19 @@ class A {
     static int i;
 };
 int A::i = 1023;
+```
+## 关于类的const
+```cpp
+// const成员变量必须通过构造函数初始化列表初始化
+// const函数中只能调用其他const成员函数
+// const对象只能调用const成员函数
+
+// 整型或枚举类型的静态const成员可在类内直接初始化
+class MyClass {
+    static const int MAX_SIZE = 100; // 正确：类内初始化整型静态const
+    static const double PI;          // 非整型需在类外定义
+};
+const double MyClass::PI = 3.14159;
 ```
 ## lambda表达式
 ```cpp
