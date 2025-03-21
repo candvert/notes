@@ -14,6 +14,20 @@
 	function-like macros有太多弊端，而使用内联函数，可以获得宏的效率以及常规函数的所有可预测行为和类型安全性
 ```
 ## Item 3: Use const Whenever possible
-```
+```cpp
+// 如果要使迭代器指向的内容无法修改，需要const_iterator
+std::vector<int> vec;
+const std::vector<int>::iterator iter = vec.begin();
+*iter = 10;
+++iter;    // error! iter is const
 
+std::vector<int>::const_iterator cIter = vec.begin();
+*cIter = 10;    // error! *cIter is const
+++cIter;
+
+
+// 让函数返回const可以减少使用者的错误
+class Rational { ... };
+const Rational operator*(const Rational& lhs, const Rational& rhs);
+if (a * b = c) ...    // oops, meant to do a comparison!
 ```
