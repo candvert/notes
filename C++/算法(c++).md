@@ -36,29 +36,23 @@
 	- [环形链表II](#环形链表II)
 	- [最大连续bit数](#最大连续bit数)
 
-## 命名空间
-```
-三种方法使用c++标准库中的标识符
-1. std::cout
-
-2. 使用using declaration：using std::cout;
-
-3. 使用using directive：using namespace std;
-```
 # 常用函数
 ```
 vector数组
 	push_back()，pop_back()
 	size()，empty()，clear()
 	begin()，end()，rbegin()，rend()
+	front()，back()
+	insert()，emplace()，erase()
 string字符串
 	getline(cin, s)
 	substr(start, length)，find(str)，replace(start, count, str)
 	replace(const_iterator first, const_iterator last, const basic_string& str)
 	stoi(str)，stol(str)，to_string(value)
-	push_back()，pop_back()
+	push_back()，pop_back()，append()，copy()
 	size()，empty()，clear()
 	begin()，end()，rbegin()，rend()
+	find()，compare()，contains()
 stack
 	push()，pop()，top()，empty()，size()
 queue
