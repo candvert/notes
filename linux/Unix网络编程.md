@@ -113,7 +113,7 @@ bind(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
 // domain表示协议族，常用值为AF_INET和AF_INET6，分别表示IPv4和IPv6
 // type表示套接字类型，常用值为SOCK_STREAM和SOCK_DGRAM，分别表示字节流和数据报，即TCP和UDP
 // 返回值叫做套接字描述符，因为和文件描述符类似，通常用sockfd表示
-// 一般来说protocol只有一个值与特定domain和type对应，这种情况置为0即可。日常使用该值置0即可
+// 一般来说protocol只有一个值与特定domain和type对应，这种情况置为0即可。平常使用该值置0即可
 int socket(int domain, int type, int protocol);
 
 // 成功返回0，出错返回-1
@@ -253,6 +253,7 @@ void exit(int status);
 信号处理函数和信号处置
 当前工作目录
 用户ID和组ID
+简短：全局变量、文件描述符、信号处理函数、当前工作目录
 
 不过每个线程有各自的：
 线程ID
@@ -261,6 +262,7 @@ void exit(int status);
 errno
 信号掩码
 优先级
+简短：线程ID、栈、error、信号掩码、优先级
 ```
 
 ```cpp

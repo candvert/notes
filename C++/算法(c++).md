@@ -35,6 +35,10 @@
 	- [找出字符串中第一个匹配项的下标（KMP算法）](#找出字符串中第一个匹配项的下标（KMP算法）)
 	- [环形链表II](#环形链表II)
 	- [最大连续bit数](#最大连续bit数)
+- [其他算法题](#其他算法题)
+	- [任务调度器](#任务调度器)
+	- [最短无序连续子数组](#最短无序连续子数组)
+	- [目标和](#目标和)
 
 # 常用函数
 ```
@@ -87,7 +91,10 @@ reverse(v.begin(), v.end())
 	binary_search(v.begin(), v.end(), x);
 最值和交换
 	max(a, b); min(a, b); swap(a, b); minmax(a, b);
-	auto max_val = *max_element(v.begin(), v.end());
+	int max_val = *max_element(v.begin(), v.end());
+	int min_val = *min_element(v.begin(), v.end());
+    int index = max_element(v.begin(), v.end()) - v.begin(); //返回第一个最大值的下标
+    int index = max_element(v.begin(), v.end(), greater<>()) - v.begin(); // 返回最后一个最大值的下标
 数组/容器操作
 	reverse(v.begin(), v.end()); // 反转
 	auto last = unique(v.begin(), v.end()); // 去重相邻重复
@@ -841,6 +848,7 @@ public:
 ## 三数之和
 ```cpp
 // leetcode 15
+// 思路：先将数组排序，然后固定第一个数（下标i），另外两个数使用双指针（下标i+1向右，下标n-1向左），这样便将O(n3)的时间复杂度降低为O(n2)
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
@@ -1084,4 +1092,79 @@ int main() {
     }
     return 0;
 }
+```
+## 其他算法题
+## 任务调度器
+```cpp
+// leetcode 621
+// 思路：https://leetcode.cn/problems/task-scheduler/solutions/196302/tong-zi-by-popopop
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        int len = tasks.size();
+        vector<int> vec(26);
+        for (const char c : tasks) ++vec[c - 'A'];
+        sort(vec.begin(), vec.end(), greater<>());
+        int cnt = 1;
+        while (cnt < vec.size() && vec[cnt] == vec[0]) ++cnt;
+        return max((vec[0] - 1) * (n + 1) + cnt, len);
+    }
+};
+```
+## 最短无序连续子数组
+```cpp
+// leetcode 581
+// 思路：https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/solutions/3061203/si-lu-xiang-xi-duo-tu-jie-shuang-zhi-zhe-6ld9
+class Solution {
+public:
+    int findUnsortedSubarray(vector<int>& nums) {
+        int n = nums.size();
+        int maxn = INT_MIN, right = -1;
+        int minn = INT_MAX, left = -1;
+        for (int i = 0; i < n; i++) {
+            if (maxn > nums[i]) {
+                right = i;
+            } else {
+                maxn = nums[i];
+            }
+            if (minn < nums[n - i - 1]) {
+                left = n - i - 1;
+            } else {
+                minn = nums[n - i - 1];
+            }
+        }
+        return right == -1 ? 0 : right - left + 1;
+    }
+};
+```
+## 目标和
+```cpp
+// leetcode 494
+// 标签：动态规划
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int sum = 0;
+        for (int& num : nums) {
+            sum += num;
+        }
+        int diff = sum - target;
+        if (diff < 0 || diff % 2 != 0) {
+            return 0;
+        }
+        int n = nums.size(), neg = diff / 2;
+        vector<vector<int>> dp(n + 1, vector<int>(neg + 1));
+        dp[0][0] = 1;
+        for (int i = 1; i <= n; i++) {
+            int num = nums[i - 1];
+            for (int j = 0; j <= neg; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (j >= num) {
+                    dp[i][j] += dp[i - 1][j - num];
+                }
+            }
+        }
+        return dp[n][neg];
+    }
+};
 ```
