@@ -35,6 +35,7 @@
 	- [找出字符串中第一个匹配项的下标（KMP算法）](#找出字符串中第一个匹配项的下标（KMP算法）)
 	- [环形链表II](#环形链表II)
 	- [最大连续bit数](#最大连续bit数)
+    - [分割等和子集](#分割等和子集)
 - [其他算法题](#其他算法题)
 	- [任务调度器](#任务调度器)
 	- [最短无序连续子数组](#最短无序连续子数组)
@@ -1092,6 +1093,36 @@ int main() {
     }
     return 0;
 }
+```
+## 分割等和子集
+```cpp
+// leetcode 142
+// 标签：动态规划
+// 思路：
+// 用二维布尔数组dp[n-1][sum]来表示当和为sum时值是不是为true，也就是和为sum-1，sum-2...时值是不是为true也计算了。也可优化为一维数组dp。对与dp的初始化，思路是当i=0时，能够使得和为sum的只有dp[0][nums[0]]。
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        int n = nums.size();
+        if (sum % 2 == 1)
+            return false;
+        sum /= 2;
+
+        vector<vector<bool>> dp(n, vector<bool>(sum + 1, false));
+        if (sum >= nums[0])
+            dp[0][nums[0]] = true;
+        for (int i = 1; i < n; ++i) {
+            for (int j = 1; j <= sum; ++j) {
+                if (nums[i] <= j)
+                    dp[i][j] = dp[i - 1][j] || dp[i - 1][j - nums[i]];
+                else
+                    dp[i][j] = dp[i - 1][j];
+            }
+        }
+        return dp[n - 1][sum];
+    }
+};
 ```
 ## 其他算法题
 ## 任务调度器
