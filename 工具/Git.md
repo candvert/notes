@@ -9,6 +9,7 @@
 ```
 git config --global user.name "candvert"
 git config --global user.email leiyue159@gmail.com
+git config --global --list
 
 ssh-keygen -t rsa -b 4096 -C "leiyue159@gmail.com"
 ```
