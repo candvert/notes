@@ -12,6 +12,10 @@ git config --global user.email leiyue159@gmail.com
 git config --global --list
 
 ssh-keygen -t rsa -b 4096 -C "leiyue159@gmail.com"
+
+vim .bashrc
+alias cda='cd /d/Document/markdown && ./git.sh'
+source .bashrc
 ```
 # 常用命令
 ```shell
