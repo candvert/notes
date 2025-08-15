@@ -55,6 +55,7 @@ Ctrl + J                         合并物体
 Ctrl + A                         应用
 Ctrl + P                         设置父级目标
 S + Z + 0                        缩放到Z轴0点
+Ctrl + 2                         添加表面细分修改器
 
 
 
@@ -82,6 +83,7 @@ P                                分离
 A                                全选
 Alt + C                          闭合曲线
 Alt + S                          缩放曲线宽度
+Ctrl + A                         改变蒙皮修改器中点的半径
 
 
 
@@ -89,4 +91,11 @@ Bool Tool插件
 选中两个物体
 Ctrl + 小键盘+                    合并物体
 Ctrl + 小键盘-                    去掉重合部分
+
+
+
+
+Node Wranger插件
+Ctrl + T
+Ctrl + X                          删除
 ```
