@@ -4,6 +4,7 @@
 - [网站链接](#网站链接)
 - [图片链接](#图片链接)
 - [视频链接](#视频链接)
+- [音频链接](#音频链接)
 - [代码块](#代码块)
 - [各种效果](#各种效果)
 - [分隔线](#分隔线)
@@ -35,18 +36,22 @@
 <https://www.baidu.com>
 ***
 ## 图片链接
+![[TheImage.png]]
 ![](TheImage.png)
 %%通过|400x400改变图片尺寸%%
 ![|400x400](TheImage.png)
 %%只指定|400则根据原始长宽比进行缩放%%
 ![|400](TheImage.png)
 ![](TheImage.gif)
-![image](https://img2.baidu.com/it/u=396436058,219850851&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1708880400&t=65ff3edcf468afcb21053913c33f6cd5)
+![image|200x200](https://img2.baidu.com/it/u=396436058,219850851&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1708880400&t=65ff3edcf468afcb21053913c33f6cd5)
 ***
 ## 视频链接
 ![[2-30fps.mp4]]
+## 音频链接
+![[song.mp3]]
 ## 代码块
 `#include <stdlib>`中的文本将被格式化为代码。
+
 ```cpp
 #include <iostream>
 ```
@@ -90,9 +95,20 @@ ___
 - [ ] to do
 ***
 ## 标注
-> [!how to play]
-the best way
+> [!note] 示例
+这是一个标注块。
+它支持 Markdown、内部链接 和 嵌入！
 
+> [!abstract]
+还有[!info]、[!todo]、[!tip]、[!success]、[!check]、[!done]、[!question]、[!help]、[!warning]、[!failure]、[!danger]、[!error]、[!bug]、[!example]、[!quote]等。
+
+%%在[!faq]后加-默认折叠，加+默认展开%%
+> [!faq]- 标注可以折叠吗？
+> 可以！在可折叠标注中，当标注收起时，内容会被隐藏。
+
+> [!question] 标注可以嵌套吗？
+> > [!todo] 可以。
+> > > [!example]  你甚至可以使用多层嵌套。
 ***
 ## 内部链接
 跳转到另一条笔记[[newnote]]
@@ -100,8 +116,10 @@ the best way
 ## 插入文件
 ![[json格式]]
 ***
+![[json格式#^示例]]
+***
 ## 嵌入网页
-<iframe src="https://bilibili.com"></iframe>
+<iframe src="https://bilibili.com" width="600" height="400"></iframe>
 
 
 ![](https://www.youtube.com/watch?v=NnTvZWp5Q7o)
