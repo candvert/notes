@@ -13,9 +13,21 @@ git config --global --list
 
 ssh-keygen -t rsa -b 4096 -C "leiyue159@gmail.com"
 
+cd
 vim .bashrc
 alias cda='cd /d/Document/markdown && ./git.sh'
 source .bashrc
+```
+## 将本地仓库和远程仓库关联起来
+```
+需要注意本地仓库必须至少commit一次才能关联
+git init
+git add .
+git commit -m "comment"
+
+git remote add origin git@github.com:candvert/Schedule.git
+git branch -M main
+git push -u origin main
 ```
 # 常用命令
 ```shell
