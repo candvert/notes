@@ -1,4 +1,5 @@
 - [初始配置](#初始配置)
+- [将本地仓库和远程仓库关联起来](#将本地仓库和远程仓库关联起来)
 - [常用指令](#常用指令)
 - [git remote](#git remote)
 - [git branch](#git branch)
@@ -9,14 +10,36 @@
 ```
 git config --global user.name "candvert"
 git config --global user.email leiyue159@gmail.com
+验证是否配置成功
 git config --global --list
+```
 
+下面是在windows上进行的配置
+```
+生成ssh密钥与github关联
 ssh-keygen -t rsa -b 4096 -C "leiyue159@gmail.com"
-
+生成的密钥位于C:\Users\leiyu\.ssh\id_rsa.pub
+```
+进入github的设置页
+![[git_01.png]]
+添加密钥
+![[git_02.png]]
+将之前生成的id_rsa.pub中的文本填入下图（Title可以随意取）
+![[git_03.png]]
+在git配置文件中添加一条命令别名
+```
 cd
 vim .bashrc
 alias cda='cd /d/Document/markdown && ./git.sh'
 source .bashrc
+
+
+git.sh文件的内容为：
+#!/bin/bash
+
+git add .
+git commit -m "a"
+git push
 ```
 ## 将本地仓库和远程仓库关联起来
 ```
