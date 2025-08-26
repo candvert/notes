@@ -10,6 +10,8 @@ nvim
 		core
 		   - options.lua
 		   - keymaps.lua
+		config
+			- lazy.lua
 		plugins
 			- plugins-setup.lua
 ```
@@ -108,4 +110,9 @@ init.lua
 require("plugins-setup.lua")
 require("core.options")
 require("core.keymaps")
+```
+## 常用命令
+```
+输出配置文件所在目录
+:echo stdpath('config')
 ```
