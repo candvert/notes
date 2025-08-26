@@ -116,3 +116,10 @@ require("core.keymaps")
 输出配置文件所在目录
 :echo stdpath('config')
 ```
+
+# Lazyvim
+```
+leaderkey为空格
+空格 + e                                打开文件树
+
+```
