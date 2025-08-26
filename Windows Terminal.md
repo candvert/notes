@@ -17,11 +17,21 @@
 
 
 
+设置专注模式快捷键（即隐藏标题栏）
+![[window_06.png]]
+![[window_07.png]]
+
+
+
+设置启动时窗口大小
+![[window_08.png]]
+
 
 ## 快捷键
 ```
 win + `                                            显示/隐藏Quark窗口
 ctrl + 滚轮                                         缩放字体
+F11                                                全屏
 ```
 ## oh-my-posh美化
 打开Windows Terminal后按win + x选择“终端管理员”。输入下列命令。
