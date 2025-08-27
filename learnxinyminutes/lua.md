@@ -31,7 +31,7 @@ end
 if num > 40 then
   print('over 40')
 elseif s ~= 'walternate' then  -- ~= 表示不等于。
-  -- 像Python一样，用 == 检查是否相等 ；字符串同样适用。
+  -- 像Python一样，用 == 检查是否相等；字符串同样适用。
   io.write('not over 40\n')  -- 默认标准输出。
 else
   -- 默认全局变量。
