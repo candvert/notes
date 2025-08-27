@@ -60,6 +60,24 @@ yw 复制单个单词
 :set hls 设置搜索高亮
 :set nohlsearch 取消搜索高亮
 
+:help 帮助页面
+:help set 显示set命令的说明
+Ctrl + w两次 跳转窗口
+
+
+Tab 补全命令
+Ctrl + d 补全命令
+Ctrl + n 下一个命令
+Ctrl + p 上一个命令
+
+"ayiw 将光标所在单词复制到寄存器a
+"bdiw 将光标所在单词删除，并复制到寄存器b
+<Ctrl-r>a<ESC> 进入编辑模式后，将寄存器a的内容复制到光标所在位置
+:reg 查看寄存器
+
+<Ctrl-r>=60*60*24 <ENTER> 进入编辑模式后，将60*60*24的结果填到光标所在位置
+<Ctrl-r>=system('ls -l')
+
 
 
 
