@@ -1,6 +1,6 @@
 ```
 不支持类
-只有nil和false代表假，即使数字0也为真
+只有nil和false代表假，即使数字0和''也为真
 不支持n--和n-=1
 ```
 ## 注释
@@ -90,8 +90,9 @@ print(a and b)
 print(a or b)
 print(not b)
 
+
 b = 0
-print(b > 10 and 'yes' or 'no') --输出no
+print(b > 10 and 'yes' or 'no') --输出no，相当于三目运算符
 
 
 if 1>10 then
@@ -104,6 +105,7 @@ end
 
 -- 第三个数为步长，即2为步长
 -- 无法在循环体中修改i的值
+-- 范围包含两端，即包括1和10
 for i=1,10,2 do
 	print(i)
 end
@@ -118,6 +120,10 @@ while n>1 do
 	print(n)
 	n = n - 1
 end
+
+repeat
+  print('ok')
+until num == 0
 ```
 ## 函数
 ```lua
