@@ -26,6 +26,29 @@ Ctrl + G 显示文件status
 G 移动到文件末尾
 gg 移动到文件开头
 
+/ok 搜索ok
+?ok 反向搜索ok
+n 下一个
+N 上一个
+Ctrl + o 返回原来的位置
+Ctrl + i 和Ctrl + o相反
+
+% 移动光标到匹配的(), {}, []
+:s/old/new 将第一个匹配的old替换为new
+:s/old/new/g 将该行匹配的old替换为new
+:5,8s/old/new/g 将第5行（含）到第8行（含）匹配的old替换为new
+:%s/old/new/g 将文件中所有old替换为new
+:%s/old/new/gc 找到所有匹配的old，并挨个询问是否替换为new
+:!ls 执行shell命令ls
+:w ok 将文件内容保存到文件ok
+
+v 进入Visual selection，可以移动光标选择文本
+d 删除选中的文本
+:w ok 将选中的文本保存到文件ok
+
+:r ok 将文件ok中的内容复制到光标的下一行
+:r !ls 将ls命令的输出复制到光标的下一行
+
 
 
 CTRL-] jump to a tag under the cursor
