@@ -109,6 +109,7 @@ require("lazy").setup({
   },
 })
 ```
+对于Windows系统，mason.nvm要求必须有powershell、git、GNU tar、[7zip](https://www.7-zip.org/)
 现在打开 nvim 后就可以通过 :Mason 命令进行 LSP 服务器的安装了
 ![[neovim_01.png]]
 在光标所在行按 i 进行 LSP 服务器的安装
@@ -200,6 +201,7 @@ require("options")
 require("keymaps")
 require("plugins")
 ```
+到目前为止，便完成了基础的配置。之后可以按自己的喜好添加插件
 ## 常用命令
 ```
 输出配置文件所在目录
