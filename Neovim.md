@@ -73,6 +73,7 @@ require("lazy").setup({
 ```lua
 require("plugins")
 ```
+现在打开 nvim 后就可以通过 :Lazy home 命令进入插件管理页面了
 ## 自动补全插件
 使用的是[blink.cmp](https://github.com/saghen/blink.cmp)
 在plugins.lua里新增这个插件
@@ -248,6 +249,42 @@ vim.cmd[[colorscheme catppuccin-latte]]
 -- 暗色主题
 -- vim.cmd[[colorscheme catppuccin]]
 ```
+## 查找文件
+使用的是[telescope](https://github.com/nvim-telescope/telescope.nvim)
+```lua
+require("lazy").setup({
+  spec = {
+	{
+		'nvim-telescope/telescope.nvim',
+		dependencies = { 
+			'nvim-lua/plenary.nvim',
+			'nvim-treesitter/nvim-treesitter'
+		}
+    },
+  },
+})
+```
+可以使用 :checkhealth telescope 命令查看安装情况
+## 文件explorer
+使用的是[nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)
+```lua
+require("lazy").setup({
+  spec = {
+	{
+		"nvim-tree/nvim-tree.lua",
+		version = "*",
+		lazy = false,
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+		},
+		config = function()
+			require("nvim-tree").setup {}
+		end,
+	}
+  },
+})
+```
+可以使用 :NvimTreeOpen 命令打开文件explorer
 ## 常用命令
 ```
 输出配置文件所在目录
