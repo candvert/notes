@@ -205,6 +205,16 @@ require("keymaps")
 require("plugins")
 ```
 到目前为止，便完成了基础的配置。之后可以按自己的喜好添加插件
+## 安装NerdFont字体
+在[自动补全插件](#自动补全插件)部分安装的 blink.cmp 插件在进行补全提示时，图标不能正常显示。要使其正常显示，需要安装[Nerd Font](https://www.nerdfonts.com/font-downloads)字体
+我安装的是JetBrainsMono Nerd Font，具体安装的是其中的JetBrainsMonoNerdFontMono-Light.ttf
+JetBrainsMonoNerdFontMono-LightItalic.ttf
+JetBrainsMonoNerdFontMono-Regular.ttf
+JetBrainsMonoNerdFontMono-Italic.ttf
+JetBrainsMonoNerdFontMono-Medium.ttf
+JetBrainsMonoNerdFontMono-MediumItalic.ttf
+JetBrainsMonoNerdFontMono-Bold.ttf
+JetBrainsMonoNerdFontMono-BoldItalic.ttf
 ## 语法高亮
 首先需要安装[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)，主要功能是进行语法分析，生成语法树。之后便可以通过其他插件进行语法高亮。
 修改 plugins.lua 文件，增加该插件
@@ -259,7 +269,15 @@ require("lazy").setup({
 		dependencies = { 
 			'nvim-lua/plenary.nvim',
 			'nvim-treesitter/nvim-treesitter'
-		}
+		},
+		-- 设置按键映射，<leader>一般为空格，即查找文件快捷键为 ff
+		config = function()
+			local builtin = require('telescope.builtin')
+			vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+			vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+			vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+			vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+		end,
     },
   },
 })
@@ -289,4 +307,30 @@ require("lazy").setup({
 ```
 输出配置文件所在目录
 :echo stdpath('config')
+
+:h vim.keymap.set 按键映射帮助
+
+```
+
+```lua
+-- 按键映射函数
+
+-- mode参数为哪种模式，n为普通模式，i为插入模式，v为视图模式，c为命令行模式
+-- lhs为要更改的按键
+-- rhs为更改后的按键
+-- opts为一些选项
+vim.keymap.set({mode}, {lhs}, {rhs}, {opts})
+
+-- 下面是将光标移到下一行的按键j和搜索下一个的按键n互换的代码
+local opts = { noremap = true, silent = true }
+vim.keymap.set('n', 'j', 'n', opts)
+vim.keymap.set("n", "n", "j", opts)
+```
+## Leader键
+```
+Leader键是一个核心的自定义快捷键前缀
+Leader 键本身不执行操作，而是作为后续按键组合的前缀（例如 <leader>ff）。它允许用户创建大量不与默认快捷键冲突的自定义命令
+
+设置代码，一般设置为空格
+vim.g.mapleader = " "
 ```
