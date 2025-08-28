@@ -125,6 +125,8 @@ require("lazy").setup({
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
+			-- 通过lspconfig.<server_name>.setup()配置特定服务器
+			--（如 lspconfig.tsserver.setup()配置 TypeScript 服务器）
 			local lspconfig = require("lspconfig")
 			lspconfig.pylsp.setup({})
 		end,
@@ -202,6 +204,50 @@ require("keymaps")
 require("plugins")
 ```
 到目前为止，便完成了基础的配置。之后可以按自己的喜好添加插件
+## 语法高亮
+首先需要安装[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)，主要功能是进行语法分析，生成语法树。之后便可以通过其他插件进行语法高亮。
+修改 plugins.lua 文件，增加该插件
+```lua
+-- ...
+-- 省略其他行
+require("lazy").setup({
+  spec = {
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		config = function () 
+		  local configs = require("nvim-treesitter.configs")
+
+		  configs.setup({
+			  ensure_installed = { "python" }, -- 在这里添加使用的语言
+			  sync_install = false,
+			  highlight = { enable = true },
+			  indent = { enable = true },  
+			})
+		end
+	}
+  },
+})
+```
+安装[nvim](https://github.com/catppuccin/nvim)颜色主题
+修改 plugins.lua 文件，增加该插件
+```lua
+require("lazy").setup({
+  spec = {
+	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  },
+})
+```
+在 init.lua 文件里面设置一下
+```lua
+-- ...
+-- 省略其他行
+
+-- 白日主题
+vim.cmd[[colorscheme catppuccin-latte]]
+-- 暗色主题
+-- vim.cmd[[colorscheme catppuccin]]
+```
 ## 常用命令
 ```
 输出配置文件所在目录

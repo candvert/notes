@@ -1,0 +1,1 @@
+对于终端，仅需安装 Regular+ Bold+ Italic+ Bold Italic的 ​​Mono 版本

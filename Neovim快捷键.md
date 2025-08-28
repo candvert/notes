@@ -21,6 +21,8 @@ IDE的功能由LSP提供
 :lua= 和:lua vim.print(...)相同
 :source ~/myluafile.lua
 
+Ctrl + w再o  全屏一个窗格
+
 
 vim.g:   global variables (g:)
 vim.b:   variables for the current buffer (b:)
@@ -61,4 +63,9 @@ Examples:
 
 vim.keymap.del('n', '<Leader>ex1')
 vim.keymap.del({'n', 'c'}, '<Leader>ex2', {buffer = true})
+```
+## vim.lsp.config
+```
+更新一个lsp客户端的配置
+
 ```
