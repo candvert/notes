@@ -1,22 +1,136 @@
 ## 配置文件
 Linux上Neovim会默认读取~/.config/nvim/init.lua文件
-Windows上所在目录为C:\Users\leiyu\AppData\Local\nvim\init.lua
-## 配置文件目录
-目录结构
+Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
+
+理论上所有配置都可以放入init.lua中，但这样不是一个好的做法，因此我划分不同的文件和目录来分管不同的配置
+首先看下按照本篇教程配置Nvim之后，目录结构看起来会是怎么样：
 ```
 nvim
 	- init.lua
 	lua
-		colorscheme.lua
 		keymaps.lua
 		options.lua
 		plugins.lua
 ```
-colorscheme.lua配置主题
+lua目录。当我们在Lua里面调用require加载模块（文件）的时候，它会自动在lua文件夹里面进行搜索
 keymaps.lua配置按键映射
-lsp.lua配置LSP
 options.lua配置选项
 plugins.lua配置插件
+## 安装Neovim
+```
+Window上：
+winget install Neovim.Neovim
+```
+在安装完成之后，可以在终端使用nvim命令进入nvim后输入下面命令创建init.lua
+```
+:exe 'edit' stdpath('config') .. '/init.lua'
+```
+可以通过如下命令查看配置文件所在目录
+```
+:echo stdpath('config') 输出配置文件所在目录
+```
+## 安装插件管理器
+使用的是最流行的[lazy.nvim](https://lazy.folke.io/installation)
+新建plugins.lua文件并填入如下内容
+```lua
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- Make sure to setup `mapleader` and `maplocalleader` before
+-- loading lazy.nvim so that mappings are correct.
+-- This is also a good place to setup other settings (vim.opt)
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+-- Setup lazy.nvim
+require("lazy").setup({
+  spec = {
+    -- add your plugins here
+  },
+  -- Configure any other settings here. See the documentation for more details.
+  -- colorscheme that will be used when installing plugins.
+  install = { colorscheme = { "habamax" } },
+  -- automatically check for plugin updates
+  -- checker = { enabled = true },
+})
+```
+在 lazy.nvim 中指定第三方插件很简单，只需要在 require("lazy").setup({ ... }) 里面声明插件
+在 init.lua 文件里面导入
+```lua
+require("plugins")
+```
+## 自动补全插件
+使用的是[blink.cmp](https://github.com/saghen/blink.cmp)
+在plugins.lua里新增这个插件
+```lua
+-- ...
+-- 省略其他行
+require("lazy").setup({
+  spec = {
+    -- add your plugins here
+	-- 只用给出github作者和仓库名，lazy.nvim会自动补全github地址并下载安装
+    { "saghen/blink.cmp", opts = {} },
+  },
+})
+```
+## LSP配置
+配置完blink.cmp之后，已经有基本的自动补全功能，但和 IDE 相比，我们还需要定义跳转、代码补全等功能，因此需要配置 LSP，使用的工具是 [mason.nvim](https://github.com/mason-org/mason.nvim?tab=readme-ov-file#recommended-setup-for-lazynvim) 和 [mason-lspconfig.nvim](https://github.com/mason-org/mason.nvim?tab=readme-ov-file#recommended-setup-for-lazynvim)，他们的功能分别是
+- mason.nvim: LSP 管理器，可以实现 LSP 的下载、更新等，管理起来比较方便
+- mason-lspconfig.nvim: 主要功能是处理 mason.nvim 和 nvim-lspconfig 之间名字不一致的问题。比如，mason.nvim 里面管 Lua 语言的 LSP 叫做 lua-language-server，但是 nvim-lspconfig 叫做 lua_ls。另外，mason-lspconfig.nvim 还会自动调用 vim.lsp.enable 启动安装好的 LSP服务器
+修改 plugins.lua 文件，增加这两个插件
+```lua
+-- ...
+-- 省略其他行
+require("lazy").setup({
+  spec = {
+	{ "mason-org/mason.nvim", opts = {} },
+    {
+        "mason-org/mason-lspconfig.nvim",
+		opts = {},
+        dependencies = {
+            { "mason-org/mason.nvim", opts = {} },
+            "neovim/nvim-lspconfig",
+        },
+    },
+  },
+})
+```
+现在打开 nvim 后就可以通过 :Mason 命令进行 LSP 服务器的安装了
+![[neovim_01.png]]
+在光标所在行按 i 进行 LSP 服务器的安装
+需要注意安装 LSP 服务器前需要相关语言的编译器能在path中找到，比如在安装 python 的 LSP 服务器前需要将 python.exe 放入 path 中
+## LSP客户端配置
+使用的工具是 [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)
+修改 plugins.lua 文件，增加该插件
+```lua
+-- ...
+-- 省略其他行
+require("lazy").setup({
+  spec = {
+	{
+		"neovim/nvim-lspconfig",
+		config = function()
+			local lspconfig = require("lspconfig")
+			lspconfig.pylsp.setup({})
+		end,
+	},
+  },
+})
+```
 ## 配置文件的选项
 options.lua
 ```lua
@@ -80,52 +194,14 @@ vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', opts)
 vim.keymap.set('v', '<', '<gv', opts)
 vim.keymap.set('v', '>', '>gv', opts)
 ```
-plugins.lua
-```lua
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
-end
-vim.opt.rtp:prepend(lazypath)
-
-require("lazy").setup({})
-```
-在lazy.nvim指定第三方插件很简单，只需要在require("lazy").setup({ ... })的...里面声明插件
-colorscheme.lua
-```lua
--- define your colorscheme here
-local colorscheme = 'monokai_pro'
-
-local is_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
-if not is_ok then
-    vim.notify('colorscheme ' .. colorscheme .. ' not found!')
-    return
-end
-```
 init.lua
 ```lua
 require("options")
 require("keymaps")
 require("plugins")
-require('colorscheme')
 ```
-
-
 ## 常用命令
 ```
 输出配置文件所在目录
 :echo stdpath('config')
-```
-
-# Lazyvim
-```
-leaderkey为空格
-空格 + e                                打开文件树
 ```
