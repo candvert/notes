@@ -86,7 +86,7 @@ require("lazy").setup({
 ```lua
 require("plugins")
 ```
-现在打开 nvim 后就可以通过 :Lazy home 命令进入插件管理页面了
+现在打开 nvim 后就可以通过 :Lazy 命令进入插件管理页面了
 ## 自动补全插件
 使用的是[blink.cmp](https://github.com/saghen/blink.cmp)
 在plugins.lua里新增这个插件
@@ -272,74 +272,7 @@ vim.cmd[[colorscheme catppuccin-latte]]
 -- 暗色主题
 -- vim.cmd[[colorscheme catppuccin]]
 ```
-## 查找文件
-使用的是[telescope](https://github.com/nvim-telescope/telescope.nvim)
-```lua
-require("lazy").setup({
-  spec = {
-	{
-		'nvim-telescope/telescope.nvim',
-		dependencies = { 
-			'nvim-lua/plenary.nvim',
-			'nvim-treesitter/nvim-treesitter'
-		},
-		-- 设置按键映射，<leader>一般为空格，即查找文件快捷键为 ff
-		config = function()
-			local builtin = require('telescope.builtin')
-			vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
-			-- 进行正则匹配，匹配当前目录下所有文件的所有行
-			vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
-			-- 在缓冲区的文件列表中进行搜索
-			vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
-			-- 在telescope的帮助手册中进行搜索
-			vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
-		end,
-    },
-  },
-})
-```
-可以使用 :checkhealth telescope 命令查看安装情况
-
-快捷键：
-```
-使用:Telescope find_files或快捷键 ff打开搜索界面
-下面都是打开搜索界面之后使用的快捷键
-
-Ctrl + n 上一个
-Ctrl + p   下一个
-j/k          下一个/上一个（普通模式）
-H/M/L        选择第一个/中间/最后一个（普通模式）
-gg/G         选择第一个/最后一个（普通模式）
-<CR>         即Enter键，确认选择
-<C-x>        在下方窗口打开文件
-<C-t>        在新的窗口打开文件
-<C-d>        在文件预览窗口向下滚动
-<C-u>        在文件预览窗口向上滚动
-<C-/>        显示快捷键及功能（插入模式）
-<C-c>        关闭搜索界面（搜索模式）
-<Esc>        关闭搜索界面（普通模式）
-
-defaults = {
-	dynamic_preview_title = true,
-	path_display = { "shorten" },
-	layout_strategy = "vertical",
-	layout_config = {
-		horizontal = {
-			preview_width = 0.5,
-			-- result_width = 0.5,
-			preview_cutoff = 30,
-		},
-		vertical = {
-			preview_height = 0.5,
-			preview_cutoff = 20,
-			mirror = true,
-			prompt_position = "bottom",
-		},
-		width = { padding = 0 },
-		height = { padding = 0 },
-	}
-}
-```
+## [[查找文件]]
 ## 文件explorer
 使用的是[nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)
 ```lua
