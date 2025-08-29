@@ -23,6 +23,9 @@ IDE的功能由LSP提供
 
 Ctrl + w再o  全屏一个窗格
 
+缓冲区是文件被加载到内存中的副本。当你用 :e filename 或启动时指定文件打开文件时，Vim 会创建一个缓冲区存储文件内容，后续编辑操作都在该缓冲区中进行，直到显式保存（:w）才会写入磁盘
+一个缓冲区可被多个窗口同时显示（例如通过 :split 分割窗口），关闭窗口不会删除缓冲区，只是不再显示其内容
+
 
 vim.g:   global variables (g:)
 vim.b:   variables for the current buffer (b:)

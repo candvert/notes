@@ -287,8 +287,11 @@ require("lazy").setup({
 		config = function()
 			local builtin = require('telescope.builtin')
 			vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+			-- 进行正则匹配，匹配当前目录下所有文件的所有行
 			vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+			-- 在缓冲区的文件列表中进行搜索
 			vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+			-- 在telescope的帮助手册中进行搜索
 			vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
 		end,
     },
@@ -299,33 +302,43 @@ require("lazy").setup({
 
 快捷键：
 ```
-<C-n>/<Down> | Next item
-<C-p>/<Up>   | Previous item
-j/k          | Next/previous (in normal mode)
-H/M/L        | Select High/Middle/Low (in normal mode)
-gg/G         | Select the first/last item (in normal mode)
-<CR>         | Confirm selection
-<C-x>        | Go to file selection as a split
-<C-v>        | Go to file selection as a vsplit
-<C-t>        | Go to a file in a new tab
-<C-u>        | Scroll up in preview window
-<C-d>        | Scroll down in preview window
-<C-f>        | Scroll left in preview window
-<C-k>        | Scroll right in preview window
-<M-f>        | Scroll left in results window
-<M-k>        | Scroll right in results window
-<C-/>        | Show mappings for picker actions (insert mode)
-?            | Show mappings for picker actions (normal mode)
-<C-c>        | Close telescope (insert mode)
-<Esc>        | Close telescope (in normal mode)
-<Tab>        | Toggle selection and move to next selection
-<S-Tab>      | Toggle selection and move to prev selection
-<C-q>        | Send all items not filtered to quickfixlist (qflist)
-<M-q>        | Send all selected items to qflist
-<C-r><C-w>   | Insert cword in original window into prompt (insert mode)
-<C-r><C-a>   | Insert cWORD in original window into prompt (insert mode)
-<C-r><C-f>   | Insert cfile in original window into prompt (insert mode)
-<C-r><C-l>   | Insert cline in original window into prompt (insert mode)
+使用:Telescope find_files或快捷键 ff打开搜索界面
+下面都是打开搜索界面之后使用的快捷键
+
+Ctrl + n 上一个
+Ctrl + p   下一个
+j/k          下一个/上一个（普通模式）
+H/M/L        选择第一个/中间/最后一个（普通模式）
+gg/G         选择第一个/最后一个（普通模式）
+<CR>         即Enter键，确认选择
+<C-x>        在下方窗口打开文件
+<C-t>        在新的窗口打开文件
+<C-d>        在文件预览窗口向下滚动
+<C-u>        在文件预览窗口向上滚动
+<C-/>        显示快捷键及功能（插入模式）
+<C-c>        关闭搜索界面（搜索模式）
+<Esc>        关闭搜索界面（普通模式）
+
+defaults = {
+	dynamic_preview_title = true,
+	path_display = { "shorten" },
+	layout_strategy = "vertical",
+	layout_config = {
+		horizontal = {
+			preview_width = 0.5,
+			-- result_width = 0.5,
+			preview_cutoff = 30,
+		},
+		vertical = {
+			preview_height = 0.5,
+			preview_cutoff = 20,
+			mirror = true,
+			prompt_position = "bottom",
+		},
+		width = { padding = 0 },
+		height = { padding = 0 },
+	}
+}
 ```
 ## 文件explorer
 使用的是[nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)
@@ -352,7 +365,7 @@ require("lazy").setup({
 
 快捷键：
 ```
-:NvimTreeOpen    打开文件树
+使用:NvimTreeOpen或快捷键 e打开文件树
 下面都是打开文件树之后使用的快捷键
 g?                                   显示所有快捷键
 
