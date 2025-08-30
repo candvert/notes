@@ -60,4 +60,60 @@ filetype插件，只对特定类型文件生效
 :options   列出选项和one-line解释
 :set option& 将选项还原为默认值
 whichwrap选项 可以设置在到达文件尾或文件头时仍可以继续移动
+
+:split 分隔窗口，新窗格文件为当前文件，光标留在上面的窗格
+:split two.c 分隔窗口，新窗格文件为two.c
+:new 分隔窗口，新窗格文件为空
+:close 关闭一个窗格（:q和ZZ也可以，但是:close可以防止你在只有一个窗格的情况下退出vim）
+:only 关闭所有其他窗格
+:3split two.c 新窗格的高度为3行
+Ctrl + w后+     窗格高度增加一行
+Ctrl + w后-     窗格高度减少一行
+4Ctrl + w后+     窗格高度增加4行
+24Ctrl + w后_     设置窗格高度为24行
+
+:vsplit 竖向分隔窗口
+:vnew 分隔窗口，新窗格文件为空
+
+winminheight选项 设置窗格最小高度
+winminwidth选项 设置窗格最小宽度
+
+在窗格间移动
+CTRL-W h        move to the window on the left
+CTRL-W j        move to the window below
+CTRL-W k        move to the window above
+CTRL-W l        move to the window on the right
+
+CTRL-W t        move to the TOP window
+CTRL-W b        move to the BOTTOM window
+
+移动窗格
+CTRL-W K        move window to the top
+CTRL-W H        move window to the far left
+CTRL-W J        move window to the bottom
+CTRL-W L        move window to the far right
+
+:qall 关闭所有窗格
+:wall
+:wqall
+:qall!
+
+
+vim -o one.txt two.txt three.txt 打开三个窗格
+vim -O one.txt two.txt three.txt 打开三个窗格，纵向分隔
+
+在shell中使用vimdiff查看两个文件的不同之处：
+vimdiff a.txt b.txt
+]c 跳转下一个不同之处
+[c 跳转上一个不同之处
+4]c
+:diffupdate
+dp 光标要位于源文件窗格，撤销更改
+do 撤销更改
+splitright选项
+
+:tabedit two.c 新建一个窗口
+gt 跳转窗口
+:tab help gt 在新窗口打开帮助文档，:tab可以放在任何打开窗口的命令前
+:tabonly 关闭所有其他窗口
 ```
