@@ -5,7 +5,12 @@ a 附加
 A 在行尾附加
 x 删除单个字符
 d$ 删除光标到行尾的内容
-w move the cursor forward a word
+w 移动到下一个单词或标点符号
+Shift + w 移动到下一个单词，忽略标点符号
+b 移动到上一个单词或标点符号
+Shift + b 移动到上一个单词，忽略标点符号
+CTRL-F 向下滚动屏幕
+CTRL-B 向上滚动屏幕
 e move to the end of a end
 0 移动到行首
 $ 移动到行尾
@@ -53,6 +58,7 @@ d 删除选中的文本
 R 进入替换模式，输入的字符替换原有字符
 y 复制文本
 yw 复制单个单词
+yy 复制一行
 
 :set ic 设置忽略大小写
 :set noic 取消忽略大小写
@@ -86,15 +92,18 @@ CTRL-O jump back
 x 删除单个字符
 diw 删除单个单词
 daw 删除单词及周围的空格
-dw 删除光标位置到下一个单词首字母前的内容
+dw 删除光标位置（包含）到下一个单词首字母前的内容
+d0 删除光标位置（不包含）到行首的内容
+d^ 删除光标位置（包含）到该行首个非空白字符间的内容
+dG 删除该行（包含）到文件末尾的所有内容
+d20G 删除该行（包含）到第20行（包含）的所有内容
 db 删除光标之前的所有字符直到当前单词的开头
 d$ 删除光标到行尾的内容
 dd 删除一行
-J 将两行合并，即删除两行间的回车符
-u 撤销
-CTRL-R redo
-o open a line below the cursor and enter insert mode
-O open a line above the cursor and enter insert mode
+J 将两行合并，即删除两行间所有空白字符并保留一个空格
+o 在光标的下面新增一行并进入插入模式
+O 在光标的上面新增一行并进入插入模式
+fa 跳转到该行的下一个字符a所在位置
 ZZ writes file and exits
 w move the cursor forward a word
 b move to the start of the previous word
@@ -108,10 +117,6 @@ Fx search backward
 % move to the matching parenthesis
 CTRL-U scroll up half a screen of text
 CTRL-D scroll down half a screen of text
-CTRL-E scoll down a line
-CTRL-Y scoll up a line
-CTRL-F scroll down a whole screen
-CTRL-B scroll up a whole screen
 zz put the cursor line at the middle
 zt put the cursor line at the top
 zb put the cursor line at the bottom
