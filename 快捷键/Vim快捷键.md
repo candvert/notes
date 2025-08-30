@@ -85,6 +85,13 @@ Ctrl + p 上一个命令
 <Ctrl-r>=system('ls -l')
 
 
+vim a.txt b.txt 打开两个文件
+:n 切换到下一个文件
+:N 切换到上一个文件
+:buffers 显示打开的文件
+:buffer 2 切换到buffers中的序号为2的文件
+:e c.txt 打开c.txt文件，其他文件仍在buffers中
+
 
 
 CTRL-] jump to a tag under the cursor
@@ -104,7 +111,7 @@ J 将两行合并，即删除两行间所有空白字符并保留一个空格
 o 在光标的下面新增一行并进入插入模式
 O 在光标的上面新增一行并进入插入模式
 fa 跳转到该行的下一个字符a所在位置
-ZZ writes file and exits
+ZZ 保存文件并退出
 w move the cursor forward a word
 b move to the start of the previous word
 e move to the end of a end
