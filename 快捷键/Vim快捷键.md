@@ -94,8 +94,8 @@ vim a.txt b.txt 打开两个文件
 
 
 
-CTRL-] jump to a tag under the cursor
-CTRL-O jump back
+CTRL-] 链接跳转
+CTRL-O 跳转回来
 x 删除单个字符
 diw 删除单个单词
 daw 删除单词及周围的空格
