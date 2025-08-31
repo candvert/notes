@@ -11,6 +11,10 @@
 - [文件explorer](#文件explorer)
 - [常用命令](#常用命令)
 - [Leader键](#Leader键)
+- [使用vimscript](#使用vimscript)
+
+- [插件](#插件)
+	- [vim-airline](vim-airline)
 ## 配置文件
 Linux上Neovim会默认读取~/.config/nvim/init.lua文件
 Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
@@ -394,4 +398,15 @@ Leader 键本身不执行操作，而是作为后续按键组合的前缀（例�
 
 设置的代码，一般设置为空格
 vim.g.mapleader = " "
+```
+## 使用vimscript
+```lua
+-- vim.cmd可以执行任何vim命令
+vim.cmd('set number')
+
+-- 通过 vim.fn 可以调用 Vim 函数，返回值会自动转换为 Lua 的数据类型。
+local current_line = vim.fn.getline('.')
+
+-- vim.call，这与 vim.fn 类似，是调用函数的另一种方式
+local result = vim.call('my#vimscript#function')
 ```
