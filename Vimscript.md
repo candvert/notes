@@ -1,4 +1,15 @@
 ```
+全部由字母、数字、下划线组成的一串字符为一个word
+全部由字母、数字、下划线以外的非空字符组成的一串字符也为一个word
+./,;:为一个word
+var.name为3个word
+一串中文字符为一个word
+word的跳转的快捷键为w/e/b
+
+一串字符串为一个WORD
+WORD的跳转的快捷键为W/E/B
+
+buffer就是加载到内存中的文件的意思
 
 :set conceallevel=0 显示链接标志
 :hi link HelpBar Normal 链接

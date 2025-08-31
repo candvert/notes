@@ -347,14 +347,12 @@ s                                    运行脚本文件，或用外部编辑器�
 
 -- mode参数为哪种模式，n为普通模式，i为插入模式，v为视图模式，c为命令行模式
 -- lhs为要更改的按键
--- rhs为更改后的按键
+-- rhs为更改后的按键或者一个lua函数
 -- opts为一些选项
 vim.keymap.set({mode}, {lhs}, {rhs}, {opts})
 
--- 下面是将光标移到下一行的按键j和搜索下一个的按键n互换的代码
-local opts = { noremap = true, silent = true }
-vim.keymap.set('n', 'j', 'n', opts)
-vim.keymap.set("n", "n", "j", opts)
+-- 
+vim.keymap.set({ "n", "i" }, "<C-a>b", "<Cmd>lua print('hello world')<CR>", { silent = true })
 
 -- 将:help命令设置为快捷键good
 vim.keymap.set('n', 'good', ':help<CR>')
