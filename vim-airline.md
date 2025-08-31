@@ -17,6 +17,8 @@ return { "vim-airline/vim-airline",
 		-- 是否显示左边的"tab"和右边的"tab"数量
 		vim.g['airline#extensions#tabline#show_tab_type'] = 0
 		vim.g['airline#extensions#tabline#show_tab_count'] = 0
+		-- 标签栏左侧不同tab的分隔符号
+		vim.g['airline#extensions#tabline#left_alt_sep'] = ''
 
 		-- 设置各个section的显示内容
 		vim.g['airline_section_c'] = vim.fn['airline#section#create']({'readonly'})
@@ -28,8 +30,8 @@ return { "vim-airline/vim-airline",
 		-- 是否显示字符计数
 		vim.g['airline#extensions#wordcount#enabled'] = 0
 
-		--是否显示git分支
-		vim.g['airline#extensions#branch#enabled'] = 1
+		-- 是否显示git分支，需要tpope/vim-fugitive插件，在dependencies中添加
+		-- vim.g['airline#extensions#branch#enabled'] = 1
 
 		-- 设置不同模式（如NORMAL，INSERT）显示的文本，即section_a显示的内容：
 		vim.g['airline_mode_map'] = {
@@ -53,9 +55,11 @@ return { "vim-airline/vim-airline",
 			['\22'] = 'V',
 		}
 	end,
+--[[
 	dependencies = {
 		-- 要显示git分支需要该插件
 		'tpope/vim-fugitive',
 	},
+--]]
 }
 ```
