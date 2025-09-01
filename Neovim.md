@@ -231,7 +231,8 @@ return {
 	  local configs = require("nvim-treesitter.configs")
 
 	  configs.setup({
-		  ensure_installed = { "python" },
+		  -- 在这里添加要语法高亮的编程语言
+		  ensure_installed = { "python", "lua" },
 		  sync_install = false,
 		  highlight = { enable = true },
 		  indent = { enable = true },  
@@ -239,20 +240,26 @@ return {
 	end
 }
 ```
-安装[catppuccin](https://github.com/catppuccin/nvim)颜色主题
-新增plugins/catppuccin.lua文件
+安装[tokyonight](https://github.com/folke/tokyonight.nvim)颜色主题
+新增plugins/tokyonight.lua文件
 ```lua
-return { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
+return {
+	"folke/tokyonight.nvim",
+	lazy = false,
+	priority = 1000,
+	opts = {},
+}
 ```
 在 init.lua 文件里面设置一下
 ```lua
 -- ...
 -- 省略其他行
 
--- 白日主题
-vim.cmd[[colorscheme catppuccin-latte]]
--- 暗色主题
--- vim.cmd[[colorscheme catppuccin]]
+vim.cmd[[colorscheme tokyonight]]
+--vim.cmd[[colorscheme tokyonight-night]]
+--vim.cmd[[colorscheme tokyonight-storm]]
+--vim.cmd[[colorscheme tokyonight-day]]
+--vim.cmd[[colorscheme tokyonight-moon]]
 ```
 ## [[查找文件]]
 ## 文件explorer
