@@ -13,10 +13,11 @@
 - [Leader键](#Leader键)
 - [使用vimscript](#使用vimscript)
 
+
+- [LSP](#LSP)
 - [插件](#插件)
 	- [lazy.nvim](#lazy.nvim)
 	- [vim-airline](vim-airline)
-	- [Mason](#Mason)
 ## 配置文件
 Linux上Neovim会默认读取~/.config/nvim/init.lua文件
 Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
@@ -94,17 +95,19 @@ require("lazy").setup({
 现在打开 nvim 后就可以通过 :Lazy 命令进入插件管理页面了
 ## 自动补全插件
 使用的是[blink.cmp](https://github.com/saghen/blink.cmp)
-在plugins.lua里新增这个插件
+新增plugins/blink.lua文件
 ```lua
--- ...
--- 省略其他行
-require("lazy").setup({
-  spec = {
-    -- add your plugins here
-	-- 只用给出github作者和仓库名，lazy.nvim会自动补全github地址并下载安装
-    { "saghen/blink.cmp", opts = {} },
+return {
+  'saghen/blink.cmp',
+  dependencies = { 'rafamadriz/friendly-snippets' },
+  opts = {
+    keymap = { preset = 'super-tab' },
+    completion = { documentation = { auto_show = true } },
+    sources = {
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
+    },
   },
-})
+}
 ```
 ## LSP配置
 配置完blink.cmp之后，已经有基本的自动补全功能，但和 IDE 相比，我们还需要定义跳转、代码补全等功能，因此需要配置 LSP，使用的工具是 [mason.nvim](https://github.com/mason-org/mason.nvim?tab=readme-ov-file#recommended-setup-for-lazynvim) 和 [mason-lspconfig.nvim](https://github.com/mason-org/mason.nvim?tab=readme-ov-file#recommended-setup-for-lazynvim)，他们的功能分别是
@@ -136,9 +139,10 @@ return {
 ```lua
 return {
 	"neovim/nvim-lspconfig",
-	dependencies = { 'saghen/blink.cmp' },
 	config = function()
-		require("lspconfig").pylsp.setup({})
+		-- 可以在 https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md 找到启动相应 LSP 配置的语句
+		vim.lsp.enable('lua_ls')
+		vim.lsp.enable('pylsp')
 	end,
 }
 ```
@@ -378,6 +382,42 @@ local current_line = vim.fn.getline('.')
 -- vim.call，这与 vim.fn 类似，是调用函数的另一种方式
 local result = vim.call('my#vimscript#function')
 ```
+## LSP
+```lua
+-- Neovim包含一个 lua 模块去操作 LSP 客户端，即vim.lsp
+
+-- 使用vim.lsp.config()为 LSP 客户端设置配置
+-- 示例：
+vim.lsp.config['luals'] = {
+	-- Command and arguments to start the server.
+	cmd = { 'lua-language-server' },
+	
+	-- 应用的文件类型
+	filetypes = { 'lua' },
+	
+	-- 设置根目录，同一根目录下的文件连接同一个 LSP 服务器。
+	-- root_markers是否需要取决于不同的 LSP 服务器
+	-- 该句代码意思是不断寻找当前文件的父级目录，直到找到.luarc.json、.luarc.jsonc或.git，将其作为根目录，即root_markers。
+	root_markers = { { '.luarc.json', '.luarc.jsonc' }, '.git' },
+	
+	-- 发送给 LSP 服务器的设置，格式由 LSP 服务器定义，例如 lua-language-server 的可
+	-- 以在https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json找到
+	settings = {
+	 Lua = {
+	   runtime = {
+		 version = 'LuaJIT',
+	   }
+	 }
+	}
+}
+
+
+-- 使用vim.lsp.enable()函数启用配置
+vim.lsp.enable('luals')
+
+-- 查看 LSP 服务器是否启动
+:checkhealth vim.lsp
+```
 ## lazy.nvim
 ```lua
 return { 
@@ -406,8 +446,4 @@ return {
 -- cmd：在某个命令被执行的时候加载插件
 -- ft：当前 buffer 为特定文件类型的时候加载插件
 -- keys：当触发快捷键时加载插件，如果快捷键不存在则创建快捷键
-```
-## Mason
-```lua
-
 ```
