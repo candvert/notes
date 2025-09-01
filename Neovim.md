@@ -14,7 +14,9 @@
 - [使用vimscript](#使用vimscript)
 
 - [插件](#插件)
+	- [lazy.nvim](#lazy.nvim)
 	- [vim-airline](vim-airline)
+	- [Mason](#Mason)
 ## 配置文件
 Linux上Neovim会默认读取~/.config/nvim/init.lua文件
 Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
@@ -375,4 +377,37 @@ local current_line = vim.fn.getline('.')
 
 -- vim.call，这与 vim.fn 类似，是调用函数的另一种方式
 local result = vim.call('my#vimscript#function')
+```
+## lazy.nvim
+```lua
+return { 
+	"xxx/xxx",
+	opts = {}
+}
+-- opts其实就相当于lazy.nvim自动为我们调用了该函数：
+-- require("xxx").setup(opts)
+-- 当然我们也可以手动调用该函数：
+-- config = function(_, opts)
+--     require("xxx").setup(opts)
+-- end
+
+
+-- 像主题类的插件一般只需要加载，不需要setup
+-- 有opts选项的插件lazy.nvim会自动setup，或者没有opts选项自己在config中调用setup
+-- 也就是说主题类可以直接return { "xxx/xxx" }就可以生效
+-- 而必须要setup才能能生效的插件要return { "xxx/xxx", opts = {} }或者
+-- return { "xxx/xxx",
+-- config = function(_, opts)
+--     require("xxx").setup(opts)
+-- end }
+
+
+-- event：在某个事件触发的时候加载插件
+-- cmd：在某个命令被执行的时候加载插件
+-- ft：当前 buffer 为特定文件类型的时候加载插件
+-- keys：当触发快捷键时加载插件，如果快捷键不存在则创建快捷键
+```
+## Mason
+```lua
+
 ```
