@@ -76,6 +76,9 @@ Ctrl + d 补全命令
 Ctrl + n 下一个命令
 Ctrl + p 上一个命令
 
+:h registers
+"ayy 将光标所在行复制到寄存器a
+"ap 粘贴寄存器a中的内容
 "ayiw 将光标所在单词复制到寄存器a
 "bdiw 将光标所在单词删除，并复制到寄存器b
 <Ctrl-r>a<ESC> 进入编辑模式后，将寄存器a的内容复制到光标所在位置

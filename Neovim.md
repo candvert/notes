@@ -2,7 +2,7 @@
 - [安装Neovim](#安装Neovim)
 - [安装插件管理器](#安装插件管理器)
 - [自动补全插件](#自动补全插件)
-- [LSP配置](#LSP配置)
+- [LSP服务器端配置](#LSP服务器端配置)
 - [LSP客户端配置](#LSP客户端配置)
 - [配置文件的选项](#配置文件的选项)
 - [安装NerdFont字体](#安装NerdFont字体)
@@ -17,12 +17,17 @@
 - [LSP](#LSP)
 - [插件](#插件)
 	- [lazy.nvim](#lazy.nvim)
+	- [lualine.nvim](#lualine.nvim)
+	- [bufferline.nvim](#bufferline.nvim)
+	- [nvim-surround](#nvim-surround)
+	- [mini.pairs](#mini.pairs)
+	- [indent-blankline](indent-blankline)
 	- [vim-airline](vim-airline)
 ## 配置文件
 Linux上Neovim会默认读取~/.config/nvim/init.lua文件
 Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
 
-理论上所有配置都可以放入init.lua中，但这样不是一个好的做法，因此划分不同的文件和目录来分管不同的配置
+理论上所有配置都可以放入init.lua中，但这样不是一个好的做法，因此划分不同的文件和目录来放不同的配置
 我的目录结构：
 ```
 nvim
@@ -98,18 +103,20 @@ require("lazy").setup({
 新增plugins/blink.lua文件
 ```lua
 return {
-  'saghen/blink.cmp',
-  dependencies = { 'rafamadriz/friendly-snippets' },
-  opts = {
-    keymap = { preset = 'super-tab' },
-    completion = { documentation = { auto_show = true } },
-    sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer' },
-    },
-  },
+	'saghen/blink.cmp',
+	dependencies = { 'rafamadriz/friendly-snippets' },
+	opts = {
+		-- 设置enter键确认补全
+		keymap = { preset = 'super-tab' },
+		-- 总是显示文档
+		completion = { documentation = { auto_show = true } },
+		sources = {
+		  default = { 'lsp', 'path', 'snippets', 'buffer' },
+		},
+	},
 }
 ```
-## LSP配置
+## LSP服务器端配置
 配置完blink.cmp之后，已经有基本的自动补全功能，但和 IDE 相比，我们还需要定义跳转、代码补全等功能，因此需要配置 LSP，使用的工具是 [mason.nvim](https://github.com/mason-org/mason.nvim?tab=readme-ov-file#recommended-setup-for-lazynvim) 和 [mason-lspconfig.nvim](https://github.com/mason-org/mason.nvim?tab=readme-ov-file#recommended-setup-for-lazynvim)，他们的功能分别是
 - mason.nvim: LSP 管理器，可以实现 LSP 的下载、更新等
 - mason-lspconfig.nvim: 主要功能是处理 mason.nvim 和 nvim-lspconfig 之间名字不一致的问题。比如，mason.nvim 里面管 Lua 语言的 LSP 叫做 lua-language-server，但是 nvim-lspconfig 叫做 lua_ls。另外，mason-lspconfig.nvim 还会自动调用 vim.lsp.enable 启动安装好的 LSP服务器
@@ -141,39 +148,51 @@ return {
 	"neovim/nvim-lspconfig",
 	config = function()
 		-- 可以在 https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md 找到启动相应 LSP 配置的语句
-		vim.lsp.enable('lua_ls')
-		vim.lsp.enable('pylsp')
+		-- 由于mason-lspconfig会自动调用 vim.lsp.enable，所以下面代码不需要
+		--vim.lsp.enable('lua_ls')
+		--vim.lsp.enable('pylsp')
 	end,
 }
 ```
 ## 配置文件的选项
 options.lua
 ```lua
--- Hint: use `:h <option>` to figure out the meaning if needed
-vim.opt.clipboard = 'unnamedplus' -- use system clipboard
-vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
-vim.opt.mouse = 'a' -- allow the mouse to be used in Nvim
+-- 可以将vim中复制的内容粘贴到如浏览器等其他地方
+vim.opt.clipboard = 'unnamedplus'
 
--- Tab
-vim.opt.tabstop = 4 -- number of visual spaces per TAB
-vim.opt.softtabstop = 4 -- number of spacesin tab when editing
-vim.opt.shiftwidth = 4 -- insert 4 spaces on a tab
-vim.opt.expandtab = true -- tabs are spaces, mainly because of python
+-- 是否将tab转换为空格
+vim.opt.expandtab = true
+-- 将tab转换为4个空格
+vim.opt.tabstop = 4
+-- 自动缩进的空格数量
+vim.opt.shiftwidth = 4
 
--- UI config
-vim.opt.number = true -- show absolute number
-vim.opt.relativenumber = true -- add numbers to each line on the left side
-vim.opt.cursorline = true -- highlight cursor line underneath the cursor horizontally
-vim.opt.splitbelow = true -- open new vertical split bottom
-vim.opt.splitright = true -- open new horizontal splits right
--- vim.opt.termguicolors = true        -- enabl 24-bit RGB color in the TUI
-vim.opt.showmode = false -- we are experienced, wo don't need the "-- INSERT --" mode hint
+-- 忽略大小写
+vim.opt.ignorecase = true
+-- 智能，如果不输入大写字符，则都搜索。如果输入了大写字符，则只匹配有大写字符的
+-- 比如搜索vary，则vary和Vary都可以；但若搜索Vary，则只查找Vary
+vim.opt.smartcase = true
+-- 搜索的内容不进行高亮显示
+vim.opt.hlsearch = false
 
--- Searching
-vim.opt.incsearch = true -- search as characters are entered
-vim.opt.hlsearch = false -- do not highlight matches
-vim.opt.ignorecase = true -- ignore case in searches by default
-vim.opt.smartcase = true -- but make it case sensitive if an uppercase is entered
+vim.opt.incsearch = true
+
+-- 不在底部显示NORMAL、INSERT等模式
+vim.opt.showmode = false
+
+-- 显示行号
+vim.opt.number = true
+ -- 显示相对行号
+vim.opt.relativenumber = true
+ -- 高亮光标所在行
+vim.opt.cursorline = true
+-- 让新窗格出现在下方
+vim.opt.splitbelow = true
+-- 让新窗格出现在右方
+vim.opt.splitright = true
+
+-- 在其他地方进行的文件的更改自动更新
+vim.opt.autoread = true
 ```
 keymaps.lua
 ```lua
@@ -454,3 +473,85 @@ return {
 -- ft：当前 buffer 为特定文件类型的时候加载插件
 -- keys：当触发快捷键时加载插件，如果快捷键不存在则创建快捷键
 ```
+## lualine.nvim
+```lua
+return {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+	
+	config = function ()
+		require('lualine').setup {
+		  options = {
+			icons_enabled = true,
+			-- 自动适应主题，比如tokyonight
+			theme = 'auto',
+		  },
+		  -- 对使用nvim-tree插件时的显示进行优化
+		  extensions = { "nvim-tree" },
+		}
+	end,
+}
+```
+## bufferline.nvim
+```lua
+return {
+	"akinsho/bufferline.nvim",
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+	},
+	opts = {},
+	keys = {
+		{ "<leader>bh", ":BufferLineCyclePrev<CR>", silent = true },
+		{ "<leader>bl", ":BufferLineCycleNext<CR>", silent = true },
+		{ "<leader>bd", ":bdelete<CR>", silent = true },
+		{ "<leader>bo", ":BufferLineCloseOthers<CR>", silent = true },
+		{ "<leader>bp", ":BufferLinePick<CR>", silent = true },
+		{ "<leader>bc", ":BufferLinePickClose<CR>", silent = true },
+	},
+	lazy = false,
+}
+```
+## nvim-surround
+```lua
+return {
+    "kylechui/nvim-surround",
+    event = "VeryLazy",
+    opts = {},
+}
+```
+
+```lua
+-- 如何使用该插件:h nvim-surround.usage
+-- 添加括号：ys{motion}{char}
+-- 比如ysiw)
+-- 删除括号：ds{char}
+-- 比如ds]
+-- 更改括号：cs{target}{replacement}
+-- 比如cs'"
+```
+## mini.pairs
+```lua
+return { 'nvim-mini/mini.pairs', version = '*', opts = { } }
+```
+## indent-blankline
+```lua
+return {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    opts = {},
+}
+```
+
+- [x] blink
+- [x] bufferline
+- [x] lualine
+- [x] mason
+- [x] mason_lspconfig
+- [x] nvim_lspconfig
+- [x] nvim_surround
+- [x] nvim_tree
+- [x] telescope
+- [x] tokyonight
+- [x] nvim-treesitter
+- [x] indent-blankline
+- [x] mini.pairs

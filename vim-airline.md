@@ -1,6 +1,6 @@
 我的配置：
 ```lua
--- airline完全使用vimscript编写，没有任何额外依赖
+-- vim-airline完全使用vimscript编写，没有任何额外依赖
 -- 帮助文档:h airline
 -- 状态栏可以分为多个section，每个section可以分为多个part
 -- Airline 的状态栏从左到右分为 a, b, c (左半部分) 和 x, y, z (右半部分)
@@ -8,18 +8,6 @@
 return { "vim-airline/vim-airline", 
 	opts = {},
 	config = function()
-		-- 启用airline的标签栏
-		vim.g['airline#extensions#tabline#enabled'] = 1
-		-- 是否显示右侧的"buffers"
-		vim.g['airline#extensions#tabline#show_buffers'] = 0
-		-- 是否显示左侧的"tab"
-		vim.g['airline#extensions#tabline#show_tabs'] = 0
-		-- 是否显示左边的"tab"和右边的"tab"数量
-		vim.g['airline#extensions#tabline#show_tab_type'] = 0
-		vim.g['airline#extensions#tabline#show_tab_count'] = 0
-		-- 标签栏左侧不同tab的分隔符号
-		vim.g['airline#extensions#tabline#left_alt_sep'] = ''
-
 		-- 设置各个section的显示内容
 		vim.g['airline_section_c'] = vim.fn['airline#section#create']({'readonly'})
 		vim.g['airline_section_x'] = ''
@@ -31,7 +19,7 @@ return { "vim-airline/vim-airline",
 		vim.g['airline#extensions#wordcount#enabled'] = 0
 
 		-- 是否显示git分支，需要tpope/vim-fugitive插件，在dependencies中添加
-		-- vim.g['airline#extensions#branch#enabled'] = 1
+		vim.g['airline#extensions#branch#enabled'] = 1
 
 		-- 设置不同模式（如NORMAL，INSERT）显示的文本，即section_a显示的内容：
 		vim.g['airline_mode_map'] = {
@@ -55,11 +43,9 @@ return { "vim-airline/vim-airline",
 			['\22'] = 'V',
 		}
 	end,
---[[
 	dependencies = {
 		-- 要显示git分支需要该插件
 		'tpope/vim-fugitive',
 	},
---]]
 }
 ```
