@@ -30,10 +30,13 @@ vim.diagnostic.config({
 	-- underline = false,
 
 	signs = {
+		-- 警告、错误时最左侧显示的字符，默认为W、E
+		--[[
 		text = {
 			[vim.diagnostic.severity.ERROR] = '',
 			[vim.diagnostic.severity.WARN] = '',
 		},
+		--]]
 		-- 有错误高亮整行内容
 		linehl = {
 			[vim.diagnostic.severity.ERROR] = 'ErrorMsg',
