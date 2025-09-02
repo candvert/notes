@@ -33,7 +33,6 @@ Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
 nvim
 	- init.lua
 	lua
-		keymaps.lua
 		options.lua
 		plugins
 			- blink.lua
@@ -43,6 +42,7 @@ nvim
 			- treesitter.lua
 			- telescope.lua
 			- nvim_tree.lua
+			- ...
 ```
 ## 安装Neovim
 ```
@@ -96,7 +96,6 @@ require("lazy").setup({
   -- checker = { enabled = true },
 })
 ```
-
 现在打开 nvim 后就可以通过 :Lazy 命令进入插件管理页面了
 ## 自动补全插件
 使用的是[blink.cmp](https://github.com/saghen/blink.cmp)
@@ -194,40 +193,6 @@ vim.opt.splitright = true
 -- 在其他地方进行的文件的更改自动更新
 vim.opt.autoread = true
 ```
-keymaps.lua
-```lua
--- define common options
-local opts = {
-    noremap = true,      -- non-recursive
-    silent = true,       -- do not show message
-}
-
------------------
--- Normal mode --
------------------
-
--- Hint: see `:h vim.map.set()`
--- Better window navigation
-vim.keymap.set('n', '<C-h>', '<C-w>h', opts)
-vim.keymap.set('n', '<C-j>', '<C-w>j', opts)
-vim.keymap.set('n', '<C-k>', '<C-w>k', opts)
-vim.keymap.set('n', '<C-l>', '<C-w>l', opts)
-
--- Resize with arrows
--- delta: 2 lines
-vim.keymap.set('n', '<C-Up>', ':resize -2<CR>', opts)
-vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', opts)
-vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', opts)
-vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', opts)
-
------------------
--- Visual mode --
------------------
-
--- Hint: start visual mode with the same area as the previous area and the same mode
-vim.keymap.set('v', '<', '<gv', opts)
-vim.keymap.set('v', '>', '>gv', opts)
-```
 到目前为止，便完成了基础的配置。之后可以按自己的喜好添加插件
 ## 安装NerdFont字体
 在[自动补全插件](#自动补全插件)部分安装的 blink.cmp 插件在进行补全提示时，图标不能正常显示。要使其正常显示，需要安装[Nerd Font](https://www.nerdfonts.com/font-downloads)字体
@@ -294,7 +259,7 @@ return {
 	},
 	config = function()
 		require("nvim-tree").setup {}
-		vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
+		vim.keymap.set('n', '<leader>uf', ':NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
 	end,
 }
 ```
@@ -446,6 +411,7 @@ vim.lsp.enable('luals')
 ```
 ## lazy.nvim
 ```lua
+-- 添加插件时其他插件配置文件的形式
 return { 
 	"xxx/xxx",
 	opts = {}
@@ -478,18 +444,7 @@ return {
 return {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-	
-	config = function ()
-		require('lualine').setup {
-		  options = {
-			icons_enabled = true,
-			-- 自动适应主题，比如tokyonight
-			theme = 'auto',
-		  },
-		  -- 对使用nvim-tree插件时的显示进行优化
-		  extensions = { "nvim-tree" },
-		}
-	end,
+	opts = { },
 }
 ```
 ## bufferline.nvim
@@ -510,6 +465,12 @@ return {
 	},
 	lazy = false,
 }
+```
+
+```
+点击关闭图标或右键关闭buffer
+:h bufferline.nvim
+:h bufferline-configuration
 ```
 ## nvim-surround
 ```lua
@@ -541,17 +502,3 @@ return {
     opts = {},
 }
 ```
-
-- [x] blink
-- [x] bufferline
-- [x] lualine
-- [x] mason
-- [x] mason_lspconfig
-- [x] nvim_lspconfig
-- [x] nvim_surround
-- [x] nvim_tree
-- [x] telescope
-- [x] tokyonight
-- [x] nvim-treesitter
-- [x] indent-blankline
-- [x] mini.pairs
