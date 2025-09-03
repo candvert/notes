@@ -1,4 +1,8 @@
 - [vim.diagnostic](#vim.diagnostic)
+```
+:e $MYVIMRC 打开init.lua配置文件
+:help nvim-quickstart
+```
 ## vim.diagnostic
 ```lua
 -- 诊断信息来自外部工具，比如 LSP 服务器，linters
