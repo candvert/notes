@@ -70,6 +70,32 @@ d 删除选中的文本
 :r ok 将文件ok中的内容复制到光标的下一行
 :r !ls 将ls命令的输出复制到光标的下一行
 
+o 在光标的下面新增一行并进入插入模式
+O 在光标的上面新增一行并进入插入模式
+a 附加
+R 进入替换模式，输入的字符替换原有字符
+y 复制选中的文本
+yw 复制单个单词
+yy 复制一行
+
+:set ic 设置忽略大小写
+:set noic 取消忽略大小写
+:set invic 取消忽略大小写（在设置前加上inv，反转该设置）
+:set hls is 设置搜索高亮和incsearch
+:set nohlsearch 取消搜索高亮
+/ok\c 该次搜索忽略大小写
+
+快捷键F1 帮助文档
+:help 帮助文档
+:help set 显示set命令的说明
+Ctrl + w两次 跳转窗口
+
+Ctrl + d 显示可能进行补全的所有命令
+Tab 显示可以补全的命令/文件名或直接补全命令/文件名
+Tab 下一个补全命令
+Ctrl + n 下一个补全命令
+Shift + Tab 上一个补全命令
+Ctrl + p 上一个补全命令
 
 
 
@@ -86,7 +112,7 @@ b 移动到上一个单词或标点符号
 Shift + b 移动到上一个单词，忽略标点符号
 CTRL-F 向下滚动屏幕
 CTRL-B 向上滚动屏幕
-e move to the end of a end
+e 移动到单词末尾
 0 移动到行首
 $ 移动到行尾
 d3w 删除3个单词
@@ -106,51 +132,6 @@ Ctrl + G 显示文件status
 20G 移动到第20行
 G 移动到文件末尾
 gg 移动到文件开头
-
-/ok 搜索ok
-?ok 反向搜索ok
-/ok\c 搜索ok忽略大小写
-n 下一个
-N 上一个
-Ctrl + o 返回原来的位置
-Ctrl + i 和Ctrl + o相反
-
-% 移动光标到匹配的(), {}, []
-:s/old/new 将第一个匹配的old替换为new
-:s/old/new/g 将该行匹配的old替换为new
-:5,8s/old/new/g 将第5行（含）到第8行（含）匹配的old替换为new
-:%s/old/new/g 将文件中所有old替换为new
-:%s/old/new/gc 找到所有匹配的old，并挨个询问是否替换为new
-:!ls 执行shell命令ls
-:w ok 将文件内容保存到文件ok
-
-v 进入Visual selection，可以移动光标选择文本
-d 删除选中的文本
-:w ok 将选中的文本保存到文件ok
-
-:r ok 将文件ok中的内容复制到光标的下一行
-:r !ls 将ls命令的输出复制到光标的下一行
-
-R 进入替换模式，输入的字符替换原有字符
-y 复制文本
-yw 复制单个单词
-yy 复制一行
-
-:set ic 设置忽略大小写
-:set noic 取消忽略大小写
-:set invic 取消忽略大小写（在设置前加上inv，反转该设置）
-:set hls 设置搜索高亮
-:set nohlsearch 取消搜索高亮
-
-:help 帮助页面
-:help set 显示set命令的说明
-Ctrl + w两次 跳转窗口
-
-
-Tab 补全命令
-Ctrl + d 补全命令
-Ctrl + n 下一个命令
-Ctrl + p 上一个命令
 
 :h registers
 "ayy 将光标所在行复制到寄存器a
