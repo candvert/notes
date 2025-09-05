@@ -1,6 +1,4 @@
 ```
-:help nvim-quickstart
-
 可以使用init.lua或init.vim作为配置文件，但同时只能存在一个
 
 

@@ -29,6 +29,9 @@
 - [内置函数](#内置函数)
 
 # Python基本语法
+```
+为了不与同时安装的 Python 2.x 冲突，Python 3.x 解释器默认安装的执行文件名不是 python
+```
 
 python中一切皆是对象，包括函数、类、模块都是对象
 
@@ -68,11 +71,17 @@ print(value..., seq=' ', end='\n', file=None)
 ## 关键字列表
 ```python
 import keyword
-
+# 打印关键字列表
 print(keyword.kwlist)
 ```
 ## 字符串操作
 ```python
+# 格式化字符串
+f'Results of the {year} {event}'
+# raw字符串
+r'D:\file'
+
+
 str = "你好"
 print(str + str)  # 你好你好
 print(str * 3)  # 你好你好
@@ -141,6 +150,11 @@ sum = 0
 for i in range(1,4):
     sum += i
 print(sum)  # 6
+
+
+list = [1, 'c']
+for item in list:
+	pass
 ```
 ## while语句
 ```python
@@ -253,6 +267,22 @@ except (ZeroDivisionError, RuntimeError) as e:
 ```
 ## 函数
 ```python
+# 函数声明形式，python3.8引入
+def f(pos1, pos2, /, pos_or_kwd, *, kwd1, kwd2):
+      -----------    ----------     ----------
+        |             |                  |
+        |        位置或关键字   |
+        |                                - 仅限关键字
+         -- 仅限位置
+# 比如该函数：
+def create_user(id, name, /, age, *, city, email):
+	pass
+# 正确调用方式：
+create_user(1001, "Alice", 25, city="Beijing", email="alice@example.com")
+create_user(1002, "Bob", age=30, city="Shanghai", email="bob@example.com")
+create_user(1003, "John", 28, email="John@example.com", city="Guangzhou")
+
+
 def calculate(num1, num2):
     return num1 + num2
 print(calculate(3, 5))  # 8

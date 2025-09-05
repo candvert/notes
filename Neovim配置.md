@@ -348,7 +348,7 @@ s                                    运行脚本文件，或用外部编辑器�
 -- opts为一些选项
 vim.keymap.set({mode}, {lhs}, {rhs}, {opts})
 
--- 
+-- 普通模式和编辑模式下按Ctrl + a后b就运行:lua print('hello world')
 vim.keymap.set({ "n", "i" }, "<C-a>b", "<Cmd>lua print('hello world')<CR>", { silent = true })
 
 -- 将:help命令设置为快捷键good

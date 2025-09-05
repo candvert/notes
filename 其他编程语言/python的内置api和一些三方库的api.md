@@ -7,7 +7,9 @@
 	- [enumerate进行遍历](#enumerate进行遍历)
 	- [json](#json)
 	- [unittest测试（内置测试框架）](#unittest测试（内置测试框架）)
-	- [文件操作](#文件操作)
+	- [文件路径操作](#文件路径操作)
+	- [文件读写操作](#文件读写操作)
+	- [面向对象的文件操作pathlib](#面向对象的文件操作pathlib)
 	- [获取时间和sleep函数](#获取时间和sleep函数)
 	- [随机数](#随机数)
 	- [多线程](#多线程)
@@ -17,6 +19,8 @@
 	- [mysql](#mysql)
 	- [网络库requests](#网络库requests)
 
+	- [os模块](#os模块)
+
 # python创建用于测试的http服务器
 ```
 mkdir test_server && cd test_server
@@ -25,7 +29,7 @@ python3 -m http.server 8000
 ```
 # python的内置api和一些三方库的api
 ## 列表
-```py
+```python
 name = ['john', 'smith', 83.4, 'joey', 42]		# name的类型为name: list[str | float | int]
 
 # 元素首字母大写
@@ -70,11 +74,11 @@ name[ : ]
 name[ : : ]
 ```
 ## 元组
-```py
+```python
 words = ('good', 42, 'human', 'profit')		# words类型为words: tuple[str, int, str, str]，因为元组不变，所以类型固定
 ```
 ## 字典
-```py
+```python
 config = {'name': 'John', 'age': 18, 1.0: 'one'}	# config的类型为config: dict[str | float, str | int]
 
 # 访问字典中的值
@@ -96,7 +100,7 @@ for value in config.values():
     print(value)
 ```
 ## 集合
-```py
+```python
 # 集合不像列表和字典，集合不会以特定的顺序存储元素
 words = {'good', 42, 'human', 'profit'}		# words的类型为words: set[str | int]
 config = {'name': 'John', 'age': 18, 1.0: 'one'}
@@ -104,14 +108,14 @@ words = set(config.keys())
 words = set(config.values())
 ```
 ## enumerate进行遍历
-```py
+```python
 name = ['john', 'joey']
 for index, value in enumerate(name):	# enumerate()返回下标和对应的值
     print(index)
     print(value)
 ```
 ## json
-```py
+```python
 # json.dump()将字典保存到文件中
 import json
 
@@ -136,7 +140,7 @@ a = json.dumps(config)		# 返回值/str
 b = json.loads(a)			# 返回值/Any
 ```
 ## unittest测试（内置测试框架）
-```py
+```python
 # 测试用例是通过继承 unittest.TestCase 类创建的。你可以在类中定义多个测试方法，测试方法的名称必须以 test_ 开头
 # 在 unittest 框架中，setUp 方法用于在每个测试方法执行之前设置测试环境。它可以用于初始化测试中需要的资源、创建对象、打开文件
 # 或建立数据库连接等
@@ -155,8 +159,58 @@ class EatTestCase(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 ```
-## 文件操作
-```py
+## 面向对象的文件操作pathlib
+```python
+from pathlib import Path
+Path.cwd()
+Path.is_dir()
+Path.is_file()
+Path.exists()
+Path.absolute()
+Path.resolve()
+Path.stat()
+Path.lstat()
+Path.iterdir()
+Path.walk()
+Path.rename()
+Path.replace()
+Path.rmdir()
+p = Path(r'D:\dir\old_file.txt')
+# old_file.txt
+p.name
+# old_file
+p.stem
+# .txt
+p.suffix
+# D:\dir
+p.parent
+p.exists()
+# D:\dir\old_file.txt
+p.absolute()
+p.is_absolute()
+# D:\dir\old_file.txt
+p.resolve()
+p.stat()
+p.is_file()
+p.is_dir()
+p.open()
+p.read_text()
+p.iterdir()
+p.rename(r'D:\file.txt')
+p = Path(r'D:\new_file.txt')
+p.touch()
+p = Path(r'D:\new_dir')
+p.mkdir()
+p.unlink() # 移除文件
+p.rmdir()
+p = Path(r'D:\dir')
+q = p / "new_file.txt"
+# new_file.txt
+q.name
+```
+## 文件路径操作
+```python
+import os
 # 打开文件，open(name, mode=None, buffering=None)
 file = open('D:\\file', 'r', encoding='utf-8')
 # 读取文件内容
@@ -170,8 +224,34 @@ with open('D:\\file', 'r', encoding='utf-8') as f:
 # 写入内容
 file.wirte('hello')
 ```
+## 文件读写操作
+```python
+# 列出目录中所有文件
+list = os.listdir(path='.')
+# 文件重命名
+os.rename(src, dst, *, src_dir_fd=None, dst_dir_fd=None)
+# 判断是文件还是文件夹
+os.path.isfile(path)
+os.path.isdir(path, /)
+# 获取文件最后修改时间
+os.path.getmtime(path, /)
+# 分离文件名和扩展名，file_extension以句点开头或为空
+file_base_name, file_extension = os.path.splitext(path, /)
+
+os.mkdir(path, mode=0o777, *, dir_fd=None)
+
+os.makedirs(name, mode=0o777, exist_ok=False)
+
+os.rmdir(path, *, dir_fd=None)
+
+os.path.getsize(path, /)
+
+os.path.join(path, /, *paths)
+
+os.walk(top, topdown=True, onerror=None, followlinks=False)
+```
 ## 获取时间和sleep函数
-```py
+```python
 # 获取当前时间
 from datetime import datetime
 a = datetime.now().strftime('%Y-%m-%d %H:%M:%S')	# a的类型为str
@@ -184,13 +264,13 @@ from time import sleep
 sleep(2)	# 休眠2秒
 ```
 ## 随机数
-```py
+```python
 import random
 a = random.randint(1, 10)	# [1, 10]
 a = random.random()			# [0, 1)
 ```
 ## 多线程
-```py
+```python
 # threading.Lock()创建锁，threading.Thread(target=函数, args=(参数))创建线程
 import threading
 
@@ -212,14 +292,14 @@ for thread in threads:
     thread.join()  # 等待所有线程完成
 ```
 ## 正则表达式
-```py
+```python
 # 使用re.match(pattern, string)进行匹配
 import re
 
 res = re.match('h.s', 'his you')
 ```
 ## 网络socket
-```py
+```python
 # 服务器端
 import socket
 
@@ -262,7 +342,7 @@ print(response.decode('utf-8'))  # 解码并打印响应
 client_socket.close()
 ```
 ## sqlite
-```py
+```python
 # 简短示例
 import sqlite3
 
@@ -326,7 +406,7 @@ cursor.close()
 conn.close()
 ```
 ## mysql
-```py
+```python
 from pymysql.connections import Connection
 
 conn = Connection(
@@ -342,7 +422,7 @@ results: tuple = cursor.fetchall()	# 获取结果
 conn.close()
 ```
 ## 网络库requests
-```py
+```python
 r = requests.get('https://api.github.com/events')
 r = requests.post('https://httpbin.org/post', data={'key': 'value'})
 r = requests.get(url, cookies=cookies)
@@ -378,4 +458,32 @@ import requests
 r = requests.get('https://baidu.com')
 with open('D:\\py.json', 'w', encoding='utf-8') as file:
     json.dump(dict(r.headers), file, indent=4)
+```
+## os模块
+```python
+os.fdopen(fd, *args, **kwargs)
+os.close(fd)
+os.fchmod(fd, mode)
+os.fchown(fd, uid, gid)
+os.fstat(fd)
+os.open(path, flags, mode=0o777, *, dir_fd=None)
+os.read(fd, n, /)
+os.write(fd, str, /)
+os.mkdir(path, mode=0o777, *, dir_fd=None)
+os.makedirs(name, mode=0o777, exist_ok=False)
+os.remove(path, *, dir_fd=None)
+os.removedirs(name)
+os.rename(src, dst, *, src_dir_fd=None, dst_dir_fd=None)
+os.renames(old, new)
+os.rmdir(path, *, dir_fd=None)
+os.scandir(path='.')
+os.stat(path, *, dir_fd=None, follow_symlinks=True)
+os.listdir(path='.')
+
+class os.DirEntry
+class os.stat_result
+os.utime(path, times=None, *, [ns, ]dir_fd=None, follow_symlinks=True)
+
+os._exit(n)
+os.kill(pid, sig, /)
 ```
