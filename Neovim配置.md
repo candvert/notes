@@ -23,6 +23,9 @@
 	- [mini.pairs](#mini.pairs)
 	- [indent-blankline](indent-blankline)
 	- [vim-airline](vim-airline)
+重要的有两个东西，要使用一门语言就要安装这两个。
+一个是 LSP 服务器，提供代码提示等功能。通过Mason插件安装。
+一个是语法解析器，提供语法高亮等功能。通过修改nvim-treesitter配置文件安装。
 ## 配置文件
 Linux上Neovim会默认读取~/.config/nvim/init.lua文件
 Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
@@ -216,7 +219,7 @@ return {
 
 	  configs.setup({
 		  -- 在这里添加要语法高亮的编程语言
-		  ensure_installed = { "python", "lua" },
+		  ensure_installed = { "python", "lua", "typescript", "css", "html" },
 		  sync_install = false,
 		  highlight = { enable = true },
 		  indent = { enable = true },  

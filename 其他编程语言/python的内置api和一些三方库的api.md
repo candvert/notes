@@ -25,7 +25,9 @@
 ```
 mkdir test_server && cd test_server
 echo {"good": true} >> ok.json
-python3 -m http.server 8000
+python -m http.server 8000
+
+然后访问 http://localhost:8000 即可看到页面
 ```
 # python的内置api和一些三方库的api
 ## 列表
