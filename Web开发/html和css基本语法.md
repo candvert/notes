@@ -42,7 +42,9 @@ vscode默认生成的html文件
 
 ```
 在 <html> 元素上提供一个带有有效语言标记的 lang 属性，将有助于屏幕阅读技术确定要宣告的适当语言。还可以确保页面的 <head> 中包含的重要元数据（如页面的 <title>）也会被正确地宣告。
-
+中文是<html lang="zh">
+简体中文是<html lang="zh-cn">
+繁体中文是<html lang="zh-tw">
 
 
 
@@ -108,11 +110,9 @@ initial-scale
 </video>
 <!-- 音频 -->
 <audio controls>
-  <source src="myVideo.webm" type="video/webm" />
-  <source src="myVideo.mp4" type="video/mp4" />
+  <source src="myAudio.mp3" type="audio/mp3" />
   <p>
-    Your browser doesn't support HTML video. Here is a
-    <a href="myVideo.mp4" download="myVideo.mp4">link to the video</a> instead.
+    Your browser doesn't support.
   </p>
 </audio>
 <!-- 网站标签上的小图标 -->
@@ -382,6 +382,7 @@ div{hello}*5
 ```
 ## 引入方式
 ```html
+<!-- 都是在html中进行引用 -->
 <!-- 行内样式表 -->
 <p style="color: red;">男</p>
 

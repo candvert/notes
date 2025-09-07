@@ -22,7 +22,7 @@
 	- [nvim-surround](#nvim-surround)
 	- [mini.pairs](#mini.pairs)
 	- [indent-blankline](indent-blankline)
-	- [vim-airline](vim-airline)
+	- [vim-airline](vim-airline.md)
 重要的有两个东西，要使用一门语言就要安装这两个。
 一个是 LSP 服务器，提供代码提示等功能。通过Mason插件安装。
 一个是语法解析器，提供语法高亮等功能。通过修改nvim-treesitter配置文件安装。
