@@ -7,7 +7,11 @@
 - [渲染列表](#渲染列表)
 - [响应事件](#响应事件)
 - [更新界面](#更新界面)
+- [props](#props)
 - [使用Hook](#使用Hook)
+
+- [npm命令](#npm命令)
+- [App Router](#App%20Router)
 # React(version 19)，使用的框架为Next.js
 ```
 全栈框架不需要服务器
@@ -19,8 +23,6 @@ Next.js 支持客户端渲染（CSR）、单页应用（SPA）和静态站点生
 // 创建项目
 // npx create-next-app@latest
 // npm run dev启动项目，然后便可在浏览器访问http://localhost:3000查看网页
-
-
 ```
 ## 组件
 ```typescript
@@ -194,10 +196,87 @@ function MyButton() {
   );
 }
 ```
+## props
+```typescript
+// props即父组件给子组件传递值
+// Ide.tsx
+export default function Ide(props) {
+    return <button>props.name</button>;
+}
+
+// page.tsx
+import Ide from './Ide.tsx'
+export default function Home() {
+    return (
+        <div>
+            <Ide name={'John'}></Ide>
+        </div>
+   );
+}
+```
 ## 使用Hook
 ```typescript
 // 以 use 开头的函数被称为 Hook。useState 是 React 提供的一个内置 Hook。你也可以通过组合现有的 Hook 来编写属于你自己的 Hook。
 // Hook 比普通函数更为严格。你只能在你的组件（或其他 Hook）的顶层调用 Hook。如果你想在一个条件或循环中使用 useState，请提取一个新的组件并在组件内部使用它。
+
+// 自定义hook，需要以use开头
+// useToggle.tsx
+import { useState } from 'react';
+function useToggle(initialValue = false) {
+  const [value, setValue] = useState(initialValue);
+  const toggle = () => setValue(prev => !prev);
+  return [value, toggle];
+}
+export default useToggle;
+// page.tsx
+'use client';
+import useToggle from './useToggle';
+export default function Home() {
+	const [isOn, toggleIsOn] = useToggle(false);
+    return (
+	    <div>
+	      <p>当前状态: {isOn ? '开' : '关'}</p>
+	      <button onClick={toggleIsOn}>切换</button>
+	    </div>
+    );
+}
+```
+## npm命令
+```typescript
+npm create next-app@latest my-app --yes
+// --yes选项跳过对话使用保存的偏好设置或默认的。默认启用TypeScript, Tailwind, App Router, Turbopack和import alias @/*
+
+// 文件目录
+app	App Router
+pages	Pages Router
+public	静态资源
+src	Optional application source folder
+
+// Top-level files
+next.config.js	Configuration file for Next.js
+package.json	Project dependencies and scripts
+instrumentation.ts	OpenTelemetry and Instrumentation file
+middleware.ts	Next.js request middleware
+.env	Environment variables
+.env.local	Local environment variables
+.env.production	Production environment variables
+.env.development	Development environment variables
+.eslintrc.json	Configuration file for ESLint
+.gitignore	Git files and folders to ignore
+next-env.d.ts	TypeScript declaration file for Next.js
+tsconfig.json	Configuration file for TypeScript
+jsconfig.json	Configuration file for JavaScript
+
+// Routing Files
+layout		Layout
+page		Page
+loading		Loading UI
+not-found		Not found UI
+error		Error UI
+global-error		Global error UI
+route		API endpoint
+template		Re-rendered layout
+default		Parallel route fallback page
 ```
 
 ```typescript
@@ -215,23 +294,6 @@ function App() {
 function App() {
     return (<button onClick={(e) => clickHandler(e, 'John')}>button</button>);
 }
-
-
-
-
-// react中正常使用css文件，区别是class为className
-import './style.css'
-function App() {
-    return (<button className='btn'>button</button>);
-}
-
-
-// 列表中的每一项应该有key属性
-const listItems = products.map(product =>
-  <li key={product.id}>
-    {product.title}
-  </li>
-);
 ```
 ## 标签
 ```js
@@ -277,36 +339,6 @@ function App() {
         </div>
     }
 }
-
-
-// prop
-// App.js
-import Home from 'Home'
-const name = 'john'
-function App() {
-    return {
-        <div className="App">
-            <Home name={name} age={20}/>			// prop
-        </div>
-    }
-}
-// Home.js
-const Home = (props) => {				// prop
-    const name = props.name
-    const age = props.age
-    return (<div>hi</div>);
-}
-export default Home;
-
-
-// 自定义hook，需要以use开头
-// useFetch.js
-const useFetch = () => {
-    const [name, setName] = useState('mario');
-    const changeName = () => setName('John');
-    return {name, changeName};
-}
-export default useFetch;
 
 
 // Router
@@ -397,6 +429,21 @@ npm run deploy
 // axios
 // redux
 ```
-
-
-
+## App Router
+```
+Next.js中的App Router使用文件夹表示
+当访问http://localhost:3000时看到的是app文件夹下的page.js：
+app
+	- page.js
+而当访问http://localhost:3000/about时看到的则是app文件夹下的about文件夹下的page.js：
+app
+	- about
+		- pages.js
+	- pages.js
+如果要使用动态路由，则文件夹的名称为[id]这种形式，其他[]，[projectId]等都可，只要存在[]
+所以当访问http://localhost:3000/123时看到的是app文件夹下的id文件夹下的page.js：
+app
+	- [id]
+		- pages.js
+	- pages.js
+```
