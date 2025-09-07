@@ -2,8 +2,8 @@
 	- [编写地方](#编写地方)
 	- [输入输出](#输入输出)
 	- [变量](#变量)
-	- [数组](#数组)
 	- [常量](#常量)
+	- [数组](#数组)
 	- [字符串模板](#字符串模板)
 	- [比较](#比较)
 	- [添加和循环语句](#添加和循环语句)
@@ -52,16 +52,25 @@ document.write("<h1>ok</h1>")
 alert("ok")
 console.log("ok")
 ```
+
+```
+如果一条语句独占一行的话，那么分号是可以省略的
+然而，在一条语句的末尾总是加上分号被认为是最佳实践
+```
 ## 变量
 ```js
-var grade = 10	// var是遗留的，不建议使用
-grade = 10	// 不加关键字，和python一样，这是由于var可以先初始化再声明，但是这会造成代码混乱
 let name = 'hello', age = 20	// 新标准的写法，推荐使用
+var grade = 10	// var是遗留的，不建议使用
+grade = 10	// 也可以不加关键字，和python一样，这是由于var可以先初始化再声明，但是这会造成代码混乱，不建议使用
 
-// 数据类型有Number、String、Boolean、Array、Object五种
+// 七种基本数据类型：Boolean、null、undefined、Number、BigInt、String、Symbol
 // undefined即变量未赋值
 console.log(typeof name)	// 使用typeof关键字来判断类型
 let a = Number(name)		// 使用Number()来进行显式类型转换
+```
+## 常量
+```js
+const i = 42
 ```
 ## 数组
 ```js
@@ -73,10 +82,6 @@ arr.unshift("ok")	// 添加到首部，返回数组新的长度
 // 删除元素
 arr.pop()			// 删除尾部元素，返回被删除的元素
 arr.shift()			// 删除首部元素，返回被删除的元素
-```
-## 常量
-```js
-const i = 42
 ```
 ## 字符串模板
 ```js
