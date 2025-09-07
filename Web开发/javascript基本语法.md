@@ -93,7 +93,7 @@ alert(`this is ${a} world`)	// 字符串模板${a}，使用反引号会包括换
 ## 比较
 ```js
 console.log(2 == '2')		// 结果为true，==只测试值是否相同，而不判断数据类型是否相同
-console.log(2 === '2')		// 结果为false，比较推荐用===或!==
+console.log(2 === '2')		// 结果为false，进行比较时推荐用===或!==
 ```
 ## 添加和循环语句
 ```js
@@ -107,14 +107,58 @@ for (index in nums) {}	// index为每个元素下标
 ## ...扩展运算符
 ```js
 // ...是扩展运算符，用于将可迭代对象（如数组或字符串）展开为单个元素
+// 合并数组
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+const mergedArr = [...arr1, ...arr2]; // [1, 2, 3, 4]
+
+// 扩展运算符进行的是​​浅拷贝
+const originalObj = { a: 1, b: 2 };
+const copyObj = { ...originalObj }; // { a: 1, b: 2 }
 ```
 ## ?.
 ```js
 // ?.在JavaScript中如果调用对象是null，则返回undefined
+// 假设我们有一个用户对象，但不确定某些信息是否存在
+const user = {
+  name: 'Alice',
+  address: {
+    city: 'Beijing'
+  },
+  sayHello: function() {
+    return `Hello, ${this.name}!`;
+  }
+};
+
+// 安全访问可能不存在的属性
+console.log(user?.address?.city); // 输出 "Beijing"
+console.log(user?.contact?.phone); // 输出 undefined，而不会报错
+
+// 安全调用可能不存在的方法
+console.log(user.sayHello?.()); // 输出 "Hello, Alice!"
+console.log(user.nonExistentMethod?.()); // 输出 undefined，而不会报错
+
+// 结合空值合并运算符提供默认值
+const phoneNumber = user?.contact?.phone ?? '暂无电话';
+console.log(phoneNumber); // 输出 "暂无电话"
+
+// 访问数组元素
+const firstItem = someArray?.[0]; // 如果 someArray 为 null 或 undefined，则返回 undefined
 ```
 ## ??空值合并运算符
 ```js
 // ??是空值合并运算符（Nullish Coalescing Operator）。它的作用是返回其左侧操作数，如果左侧操作数为null或undefined，则返回右侧操作数
+const nullValue = null;
+const undefinedValue = undefined;
+const zero = 0;
+const emptyString = '';
+const normalText = 'Hello';
+
+console.log(nullValue ?? 'default');        // 输出: 'default'
+console.log(undefinedValue ?? 'default');  // 输出: 'default'
+console.log(zero ?? 42);                   // 输出: 0 (保留了 0)
+console.log(emptyString ?? 'default');     // 输出: '' (保留了空字符串)
+console.log(normalText ?? 'default');      // 输出: 'Hello'
 ```
 ## 调试
 ```js

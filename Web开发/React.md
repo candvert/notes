@@ -1,39 +1,206 @@
-# React(version 18)
-## 起始工作
-```react
+- [快速体验](#快速体验)
+- [组件](#组件)
+- [JSX语法](#JSX语法)
+- [添加样式](#添加样式)
+- [显示数据](#显示数据)
+- [条件渲染](#条件渲染)
+- [渲染列表](#渲染列表)
+- [响应事件](#响应事件)
+- [更新界面](#更新界面)
+- [使用Hook](#使用Hook)
+# React(version 19)，使用的框架为Next.js
+```
+全栈框架不需要服务器
+Next.js 支持客户端渲染（CSR）、单页应用（SPA）和静态站点生成（SSG）。这些应用可以部署到 CDN 或静态托管服务（无需服务器）。此外，允许你根据实际需求，针对特定路由单独启用服务端渲染。
+可以将 Next.js 应用部署到任何支持 Node.js 或 Docker 容器的托管平台，或者部署到你自己的服务器。 Next.js 也支持静态导出，无需服务器。
+```
+## 快速体验
+```typescript
 // 创建项目
-// npx create-react-app local
-// local为项目名
+// npx create-next-app@latest
+// npm run dev启动项目，然后便可在浏览器访问http://localhost:3000查看网页
 
-// npm start启动项目
 
-// src目录下只需保留App.js和index.js两个文件，index.js是react项目的起点，一般在App.js文件中编写代码
-// 下面是两个文件应保留的内容
-// App.js
-function App() {
+```
+## 组件
+```typescript
+// React 应用程序是由组件组成的。一个组件是 UI（用户界面）的一部分，它拥有自己的逻辑和外观。组件可以小到一个按钮，也可以大到整个页面。
+// React 组件是返回标签的 JavaScript 函数：
+function MyButton() {
   return (
-    <div className="App">
-      this is App
+    <button>我是一个按钮</button>
+  );
+}
+// 至此，你已经声明了 MyButton，现在把它嵌套到另一个组件中
+function App() {
+    return (
+        <MyButton />
+    )
+}
+// React 组件必须以大写字母开头，而 HTML 标签则必须是小写字母。
+```
+## JSX语法
+```typescript
+// React 使用的标签语法被称为 JSX
+// JSX 比 HTML 更加严格。你必须闭合标签，如 <br />。你的组件也不能返回多个 JSX 标签。你必须将它们包裹到一个共享的父级中，比如 <div>...</div> 或使用空的 <>...</> 包裹：
+function AboutPage() {
+  return (
+    <>
+      <h1>关于</h1>
+      <p>你好。<br />最近怎么样？</p>
+    </>
+  );
+}
+```
+## 添加样式
+```typescript
+// 在 React 中，你可以使用 className 来指定一个 CSS 的 class。它与 HTML 的 class 属性的工作方式相同：
+<img className="avatar" />
+// 然后，你可以在一个单独的 CSS 文件中为它编写 CSS 规则：
+/* 在你的 CSS 文件中修改 */
+.avatar {
+  border-radius: 50%;
+}
+```
+## 显示数据
+```typescript
+// 在 JSX 中可以将 JavaScript 的表达式放进大括号 {} 中，这样你就可以从你的代码中嵌入一些变量并展示给用户
+return (
+  <h1>
+    {user.name}
+  </h1>
+);
+// 你还可以这样赋值 JSX 属性
+return (
+  <img
+    className="avatar"
+    src={user.imageUrl}
+  />
+);
+```
+## 条件渲染
+```typescript
+// React 没有特殊的语法来编写条件语句，因此你使用的就是普通的 JavaScript 代码。例如使用 if 语句根据条件：
+let content;
+if (isLoggedIn) {
+  content = <AdminPanel />;
+} else {
+  content = <LoginForm />;
+}
+return (
+  <div>
+    {content}
+  </div>
+);
+// 如果你喜欢更为紧凑的代码，可以使用条件 ? 运算符。与 if 不同的是，它工作于 JSX 内部：
+<div>
+  {isLoggedIn ? (
+    <AdminPanel />
+  ) : (
+    <LoginForm />
+  )}
+</div>
+// 当你不需要 else 分支时，你也可以使用更简短的逻辑 && 语法：
+<div>
+  {isLoggedIn && <AdminPanel />}
+</div>
+// 所有这些方法也适用于有条件地指定属性。
+```
+## 渲染列表
+```typescript
+// 你将依赖 JavaScript 的特性，例如 for 循环和 array 的 map() 函数来渲染组件列表。
+// 假设你有一个产品数组：
+const products = [
+  { title: 'Cabbage', id: 1 },
+  { title: 'Garlic', id: 2 },
+  { title: 'Apple', id: 3 },
+];
+// 在你的组件中，使用 map() 函数将这个数组转换为 <li> 标签构成的列表:
+const listItems = products.map(product =>
+  <li key={product.id}>
+    {product.title}
+  </li>
+);
+
+return (
+  <ul>{listItems}</ul>
+);
+// 注意，<li> 有一个 key 属性。对于列表中的每一个元素，你都应该传递一个字符串或者数字给 key，用于在其兄弟节点中唯一标识该元素。
+```
+## 响应事件
+```typescript
+// 你可以通过在组件中声明事件处理函数来响应事件：
+function MyButton() {
+  function handleClick() {
+    alert('You clicked me!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      点我
+    </button>
+  );
+}
+// 注意，onClick={handleClick} 的结尾没有小括号！不要调用事件处理函数：你只需把函数传递给事件即可。
+```
+## 更新界面
+```typescript
+// 通常你会希望你的组件 “记住” 一些信息并展示出来，比如一个按钮被点击的次数。要做到这一点，你需要在你的组件中添加 state。
+// 首先，从 React 引入 useState：
+import { useState } from 'react';
+// 现在你可以在你的组件中声明一个 state 变量：
+function MyButton() {
+  const [count, setCount] = useState(0);
+  // ...
+// 你将从 useState 中获得两样东西：当前的 state（count），以及用于更新它的函数（setCount）。你可以给它们起任何名字，但按照惯例会像 [something, setSomething] 这样为它们命名。
+// 第一次显示按钮时，count 的值为 0，因为你把 0 传给了 useState()。当你想改变 state 时，调用 setCount() 并将新的值传递给它。点击该按钮计数器将递增：
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+// 如果你多次渲染同一个组件，每个组件都会拥有自己的 state。你可以尝试点击不同的按钮：
+import { useState } from 'react';
+
+export default function MyApp() {
+  return (
+    <div>
+      <h1>独立更新的计数器</h1>
+      <MyButton />
+      <MyButton />
     </div>
   );
 }
 
-export default App;
-// index.js
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+function MyButton() {
+  const [count, setCount] = useState(0);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      点了 {count} 次
+    </button>
+  );
+}
 ```
-## JSX语法
-```react
-// react使用的语法叫JSX
-// 将JSX编译为js的工具为Babel
-// 在JSX中可以通过大括号{}识别JavaScript中的表达式
+## 使用Hook
+```typescript
+// 以 use 开头的函数被称为 Hook。useState 是 React 提供的一个内置 Hook。你也可以通过组合现有的 Hook 来编写属于你自己的 Hook。
+// Hook 比普通函数更为严格。你只能在你的组件（或其他 Hook）的顶层调用 Hook。如果你想在一个条件或循环中使用 useState，请提取一个新的组件并在组件内部使用它。
+```
 
-
+```typescript
 // 在react中，可以通过&&、?:实现基础的条件渲染
 {flag && <span>this is span</span>}
 {loading ? <span>loading...</span> : <span>this is span</span>}
@@ -50,19 +217,6 @@ function App() {
 }
 
 
-// 组件
-// 一个组件就是用户界面的一部分
-// 定义组件
-function Button() {
-    return <button>click</button>
-}
-// 使用组件
-function App() {
-    return (
-        <Button/>
-        <Button></Button>
-    )
-}
 
 
 // react中正常使用css文件，区别是class为className
@@ -90,11 +244,11 @@ const [value, setValue] = useState('')
 />
 ```
 
-```react
+```typescript
 npx json-server --watch data/db.json --port 8000
 ```
 
-```react
+```typescript
 // useState是一个Hook函数，允许向组件添加一个状态变量，也就是变量变化时，UI也会变化
 // useState返回一个数组，第一个元素就是变量，第二个元素是修改变量的函数
 import { useState } from 'react';

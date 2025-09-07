@@ -15,6 +15,8 @@
 
 
 - [LSP](#LSP)
+- [Linter](#Linter)
+- [Dap](#Dap)
 - [插件](#插件)
 	- [lazy.nvim](#lazy.nvim)
 	- [lualine.nvim](#lualine.nvim)
@@ -411,6 +413,14 @@ vim.lsp.enable('luals')
 
 -- 查看 LSP 服务器是否启动
 :checkhealth vim.lsp
+```
+## Linter
+```lua
+-- Linter 是一款​​静态代码分析工具​​。它会在代码执行前对其进行分析，能帮你找出语法错误、风格不一致、潜在的逻辑问题以及不符合最佳实践的代码
+```
+## Dap
+```lua
+-- 通过 Mason 安装的 DAP 调试适配器，使得你能够直接在 Neovim 中​​设置断点、单步调试、查看变量调用栈​​等，为多种编程语言提供统一的调试界面。
 ```
 ## lazy.nvim
 ```lua
