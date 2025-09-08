@@ -141,3 +141,21 @@ import { RevenueChartSkeleton } from '@/app/ui/skeletons';
     </main>
   );
 ```
+
+
+
+"use client"，这是一个客户端组件，这意味着您可以使用event listeners和hooks。
+```typescript
+import { useSearchParams } from 'next/navigation';
+const searchParams = useSearchParams();
+const params = new URLSearchParams(searchParams);
+
+
+
+
+
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  replace(`${pathname}?${params.toString()}`);
+```
