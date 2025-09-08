@@ -41,3 +41,10 @@ function myFn<T>(a: T, b: T): T[] {
 myFn<number>(1, 2)
 myFn(1, 2)
 ```
+
+```typescript
+// status只能是'pending'或'paid'两者中一个
+invoice = {
+	status: 'pending' | 'paid'
+}
+```
