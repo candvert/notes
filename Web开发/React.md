@@ -198,20 +198,26 @@ function MyButton() {
 ```
 ## props
 ```typescript
-// props即父组件给子组件传递值
-// Ide.tsx
-export default function Ide(props) {
-    return <button>props.name</button>;
+// 在您的 HomePage 组件中，您可以将自定义标题属性传递给 Header 组件，就像传递 HTML 属性一样：
+function HomePage() {
+  return (
+    <div>
+      <Header title="React" />
+    </div>
+  );
 }
 
-// page.tsx
-import Ide from './Ide.tsx'
-export default function Home() {
-    return (
-        <div>
-            <Ide name={'John'}></Ide>
-        </div>
-   );
+// 子组件 Header 可以接受这些 props 作为其第一个函数参数：
+// 如果您使用 console.log() props，您就会看到它是一个具有 title 属性的对象。
+function Header(props) {
+  console.log(props); // { title: "React" }
+  return <h1>Develop. Preview. Ship.</h1>;
+}
+
+// 由于 props 是一个对象，因此您可以使用对象解构来明确命名函数参数中的 props 值：
+function Header({ title }) {
+  console.log(title);
+  return <h1>{title}</h1>;
 }
 ```
 ## 使用Hook
