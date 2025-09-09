@@ -7,6 +7,7 @@
 	- [字符串模板](#字符串模板)
 	- [比较](#比较)
 	- [添加和循环语句](#添加和循环语句)
+	- [解构赋值的重命名](#解构赋值的重命名)
 	- [...扩展运算符](#...扩展运算符)
 	- [?.](#?.)
 	- [??空值合并运算符](#??空值合并运算符)
@@ -26,6 +27,7 @@
 
 - [api和框架](#api和框架)
 	- [内置api](#内置api)
+		- [Date模块](#Date模块)
 	- [浏览器api](#浏览器api)
 	- [Node.js](#Node.js)
 	- [electron](#electron)
@@ -103,6 +105,12 @@ let nums = [23, 35, 67]
 for (num of nums) {}	// num为每个元素值
 for (index in nums) {}	// index为每个元素下标
 // js中也有三元运算符 ? :
+```
+## 解构赋值的重命名
+```js
+// data: metadata的意思是将data的值赋给metadata，两个变量都能使用
+let { data: metadata, content } = readMDXFile();
+console.log(metadata);
 ```
 ## ...扩展运算符
 ```js
@@ -302,7 +310,7 @@ for (a in Person) {			// a为属性名，类型是字符串，比如name属性�
 ## import
 ```js
 // 文件中包含import或export语句，则该文件被视为模块，模块导入<script type="module" src="a.js"></script>要有type属性
-// import的文件中需要有export，比如math.js中有export const PI = 3.14，则main.js才可以导入math.js中的PI
+// 通过import语句导入的文件中需要有export，比如math.js中有export const PI = 3.14，则main.js才可以导入math.js中的PI
 // 基本语法
 import { namedExport1, namedExport2 } from './module.js';
 // 导入整个模块并使用一个命名空间
@@ -649,6 +657,17 @@ setTimeout(() => {}, 5000)
 // 查看DOM元素的详细信息，显示其所有属性和方法
 console.dir(document.querySelector('button'))
 ```
+## Date模块
+```js
+// 如果没有输入任何参数，则 Date 的构造器会依据系统设置的当前时间来创建一个 Date 对象。
+let now = new Date();
+// 返回完整年份（四位数年份）
+now.getFullYear()
+// 返回月份（0–11），0 表示一年中的第一月
+now.getMonth()
+// 返回一个月中的哪一日（1-31）
+now.getDate()
+```
 ## 浏览器api
 ```js
 // localStorage在用户的浏览器中存储数据，数据可以永久保留，直到显式删除
@@ -673,7 +692,7 @@ sessionStorage.clear();
 ```
 ## Node.js
 ```js
-// require()函数在node中用于导入模块，或导入json文件内容
+// require()函数在node中用于导入模块，或导入json文件内容。一般只在node中使用，因为浏览器和主流标准使用import/export语法
 const path = require('path')
 const j = require('./j.json')
 // 常用模块
