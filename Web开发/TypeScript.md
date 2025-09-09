@@ -48,3 +48,12 @@ invoice = {
 	status: 'pending' | 'paid'
 }
 ```
+
+```typescript
+// 语法分析
+// { children }​​       对象解构 (Destructuring)
+// Readonly<...>​​       只读泛型 (Generic)​​         表示整个对象是不可变的
+// { children: React.ReactNode; }​​  定义对象的形状：必须有一个 children 属性
+// React.ReactNode        定义 children 属性的类型
+{ children, }: Readonly<{ children: React.ReactNode; }>​​
+```

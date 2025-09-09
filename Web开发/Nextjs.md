@@ -1,6 +1,13 @@
 - [添加自定义字体next/font](#添加自定义字体next/font)
 - [添加图片next/image](#添加图片next/image)
 - [route](#route)
+- [Link组件](#Link组件)
+- [Server Components](#Server%20Components)
+- [loading.tsx](#loading.tsx)
+- [Route groups](#Route%20groups)
+- [React Suspense](#React%20Suspense)
+- [use client](#use%20client)
+- [layout文件](#layout文件)
 ## 添加自定义字体next/font
 ```typescript
 // 当浏览器最初以系统字体呈现文本，然后在字体网络请求并加载后将其换成自定义字体时，就会发生布局转变。可能会导致文本大小、间距或布局发生变化，并移动周围的元素。
@@ -62,8 +69,7 @@ page.tsx 是一个特殊的 Next.js 文件，它导出一个 React 组件，并�
 ![[nextjs3.avif]]
 <Layout /> 组件（即 layout.tsx 文件）接收一个 children prop。这个子组件可以是一个页面，也可以是另一个布局。
 /app/layout.tsx 称为根布局，每个 Next.js 应用程序都需要它。添加到根布局的任何 UI 都将在应用程序的所有页面之间共享。
-
-
+## Link组件
 <Link /> 组件允许您使用 JavaScript 进行客户端导航。
 每当 <Link /> 组件出现在浏览器的视口中时，Next.js 都会在后台自动预取链接路由的代码。当用户点击链接时，目标页面的代码已经在后台加载，这使得页面转换几乎是即时的！
 ```typescript
@@ -77,7 +83,7 @@ import Link from 'next/link';
             <p className="hidden md:block">{link.name}</p>
           </Link>
 ```
-
+使用clsx
 ```typescript
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -89,7 +95,7 @@ const pathname = usePathname();
               },
             )}
 ```
-
+## Server Components
 默认情况下，Next.js 应用程序使用 React Server Components。
 ```typescript
 import postgres from 'postgres';
@@ -117,17 +123,13 @@ SEO - 预渲染内容更容易被搜索引擎爬虫索引，因为页面加载�
 在 Next.js 中，有两种实现流式传输的方式： 
 在页面级别，使用loading.tsx文件（它会为你创建 <Suspense />）。 
 在组件级别，使用 <Suspense /> 进行更精细的控制。
-
+## loading.tsx
 loading.tsx 是一个基于 React Suspense 构建的特殊 Next.js 文件。它允许你创建备用 UI，以便在页面内容加载时替代显示。您在loading.tsx中添加的任何UI都将作为静态文件的一部分嵌入，并首先发送。然后，其余的动态内容将从服务器流式传输到客户端。
-
-
-
+## Route groups
 在 dashboard 文件夹内创建一个名为 /(overview) 的新文件夹。然后将你的loading.tsx 和 page.tsx 文件移动到该文件夹​​中：
 ![[nextjs5.avif]]
 Route groups允许您将文件组织成逻辑组，而不会影响 URL 路径结构。当您使用括号 () 创建新文件夹时，其名称不会包含在 URL 路径中。因此，/dashboard/(overview)/page.tsx 会变成 /dashboard。
-
-
-
+## React Suspense
 您还可以使用 React Suspense 更加细粒度地传输特定组件。
 Suspense 允许你将应用程序的某些部分延迟渲染，直到满足某些条件（例如，数据加载完成）。你可以将动态组件包装在 Suspense 中。然后，将一个 fallback 组件传递给 Suspense，以便在动态组件加载时显示。
 ```typescript
@@ -141,9 +143,7 @@ import { RevenueChartSkeleton } from '@/app/ui/skeletons';
     </main>
   );
 ```
-
-
-
+## use client
 "use client"，这是一个客户端组件，这意味着您可以使用event listeners和hooks。
 ```typescript
 import { useSearchParams } from 'next/navigation';
@@ -158,4 +158,21 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
   const pathname = usePathname();
   const { replace } = useRouter();
   replace(`${pathname}?${params.toString()}`);
+```
+## layout文件
+`layout` 文件用于定义 Next.js 应用程序中的布局。
+A root layout is the top-most layout in the root app directory.
+布局组件应该接受并使用 `children` prop。
+```typescript
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  )
+}
 ```
