@@ -8,6 +8,19 @@
 - [React Suspense](#React%20Suspense)
 - [use client](#use%20client)
 - [layout文件](#layout文件)
+
+npx shadcn@latest init
+npm i gray-matter
+npm install next-themes
+npx shadcn@latest add breadcrumb 
+npm i next-mdx-remote
+npm i sugar-high
+npm install prisma --save-dev 
+npx prisma init --datasource-provider postgresql --output ../generated/prisma
+npx prisma db push
+npx prisma studio
+npm i swr
+npm i zod
 ## 添加自定义字体next/font
 ```typescript
 // 当浏览器最初以系统字体呈现文本，然后在字体网络请求并加载后将其换成自定义字体时，就会发生布局转变。可能会导致文本大小、间距或布局发生变化，并移动周围的元素。

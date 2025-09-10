@@ -3,6 +3,7 @@
 	- [输入输出](#输入输出)
 	- [变量](#变量)
 	- [常量](#常量)
+	- [数据类型](#数据类型)
 	- [数组](#数组)
 	- [字符串模板](#字符串模板)
 	- [比较](#比较)
@@ -62,17 +63,20 @@ console.log("ok")
 ## 变量
 ```js
 let name = 'hello', age = 20	// 新标准的写法，推荐使用
-var grade = 10	// var是遗留的，不建议使用
-grade = 10	// 也可以不加关键字，和python一样，这是由于var可以先初始化再声明，但是这会造成代码混乱，不建议使用
 
+var grade = 10	// var是遗留的，不建议使用
+grade = 10	// 也可以不加关键字，不建议使用，和python一样，这是由于var可以先初始化再声明，但是这会造成代码混乱
+```
+## 常量
+```js
+const GRADE = 78
+```
+## 数据类型
+```js
 // 七种基本数据类型：Boolean、null、undefined、Number、BigInt、String、Symbol
 // undefined即变量未赋值
 console.log(typeof name)	// 使用typeof关键字来判断类型
 let a = Number(name)		// 使用Number()来进行显式类型转换
-```
-## 常量
-```js
-const i = 42
 ```
 ## 数组
 ```js
