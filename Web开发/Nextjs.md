@@ -1,6 +1,7 @@
 - [添加自定义字体next/font](#添加自定义字体next/font)
 - [添加图片next/image](#添加图片next/image)
-- [route](#route)
+- [文件系统路由Routes](#文件系统路由Routes)
+- [文件系统api](#文件系统api)
 - [Link组件](#Link组件)
 - [Server Components](#Server%20Components)
 - [loading.tsx](#loading.tsx)
@@ -56,7 +57,7 @@ export default function Page() {
 // 为了避免布局偏移，最好设置图片的宽度和高度。应该具有与源图像相同的纵横比。
 // class hidden用于从移动屏幕的 DOM 中删除图像，而 md:block 用于在桌面屏幕上显示图像。
 ```
-## route
+## 文件系统路由Routes
 Next.js 使用文件系统路由，其中​​文件夹用于创建嵌套路由。每个文件夹代表一个映射到 URL 段的路由段。
 ![[nextjs1.avif]]
 您可以使用 layout.tsx 和 page.tsx 文件为每条路线创建单独的 UI。
@@ -71,6 +72,51 @@ page.tsx 是一个特殊的 Next.js 文件，它导出一个 React 组件，并�
 ![[nextjs3.avif]]
 <Layout /> 组件（即 layout.tsx 文件）接收一个 children prop。这个子组件可以是一个页面，也可以是另一个布局。
 /app/layout.tsx 称为根布局，每个 Next.js 应用程序都需要它。添加到根布局的任何 UI 都将在应用程序的所有页面之间共享。
+## 文件系统api
+```ts
+// Route Handlers 仅在 app 目录内可用
+// Route Handlers在 app 目录内的 route.js|ts 文件中定义：
+export async function GET(request: Request) {}
+// route.js|ts文件和文件系统路由 Routes 中的 page.js 很像
+// route.js 文件不能与 page.js 文件位于同一路由中。
+// 支持以下 HTTP 方法：GET、POST、PUT、PATCH、DELETE、HEAD 和 OPTIONS
+// 特殊 Route Handlers（如 sitemap.ts、opengraph-image.tsx 和 icon.tsx）以及其他 metadata files 默认保持 static，除非它们使用动态 API 或动态配置选项。
+
+// 使用
+import { cookies } from 'next/headers'
+ 
+export async function GET(request: NextRequest) {
+  const cookieStore = await cookies()
+ 
+  const a = cookieStore.get('a')
+  const b = cookieStore.set('b', '1')
+  const c = cookieStore.delete('c')
+}
+// 使用
+import { cookies } from 'next/headers'
+ 
+export async function GET(request: Request) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('token')
+ 
+  return new Response('Hello, Next.js!', {
+    status: 200,
+    headers: { 'Set-Cookie': `token=${token.value}` },
+  })
+}
+// 使用
+import { type NextRequest } from 'next/server'
+ 
+export async function GET(request: NextRequest) {
+  const token = request.cookies.get('token')
+}
+// 重定向
+import { redirect } from 'next/navigation'
+ 
+export async function GET(request: Request) {
+  redirect('https://nextjs.org/')
+}
+```
 ## Link组件
 <Link /> 组件允许您使用 JavaScript 进行客户端导航。
 每当 <Link /> 组件出现在浏览器的视口中时，Next.js 都会在后台自动预取链接路由的代码。当用户点击链接时，目标页面的代码已经在后台加载，这使得页面转换几乎是即时的！
