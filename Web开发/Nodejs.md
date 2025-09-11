@@ -3,6 +3,10 @@
 - [dns模块](#dns模块)
 
 - [gray-matter依赖](#gray-matter依赖)
+- [zod依赖](#zod依赖)
+- [swr依赖](#swr依赖)
+- [sugar-high依赖](#sugar-high依赖)
+- [next-mdx-remote依赖](#next-mdx-remote依赖)
 
 Node.js 是一个开源且跨平台的 JavaScript 运行时环境。它几乎适用于任何类型的项目！Node.js 在浏览器之外运行 V8 JavaScript 引擎（Google Chrome 的核心）。这使得 Node.js 性能非常出色。
 运行javascript文件，只需在 shell 中输入 node xxx.js
@@ -158,5 +162,188 @@ console.log(matter(str));
     title: 'Hello', 
     slug: 'home' 
   }
+}
+```
+## zod依赖
+```typescript
+// zod的作用是验证数据类型和格式
+// 先定义一个模式
+import * as z from "zod"; 
+ 
+const Player = z.object({ 
+  username: z.string(),
+  xp: z.number()
+});
+// 如果数据类型和格式正确，则返回参数的深拷贝
+Player.parse({ username: "billie", xp: 100 }); 
+// => returns { username: "billie", xp: 100 }
+// 异步使用该函数
+await Player.parseAsync({ username: "billie", xp: 100 }); 
+// 当验证失败时，.parse() 方法将抛出一个 ZodError 实例，其中包含有关验证问题的详细信息
+try {
+  Player.parse({ username: 42, xp: "100" });
+} catch(error){
+  if(error instanceof z.ZodError){
+    error.issues; 
+  }
+}
+// 如果不想用try/catch，可以使用safeParse函数
+const result = Player.safeParse({ username: 42, xp: "100" });
+if (!result.success) {
+  result.error;   // ZodError instance
+} else {
+  result.data;    // { username: string; xp: number }
+}
+// 异步使用该函数
+await schema.safeParseAsync("hello");
+
+
+
+
+// 提取类型
+const Player = z.object({ 
+  username: z.string(),
+  xp: z.number()
+});
+ 
+// extract the inferred type
+type Player = z.infer<typeof Player>;
+ 
+// use it in your code
+const player: Player = { username: "billie", xp: 100 };
+
+
+
+
+
+
+// 存在的类型： https://zod.dev/api
+// primitive types
+z.string();
+z.number();
+z.bigint();
+z.boolean();
+z.symbol();
+z.undefined();
+z.null();
+
+// 限制条件
+z.string().max(5);
+z.string().min(5);
+z.string().length(5);
+z.string().regex(/^[a-z]+$/);
+z.string().startsWith("aaa");
+z.string().endsWith("zzz");
+z.string().includes("---");
+z.string().uppercase();
+z.string().lowercase();
+z.string().trim(); // trim whitespace
+z.string().toLowerCase(); // toLowerCase
+z.string().toUpperCase(); // toUpperCase
+z.string().normalize(); // normalize unicode characters
+
+// 常见的字符串类型，如email
+z.email();
+z.uuid();
+z.url();
+z.httpUrl();       // http or https URLs only
+z.hostname();
+z.emoji();         // validates a single emoji character
+z.base64();
+z.base64url();
+z.hex();
+z.jwt();
+z.nanoid();
+z.cuid();
+z.cuid2();
+z.ulid();
+z.ipv4();
+z.ipv6();
+z.cidrv4();        // ipv4 CIDR block
+z.cidrv6();        // ipv6 CIDR block
+z.hash("sha256");  // or "sha1", "sha384", "sha512", "md5"
+z.iso.date();
+z.iso.time();
+z.iso.datetime();
+z.iso.duration();
+```
+## swr依赖
+```typescript
+// 用于数据获取的 React Hooks 库
+// 在这个例子中，useSWR hook 接受一个 key 字符串和一个 fetcher 函数。key 是数据的唯一标识符（通常是 API URL），将传递给 fetcher。fetcher 可以是任何返回数据的异步函数，您可以使用原生的 fetch 或 Axios 之类的工具。根据请求的状态，该钩子返回 3 个值：data、isLoading 和 error。
+import useSWR from 'swr'
+
+function Profile() {
+  const { data, error, isLoading } = useSWR('/api/user', fetcher)
+
+  if (error) return <div>failed to load</div>
+  if (isLoading) return <div>loading...</div>
+  return <div>hello {data.name}!</div>
+}
+```
+## sugar-high依赖
+```typescript
+// 超轻量级 JSX 语法高亮器，压缩和 gzip 压缩后约 1KB
+import { highlight } from 'sugar-high'
+
+const codeHTML = highlight(code)
+
+document.querySelector('pre > code').innerHTML = codeHTML
+
+// 自定义高亮颜色，放进global.css
+/**
+ * Types that sugar-high have:
+ *
+ * identifier
+ * keyword
+ * string
+ * Class, number and null
+ * property
+ * entity
+ * jsx literals
+ * sign
+ * comment
+ * break
+ * space
+ */
+:root {
+  --sh-class: #2d5e9d;
+  --sh-identifier: #354150;
+  --sh-sign: #8996a3;
+  --sh-property: #0550ae;
+  --sh-entity: #249a97;
+  --sh-jsxliterals: #6266d1;
+  --sh-string: #00a99a;
+  --sh-keyword: #f47067;
+  --sh-comment: #a19595;
+}
+```
+## next-mdx-remote
+```typescript
+// 将下面内容复制到next.config.js中
+const nextConfig = {
+  transpilePackages: ['next-mdx-remote'],
+}
+// 使用
+import { serialize } from 'next-mdx-remote/serialize'
+import { MDXRemote } from 'next-mdx-remote'
+
+import Test from '../components/test'
+
+const components = { Test }
+
+export default function TestPage({ source }) {
+  return (
+    <div className="wrapper">
+      <MDXRemote {...source} components={components} />
+    </div>
+  )
+}
+
+export async function getStaticProps() {
+  // MDX text - can be from a local file, database, anywhere
+  const source = 'Some **mdx** text, with a component <Test />'
+  const mdxSource = await serialize(source)
+  return { props: { source: mdxSource } }
 }
 ```
