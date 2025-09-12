@@ -75,7 +75,7 @@ page.tsx 是一个特殊的 Next.js 文件，它导出一个 React 组件，并�
 ## 文件系统api
 ```ts
 // Route Handlers 仅在 app 目录内可用
-// Route Handlers在 app 目录内的 route.js|ts 文件中定义：
+// Route Handlers 在 app 目录内的 route.js|ts 文件中定义：
 export async function GET(request: Request) {}
 // route.js|ts文件和文件系统路由 Routes 中的 page.js 很像
 // route.js 文件不能与 page.js 文件位于同一路由中。

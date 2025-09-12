@@ -1,9 +1,10 @@
 - [初始配置](#初始配置)
+- [设置全局代理](#设置全局代理)
 - [将本地仓库和远程仓库关联起来](#将本地仓库和远程仓库关联起来)
 - [常用指令](#常用指令)
-- [git remote](#git remote)
-- [git branch](#git branch)
-- [git push](#git push)
+- [git remote](#git%20remote)
+- [git branch](#git%20branch)
+- [git push](#git%20push)
 - [.gitignore](#.gitignore)
 
 # 初始配置
@@ -41,7 +42,7 @@ git add .
 git commit -m "a"
 git push
 ```
-有时提交会失败，若出错消息是ssh，则在密钥所在目录创建一个config文件，并写入下面内容。作用是通过HTTPS端口进行SSH连接
+有时 git push 会失败，若出错消息是 ssh，则在密钥所在目录创建一个 config 文件，并写入下面内容。作用是通过 HTTPS 端口进行 SSH 连接
 ```
 Host github.com
   HostName ssh.github.com
@@ -105,6 +106,10 @@ git branch -M ok
 git push -u origin master:main
 # 将远程的main分支和本地的main分支关联起来
 git push -u origin main
+```
+## git fetch
+```shell
+git fetch 可获取远程所有最新更新，但不会自动合并到本地
 ```
 ## .gitignore
 ```
