@@ -76,11 +76,14 @@ page.tsx 是一个特殊的 Next.js 文件，它导出一个 React 组件，并�
 ```ts
 // Route Handlers 仅在 app 目录内可用
 // Route Handlers 在 app 目录内的 route.js|ts 文件中定义：
+<<<<<<< HEAD
 export async function GET(request: Request) {}
 // route.js|ts文件和文件系统路由 Routes 中的 page.js 很像
 // route.js 文件不能与 page.js 文件位于同一路由中。
+=======
+// route.js 文件不能与 page.js 文件位于同一路由，也就说 URL 不能相同
+>>>>>>> 29f510abc618394f87cb1f0a4224d4589a55b0b4
 // 支持以下 HTTP 方法：GET、POST、PUT、PATCH、DELETE、HEAD 和 OPTIONS
-// 特殊 Route Handlers（如 sitemap.ts、opengraph-image.tsx 和 icon.tsx）以及其他 metadata files 默认保持 static，除非它们使用动态 API 或动态配置选项。
 
 // 使用
 import { cookies } from 'next/headers'

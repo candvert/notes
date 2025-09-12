@@ -2,9 +2,12 @@
 - [设置全局代理](#设置全局代理)
 - [将本地仓库和远程仓库关联起来](#将本地仓库和远程仓库关联起来)
 - [常用指令](#常用指令)
+- [远程提交更新且本地有修改，进行merge并提交](#远程提交更新且本地有修改，进行merge并提交)
 - [git remote](#git%20remote)
 - [git branch](#git%20branch)
 - [git push](#git%20push)
+- [git status](#git%20status)
+- [git diff](#git%20diff)
 - [.gitignore](#.gitignore)
 
 # 初始配置
@@ -78,6 +81,16 @@ git status
 git diff
 git log
 ```
+## 远程提交更新且本地有修改，进行merge并提交
+```shell
+git add .
+git commit -m " "
+发生错误后，对冲突的文件要进行手动修改
+然后再
+git add .
+git commit -m " "
+git push
+```
 ## git remote
 ```shell
 # 添加仓库，将其命名为origin
@@ -110,6 +123,11 @@ git push -u origin main
 ## git fetch
 ```shell
 git fetch 可获取远程所有最新更新，但不会自动合并到本地
+```
+## git diff
+```shell
+// 查看本地和远程仓库 main.txt文件的区别
+git diff main.txt
 ```
 ## .gitignore
 ```
