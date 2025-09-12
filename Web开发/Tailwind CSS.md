@@ -11,6 +11,7 @@ p{t|r|b|l}-{size}
 text-center
 // text-large
 text-lg
+text-2xl
 text-blue
 text-blue-400
 text-[13px]
@@ -94,6 +95,9 @@ text-[min(10vw,70px)]
 
 // 
 selection:bg-green-200
+
+// 字体间距
+tracking-tight
 ```
 
 ```js

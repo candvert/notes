@@ -184,7 +184,18 @@ initial-scale
 ```html
 <!-- 这是注释 -->
 <!-- 因为<和>等符号用于表示标签，所以要使用特殊字符，像c++中的转义字符 -->
-<p> &lt; &gt; &nbsp; </p>	<!-- &lt;表示>，&gt;表示<，&nbsp;表示空格，&plus;表示+，&minus表示-，&times;表示X -->
+<p> &lt; &gt; &nbsp; </p>
+<!-- 
+	&lt;             表示>
+	&gt;             表示<
+	&nbsp;           表示空格
+	&plus;           表示+
+	&minus           表示-
+	&times;          表示X
+	&apos;           表示'
+	&quot;           表示"
+	&amp;            表示&
+-->
 ```
 ## 表格
 ```html

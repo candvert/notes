@@ -10,7 +10,36 @@
 - [use client](#use%20client)
 - [layout文件](#layout文件)
 
-npm i next-mdx-remote
+- [处理md/mdx文件](#处理md/mdx文件)
+解析 Frontmatter (YAML格式的元数据)
+npm install remark-frontmatter
+
+从 Frontmatter 中提取数据
+npm install remark-mdx-frontmatter
+
+生成文章目录（TOC）
+npm install remark-toc
+
+代码语法高亮（这是目前最流行、效果最好的选择）
+npm install rehype-highlight
+或者使用 Shiki（效果更佳，但包体积稍大）
+npm install rehype-shiki
+
+允许在 MDX 中使用 HTML
+npm install rehype-raw
+
+npm install remark-gfm
+
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import rehypeSanitize from 'rehype-sanitize'
+import rehypeStringify from 'rehype-stringify'
+
+
+
+
+nextjs 具有基于文件的路由，基于文件的 api （即GET，POST等请求），基于文件的 MD/MDX （将 md/mdx 文件解析为组件并显示）
 ## 添加自定义字体next/font
 ```typescript
 // 当浏览器最初以系统字体呈现文本，然后在字体网络请求并加载后将其换成自定义字体时，就会发生布局转变。可能会导致文本大小、间距或布局发生变化，并移动周围的元素。
@@ -76,13 +105,7 @@ page.tsx 是一个特殊的 Next.js 文件，它导出一个 React 组件，并�
 ```ts
 // Route Handlers 仅在 app 目录内可用
 // Route Handlers 在 app 目录内的 route.js|ts 文件中定义：
-<<<<<<< HEAD
-export async function GET(request: Request) {}
-// route.js|ts文件和文件系统路由 Routes 中的 page.js 很像
-// route.js 文件不能与 page.js 文件位于同一路由中。
-=======
 // route.js 文件不能与 page.js 文件位于同一路由，也就说 URL 不能相同
->>>>>>> 29f510abc618394f87cb1f0a4224d4589a55b0b4
 // 支持以下 HTTP 方法：GET、POST、PUT、PATCH、DELETE、HEAD 和 OPTIONS
 
 // 使用
@@ -125,14 +148,14 @@ export async function GET(request: Request) {
 每当 <Link /> 组件出现在浏览器的视口中时，Next.js 都会在后台自动预取链接路由的代码。当用户点击链接时，目标页面的代码已经在后台加载，这使得页面转换几乎是即时的！
 ```typescript
 import Link from 'next/link';
-          <Link
-            key={link.name}
-            href={link.href}
-            className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
-          >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
-          </Link>
+<Link
+	key={link.name}
+	href={link.href}
+	className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+>	
+	<LinkIcon className="w-6" />
+	<p className="hidden md:block">{link.name}</p>
+</Link>
 ```
 使用clsx
 ```typescript
@@ -226,4 +249,102 @@ export default function RootLayout({
     </html>
   )
 }
+```
+## 处理md/mdx文件
+```ts
+// nextjs官方推荐和维护的包
+npm install @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
+// 修改 next.config.ts
+// This allows .mdx files to act as pages, routes, or imports in your application.
+import createMDX from '@next/mdx'
+ 
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Configure `pageExtensions` to include markdown and MDX files
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  // Optionally, add any other Next.js config below
+}
+ 
+const withMDX = createMDX({
+  // Add markdown plugins here, as desired
+  // 默认是只处理mdx文件，要处理md文件，则添加该行代码
+  extension: /\.(md|mdx)$/,
+})
+ 
+// Merge MDX config with Next.js config
+export default withMDX(nextConfig)
+
+
+
+
+// 和 app 目录同一目录层级创建 mdx-components.tsx 文件，定义全局 MDX 组件
+// mdx-components.tsx 是将 @next/mdx 与 App Router 一起使用所必需的，没有它，它将无法工作
+// 在 mdx-components.tsx 中添加样式和组件将影响应用程序中的所有 MDX 文件
+import type { MDXComponents } from 'mdx/types'
+ 
+const components: MDXComponents = {}
+ 
+export function useMDXComponents(): MDXComponents {
+  return components
+}
+
+
+
+
+// 您可以使用 Next.js 基于文件的路由或将 MDX 文件导入其他页面来渲染 MDX
+  my-project
+  |── mdx-components.(tsx/js)
+  ├── pages
+  │   └── mdx-page.(mdx/md)
+  └── package.json
+// mdx-page.(mdx/md) 文件
+// /mdx-page 路由显示 MDX 页面
+import { MyComponent } from 'my-component'
+ 
+# Welcome to my MDX page!
+ 
+This is some **bold** and _italics_ text.
+ 
+This is a list in markdown:
+ 
+- One
+- Two
+- Three
+ 
+Checkout my React component:
+ 
+<MyComponent />
+// 
+  .
+  ├── markdown/
+  │   └── welcome.(mdx/md)
+  ├── pages/
+  │   └── mdx-page.(tsx/js)
+  ├── mdx-components.(tsx/js)
+  └── package.json
+// mdx-page.(tsx/js)文件
+import Welcome from '@/markdown/welcome.mdx'
+ 
+export default function Page() {
+  return <Welcome />
+}
+
+
+// 设置局部样式
+import Welcome from '@/markdown/welcome.mdx'
+ 
+function CustomH1({ children }) {
+  return <h1 style={{ color: 'blue', fontSize: '100px' }}>{children}</h1>
+}
+ 
+const overrideComponents = {
+  h1: CustomH1,
+}
+ 
+export default function Page() {
+  return <Welcome components={overrideComponents} />
+}
+
+
+// mdx-layout.tsx
 ```
