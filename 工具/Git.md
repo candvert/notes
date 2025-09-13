@@ -8,6 +8,7 @@
 - [git push](#git%20push)
 - [git status](#git%20status)
 - [git diff](#git%20diff)
+- [git tag](#git%20tag)
 - [.gitignore](#.gitignore)
 
 # 初始配置
@@ -128,6 +129,26 @@ git fetch 可获取远程所有最新更新，但不会自动合并到本地
 ```shell
 // 查看本地和远程仓库 main.txt文件的区别
 git diff main.txt
+```
+## git tag
+```shell
+// 默认情况下，git push 命令不会推送标签到远程仓库，需要手动推送
+// 创建轻量标签，为已提交记录中最近的一次提交打标签
+git tag <标签名>
+// 创建附注标签，包含标签名、创建者信息、创建日期、标签说明等信息
+git tag -a <标签名> -m "说明信息"
+// ​​为历史提交打标签
+git tag -a <标签名> -m "说明信息" [commit-hash]
+// 查看标签列表​
+git tag
+// 查看标签详情
+git show <标签名>
+// 推送单个标签
+git push origin <标签名>
+// 推送所有标签​​
+git push origin --tags
+// 删除本地标签
+git tag -d <标签名>
 ```
 ## .gitignore
 ```

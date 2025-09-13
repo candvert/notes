@@ -1,24 +1,25 @@
 ```jsx
 // https://ui.shadcn.com/docs/blocks 网站的布局
 body
-	- header
-		- div container-wrapper
-			- div 3xl:fixed:container
-				- 各个 element
-	- main
-		- div container-wrapper
-			- div sidebar-wrapper
-				- div sidebar
-					- div sidebar-content
-						- 各个 element
-				- div h-full w-full
-					- div docs
-						- div flex min-w-0 flex-1 flex-col
-							- div mx-auto flex w-full max-w-2xl
-								- 各个 element
-						- div sticky top-[calc(var(--header-height)+1px)]
+	- div relative z-10 flex min-h-svh flex-col
+		- header sticky top-0 z-50 w-full
+			- div container-wrapper 3xl:fixed:px-0 px-6
+				- div 3xl:fixed:container
+					- 各个 element
+		- main
+			- div container-wrapper
+				- div sidebar-wrapper
+					- div sidebar
+						- div sidebar-content
 							- 各个 element
-	- footer
+					- div h-full w-full
+						- div docs
+							- div flex min-w-0 flex-1 flex-col
+								- div mx-auto flex w-full max-w-2xl
+									- 各个 element
+							- div sticky top-[calc(var(--header-height)+1px)]
+								- 各个 element
+		- footer
 <body class="text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)] __variable_5cfdac __variable_224a03 __variable_e8ce0c theme-default">
 <div class="bg-background relative z-10 flex min-h-svh flex-col">
 	<header class="bg-background sticky top-0 z-50 w-full">
@@ -56,6 +57,47 @@ body
 </div>
 </body>
 ```
+
+## flex布局和grid布局
+```
+flex​​ 擅长在​​一个方向​​（水平或垂直）上排列和对齐元素，它让元素具有弹性，能根据可用空间动态调整大小和顺序。它非常适合处理​​组件内部的布局
+
+grid​​ 则是一个​​二维系统​​，它允许你同时定义​​行和列​​，从而实现对整体结构的精确控制。它非常适合用于构建​​页面的宏观骨架和复杂的二维布局​​
+
+混合使用 flex 和 grid 正成为最佳实践：grid 构建宏观骨架，flex 处理微观排列​​：这是最常见的组合方式。使用 ​​grid 定义页面的整体结构​​（例如，划分出页头、侧边栏、主内容区、页脚等区域），然后在​​各个 grid 区域内部，使用 flex 来排列其子元素​​（例如，在导航区域内水平排列链接，在卡片区域内垂直排列图文内容）。这样，grid 负责大局的排兵布阵，flex 负责内部的精细调整。
+这种分工使代码逻辑更清晰。修改整体布局时，只需调整 grid；修改组件内部结构时，只需调整 flex，两者耦合度低，更易于维护和扩展。
+```
+实现该布局：
+![[tailwind_3.png]]
+```ts
+<div className="flex flex-col min-h-screen">
+	<header>
+		<p className="bg-amber-700">a</p>
+	</header>
+	<main className="flex-1 grid grid-cols-12 gap-4">
+		<p className="col-span-2 bg-blue-700">b</p>
+		<p className="col-span-8 bg-yellow-500">c</p>
+		<p className="col-span-2 bg-cyan-600">d</p>
+	</main>
+	<footer>
+		<p className="bg-purple-700">e</p>
+	</footer>
+</div>
+```
+
+```js
+sticky top-0 可以让元素固定在顶部，只有 sticky 而没 top-0 就没有固定的效果，保留原来位置
+fixed 会导致悬浮，也就是说其他元素会和该元素在同一位置，没有“实体”，不占有原来位置
+relative 偏移是相对于原位置的，偏移后仍保留原来位置
+absolute 偏移是相对于祖先元素的，祖先元素需要有除静态定位的其他定位，如果没有祖先元素，则相对于document偏移。偏移后不占有原来位置
+​​
+data-[slot=separator]​​: 这是一个​​属性选择器​​。它匹配所有具有 slot属性、且该属性值​​等于​​ separator 的 HTML 元素。例如，它会匹配：<div data-slots="separator">或 <span slot="separator">。
+```
+## 移除文字覆盖
+导航栏没有设置 bg-background
+![[tailwind_1.png]]
+导航栏设置 bg-background
+![[tailwind_2.png]]
 
 ```js
 在global.css中添加
@@ -104,6 +146,8 @@ bg-blue-200
 
 // height
 h-10
+// 提升优先级
+!h-10
 w-full
 
 // border
@@ -116,20 +160,45 @@ rounded-full
 
 top-0
 
-// flex，使用时要这样使用 flex justify-center items-center
-// 竖排
-flex-col
-// 一行/列元素如何分布
-justify-center
-justify-end
-justify-evenly
-// 
-items-center
-space-x-6
-space-y-6
+// 在下方加一条分界线
+border-b
+border-l
 
-// grid，使用时要这样使用 grid grid-cols-3 gap-2
-grid-rows-3
+// flex，使用时要这样使用 flex justify-center items-center
+// flex 默认元素有一个 min-height，可以使用 min-h-0 来覆盖默认，允许元素尺寸小于内容
+// 所有元素水平排列
+flex-row
+// 所有元素垂直排列
+flex-col
+// justify-<xxx> 一行中的所有元素如何分布
+// 一行元素位于中间
+justify-center
+// 一行所有元素放在开头
+justify-start
+// 一行所有元素放在末尾
+justify-end
+// 每个元素占据相同空间
+justify-evenly
+// 第一个元素放在开头，最后一个元素放在末尾，剩余均匀分布
+justify-between
+// content-<xxx> 多行如何在垂直方向分布
+content-start
+content-center
+contend-end
+content-between
+content-evenly
+// 元素填充所有可用空间
+content-stretch
+
+// grid，使用时要这样使用 grid grid-rows-2 grid-cols-2 gap-2
+grid-rows-2
+grid-cols-2
+row-span-2
+col-span-2
+// 行之间的间距
+gap-x-4
+// 列之间的间距
+gap-y-4
 
 // 不同设备显示
 // 默认隐藏，若设备大于 medium，则显示
@@ -147,10 +216,17 @@ dark:bg-black text-black dark:text-white
 // 阴影
 shadow-xl
 
+// 使元素跨越视口的整个高度
+h-screen
+
 accent-pink-200
 
 // 字体自适应大小
 text-[min(10vw,70px)]
+
+items-center
+space-x-6
+space-y-6
 
 // 
 selection:bg-green-200

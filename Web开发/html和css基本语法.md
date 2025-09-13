@@ -9,13 +9,16 @@
 	- [列表](#列表)
 	- [表单form](#表单form)
 	- [块元素、行内元素和行内块元素](#块元素、行内元素和行内块元素)
-	- [简便语法](#简便语法)
+	- [简便语法(Emmet语法)](#简便语法(Emmet语法))
 - [css](#css)
 	- [基本语法](#基本语法)
 	- [引入方式](#引入方式)
 	- [选择器](#选择器)
-	- [字体](#字体)
-	- [Bootstrap](#Bootstrap)
+	- [css3新增选择器](#css3新增选择器)
+	- [属性](#属性)
+	- [flex布局](#flex布局)
+	- [实现弹跳动画效果](#实现弹跳动画效果)
+	- [css的特性](#css的特性)
 
 # html
 ## 基本结构
@@ -778,19 +781,5 @@ flex-flow: row wrap;
 /* 子标签会继承父标签的某些样式，text-, font-, line-开头的可以继承，以及color属性 */
 <div>
 	<span>hello</span>
-</div>
-```
-## Bootstrap
-```html
-// 栅格系统
-<div class="container">
-    <div class="row">
-        <div class="col-md-4">hello</div>
-        <div class="col-md-4">world</div>
-        <div class="row">
-            <div class="col-md-6">hello</div>
-            <div class="col-md-6">world</div>
-        </div>
-    </div>
 </div>
 ```
