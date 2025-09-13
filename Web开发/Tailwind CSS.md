@@ -1,63 +1,3 @@
-```jsx
-// https://ui.shadcn.com/docs/blocks 网站的布局
-body
-	- div relative z-10 flex min-h-svh flex-col
-		- header sticky top-0 z-50 w-full
-			- div container-wrapper 3xl:fixed:px-0 px-6
-				- div 3xl:fixed:container
-					- 各个 element
-		- main
-			- div container-wrapper
-				- div sidebar-wrapper
-					- div sidebar
-						- div sidebar-content
-							- 各个 element
-					- div h-full w-full
-						- div docs
-							- div flex min-w-0 flex-1 flex-col
-								- div mx-auto flex w-full max-w-2xl
-									- 各个 element
-							- div sticky top-[calc(var(--header-height)+1px)]
-								- 各个 element
-		- footer
-<body class="text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)] __variable_5cfdac __variable_224a03 __variable_e8ce0c theme-default">
-<div class="bg-background relative z-10 flex min-h-svh flex-col">
-	<header class="bg-background sticky top-0 z-50 w-full">
-		<div class="container-wrapper 3xl:fixed:px-0 px-6">
-			<div class="3xl:fixed:container flex h-(--header-height) items-center gap-2 **:data-[slot=separator]:!h-4">
-				nav
-			</div>
-		</div>
-	</header>
-	<main class="flex flex-1 flex-col">
-		<div class="container-wrapper flex flex-1 flex-col px-2">
-			<div data-slot="sidebar-wrapper" class="group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex w-full 3xl:fixed:container 3xl:fixed:px-3 min-h-min flex-1 items-start px-0 [--sidebar-width:220px] [--top-spacing:0] lg:grid lg:grid-cols-[var(--sidebar-width)_minmax(0,1fr)] lg:[--sidebar-width:240px] lg:[--top-spacing:calc(var(--spacing)*4)]" style="--sidebar-width: 16rem; --sidebar-width-icon: 3rem;">
-				<div data-slot="sidebar" class="text-sidebar-foreground w-(--sidebar-width) flex-col sticky top-[calc(var(--header-height)+1px)] z-30 hidden h-[calc(100svh-var(--footer-height)+2rem)] bg-transparent lg:flex">
-					sidebar
-				</div>
-				<div class="h-full w-full">
-					<div data-slot="docs" class="flex items-stretch text-[1.05rem] sm:text-[15px] xl:w-full">
-						<div class="flex min-w-0 flex-1 flex-col">
-							<div class="h-(--top-spacing) shrink-0">
-								<div class="mx-auto flex w-full max-w-2xl min-w-0 flex-1 flex-col gap-8 px-4 py-6 text-neutral-800 md:px-0 lg:py-8 dark:text-neutral-300">
-									mainarea
-								</div>
-							</div>
-						</div>
-						<div class="sticky top-[calc(var(--header-height)+1px)] z-30 ml-auto hidden h-[calc(100svh-var(--footer-height)+2rem)] w-72 flex-col gap-4 overflow-hidden overscroll-none pb-8 xl:flex">
-							right sidebar
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</main>
-	<footer class="group-has-[.section-soft]/body:bg-surface/40 3xl:fixed:bg-transparent group-has-[.docs-nav]/body:pb-20 group-has-[.docs-nav]/body:sm:pb-0 dark:bg-transparent">
-	</footer>
-</div>
-</body>
-```
-
 ## flex布局和grid布局
 ```
 flex​​ 擅长在​​一个方向​​（水平或垂直）上排列和对齐元素，它让元素具有弹性，能根据可用空间动态调整大小和顺序。它非常适合处理​​组件内部的布局
@@ -70,6 +10,7 @@ grid​​ 则是一个​​二维系统​​，它允许你同时定义​​
 实现该布局：
 ![[tailwind_3.png]]
 ```ts
+// main 标签中的 flex-1 是必须的。flex-1 允许 flex item 根据需要增大或缩小，忽略其初始大小
 <div className="flex flex-col min-h-screen">
 	<header>
 		<p className="bg-amber-700">a</p>
@@ -82,6 +23,23 @@ grid​​ 则是一个​​二维系统​​，它允许你同时定义​​
 	<footer>
 		<p className="bg-purple-700">e</p>
 	</footer>
+</div>
+```
+实现该布局：
+![[tailwind_5.png]]
+```ts
+<div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full max-w-4xl h-96">
+	<div className="row-span-2 bg-purple-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold">
+	  01
+	</div>
+	<div className="bg-purple-200 flex items-center justify-center text-gray-800 text-2xl font-bold">
+	  02
+	</div>
+	<div className="bg-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+	  03
+	</div>
+  </div>
 </div>
 ```
 
@@ -181,10 +139,14 @@ justify-end
 justify-evenly
 // 第一个元素放在开头，最后一个元素放在末尾，剩余均匀分布
 justify-between
+// 允许 flex item 根据需要增大或缩小，忽略其初始大小
+flex-1
+// 放大元素
+grow-2
 // content-<xxx> 多行如何在垂直方向分布
 content-start
 content-center
-contend-end
+content-end
 content-between
 content-evenly
 // 元素填充所有可用空间

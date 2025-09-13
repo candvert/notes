@@ -149,6 +149,10 @@ git push origin <标签名>
 git push origin --tags
 // 删除本地标签
 git tag -d <标签名>
+// 查看远程仓库的标签
+git ls-remote --tags origin
+// 删除远程仓库的标签
+git push origin --d <tagname>
 ```
 ## .gitignore
 ```

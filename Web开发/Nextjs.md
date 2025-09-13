@@ -252,13 +252,12 @@ export default function RootLayout({
 ```
 ## 处理md/mdx文件
 ```ts
-// nextjs官方推荐和维护的包
+// 先安装nextjs官方推荐和维护的包
 npm install @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
 // 修改 next.config.ts
 // This allows .mdx files to act as pages, routes, or imports in your application.
 import createMDX from '@next/mdx'
  
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   // Configure `pageExtensions` to include markdown and MDX files
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
@@ -291,13 +290,14 @@ export function useMDXComponents(): MDXComponents {
 
 
 
-// 您可以使用 Next.js 基于文件的路由或将 MDX 文件导入其他页面来渲染 MDX
+// 当使用基于文件的路由时，您可以像使用任何其他页面一样使用 MDX 页面
   my-project
+  ├── app
+  │   └── mdx-page
+  │       └── page.(mdx/md)
   |── mdx-components.(tsx/js)
-  ├── pages
-  │   └── mdx-page.(mdx/md)
   └── package.json
-// mdx-page.(mdx/md) 文件
+// page.(mdx/md) 文件，也就是说必须以文件名必须为page.(mdx/md)
 // /mdx-page 路由显示 MDX 页面
 import { MyComponent } from 'my-component'
  
@@ -314,12 +314,13 @@ This is a list in markdown:
 Checkout my React component:
  
 <MyComponent />
-// 
+// 使用 imports
   .
+  ├── app/
+  │   └── mdx-page/
+  │       └── page.(tsx/js)
   ├── markdown/
   │   └── welcome.(mdx/md)
-  ├── pages/
-  │   └── mdx-page.(tsx/js)
   ├── mdx-components.(tsx/js)
   └── package.json
 // mdx-page.(tsx/js)文件
