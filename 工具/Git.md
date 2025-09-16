@@ -9,6 +9,7 @@
 - [git status](#git%20status)
 - [git diff](#git%20diff)
 - [git tag](#git%20tag)
+- [git reset](#git%20reset)
 - [.gitignore](#.gitignore)
 
 # 初始配置
@@ -153,6 +154,11 @@ git tag -d <标签名>
 git ls-remote --tags origin
 // 删除远程仓库的标签
 git push origin --d <tagname>
+```
+## git reset
+```shell
+git reset --hard <hash>
+git clean --fd
 ```
 ## .gitignore
 ```

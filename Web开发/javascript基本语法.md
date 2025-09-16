@@ -640,7 +640,7 @@ arr.unshift("ok")					// 添加的首部，返回数组新的长度
 arr.pop()							// 删除尾部元素，返回被删除的元素
 arr.shift()							// 删除首部元素，返回被删除的元素
 arr.splice(0, 2)					// 删除arr中的元素，范围是[)
-arr.map(() => {})					// 对每个元素执行操作，返回新数组
+arr.map(() => {})					// 对每个元素执行操作，返回新数组，不会改变原来数组
 arr.filter(() => {})				// 对每个元素执行操作，如果lambda返回true，则添加到新数组，返回新数组
 const dogNames = ["Rocket", "Flash", "Bella", "Slugger"]
 dogNames.toString()					// Rocket,Flash,Bella,Slugger

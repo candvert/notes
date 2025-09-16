@@ -86,6 +86,10 @@ path.basename('nodejs.md', '.md')
 path.extname('nodejs.md')
 // 获取目录名
 path.dirname('nodejs.md')
+
+
+// 在 nextjs 中 process.cwd() 输出的是根目录，即 package.json 所在目录
+path.join(process.cwd(), 'content', 'post.md')
 ```
 
 ```js

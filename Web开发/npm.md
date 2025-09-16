@@ -62,6 +62,7 @@ npm i <包名>@1.12.3
 npm i <包名>latest
 # 安装开发依赖，只在开发环境用，不会打包到生产环境
 npm i <包名> --save-dev
+npm i -D <包名>    # -D是--save-dev的简写
 # 安装全部依赖，根据 package.json 或 package-lock.json 安装项目需要的所有依赖
 npm i
 # 卸载依赖

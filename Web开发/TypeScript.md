@@ -121,3 +121,9 @@ myFn(1, 2)
 // React.ReactNode        定义 children 属性的类型
 { children, }: Readonly<{ children: React.ReactNode; }>​​
 ```
+
+## satisfies关键字
+```ts
+// 确保你定义的对象（components）满足（satisfies）MDXComponents接口的要求。如果对象缺少必需的属性或者属性类型不匹配，TypeScript 编译器会报错
+const components = {} satisfies MDXComponents
+```

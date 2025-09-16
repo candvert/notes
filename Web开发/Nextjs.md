@@ -24,11 +24,13 @@ npm install remark-toc
 npm install rehype-highlight
 或者使用 Shiki（效果更佳，但包体积稍大）
 npm install rehype-shiki
+生成文章目录（TOC）
+npm install remark-toc
+
+npm install remark-gfm
 
 允许在 MDX 中使用 HTML
 npm install rehype-raw
-
-npm install remark-gfm
 
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
