@@ -254,6 +254,63 @@ export default function RootLayout({
 ```
 ## 处理md/mdx文件
 ```ts
+// 成功使用的技术栈
+npm i next-mdx-remote shiki rehype-autolink-headings html-react-parser
+
+// 这些插件的配合使用
+const components = {
+  h1: (props: ComponentPropsWithoutRef<"h1">) => (
+    <h1 {...props} className="text-amber-400 text-2xl py-4">
+      {props.children}
+    </h1>
+  ),
+  h2: (props: ComponentPropsWithoutRef<"h2">) => (
+    <h2
+      {...props}
+      className="text-amber-400 text-2xl py-4"
+      id={props.children?.toString()}
+    >
+      {props.children}
+    </h2>
+  ),
+  code: async (props: ComponentPropsWithoutRef<"code">) => (
+    <code>
+      {parse(
+        await codeToHtml(props.children?.toString() || "", {
+          lang: "c++",
+          theme: "vitesse-dark",
+          transformers: [
+            {
+              pre(node) {
+                node.properties.class = node.properties.class +=
+                  " pl-8 rounded-xl py-4";
+              },
+            },
+          ],
+        })
+      )}
+    </code>
+  ),
+  a: (props: ComponentPropsWithoutRef<"a">) => (
+    <div className="pl-12 text-lg py-1 text-blue-800">
+      <a {...props}>{props.children}</a>
+    </div>
+  ),
+};
+
+<MDXRemote
+  source={content}
+  components={components}
+  options={{
+	mdxOptions: {
+	  rehypePlugins: [rehypeAutolinkHeadings],
+	},
+  }}
+/>
+```
+使用官方提供的工具
+```ts
+// 目前无法实现动态路由，其他都没有问题。虽然可以 import Welcome from '@/markdown/welcome.mdx' 然后直接 <Welcome />。但无法实现根据当前路由读取 md 文档再显示的功能，因为无法动态 import
 // 先安装nextjs官方推荐和维护的包
 npm install @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
 // 修改 next.config.ts
@@ -350,4 +407,59 @@ export default function Page() {
 
 
 // mdx-layout.tsx
+```
+使用 remark 和 rehype 生态
+```ts
+// unified 本身是一个相当小的模块，充当统一处理不同内容格式的接口。围绕某种格式，存在一个生态系统。例如 Markdown 的 Remark，Html 的 Rehype
+// remark-parse 定义了如何将 markdown 作为输入并将其转换为语法树
+// remark-gfm 用于启用 GitHub 使用 GFM 添加的 markdown 扩展：自动链接文字（www.x.com）、脚注（[^1]）、删除线（~~stuff~~）、表格（| cell |...）和任务列表（* [x]）
+// remark-rehype 可以从 remark（markdown 生态系统）切换到 rehype（HTML 生态系统）。它通过将当前 markdown（mdast）语法树转换为 HTML（hast）语法树来实现这一点。remark 插件处理 mdast，rehype 插件处理 hast，因此 remark-rehype 之后使用的插件必须是 rehype 插件。
+// rehype-stringify 将语法树作为输入并将其转换为序列化的 HTML
+
+
+// npm i to-vfile rehype-stringify remark-gfm remark-rehype rehype-pretty-code shiki
+// process(await read("example.md")); 的 read 函数是基于根目录的，
+// 即package.json所在目录
+import rehypeStringify from "rehype-stringify";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import rehypePrettyCode from "rehype-pretty-code";
+import rehypeSlug from 'rehype-slug'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import { read } from "to-vfile";
+import { unified } from "unified";
+
+async function ok() {
+  const file = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings)
+    .use(rehypePrettyCode)
+    .use(rehypeStringify)
+    .process(await read("javascript基本语法.md"));
+
+    return String(file);
+}
+
+export default async function Home() {
+  const c = await ok();
+  return <div dangerouslySetInnerHTML={{ __html: c }} />;
+}
+```
+
+```ts
+当浏览器发送请求时，如果 URL 中包含中文或其他特殊字符，浏览器会自动使用 encodeURIComponent对其进行编码，转换成 %xx的形式
+Next.js 服务器或路由机制接收到的是编码后的字符串
+Next.js 不会自动为你解码这些参数，因此你需要手动调用 decodeURIComponent来将其还原为原始字符串
+```
+
+```ts
+直接将字符串转换为 react 组件
+export default function Home() {
+	const html = "<h1>hi<h1>";
+	return <div dangerouslySetInnerHTML={{ __html: html }} />;
+}
 ```

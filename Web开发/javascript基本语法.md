@@ -101,7 +101,7 @@ alert(`this is ${a} world`)	// 字符串模板${a}，使用反引号会包括换
 console.log(2 == '2')		// 结果为true，==只测试值是否相同，而不判断数据类型是否相同
 console.log(2 === '2')		// 结果为false，进行比较时推荐用===或!==
 ```
-	## 添加和循环语句
+## 添加和循环语句
 ```js
 // if语句，switch语句，while语句，for语句，do...while语句和c++中的相同
 // 但范围for语句和c++中的不同
@@ -647,6 +647,12 @@ dogNames.toString()					// Rocket,Flash,Bella,Slugger
 const data = "Manchester,London,Liverpool,Birmingham,Leeds,Carlisle"
 const cities = data.split(",")		// 返回新数组
 cities.join(',')					// 返回字符串
+
+// 
+const arr1 = [1, 2, 1];
+const result = arr1.flatMap((num) => (num === 2 ? [2, 2] : 1));
+console.log(result);
+// Expected output: Array [1, 2, 2, 1]
 
 
 // 判断变量是否为空
