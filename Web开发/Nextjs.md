@@ -253,61 +253,6 @@ export default function RootLayout({
 }
 ```
 ## 处理md/mdx文件
-```ts
-// 成功使用的技术栈
-npm i next-mdx-remote shiki rehype-autolink-headings html-react-parser
-
-// 这些插件的配合使用
-const components = {
-  h1: (props: ComponentPropsWithoutRef<"h1">) => (
-    <h1 {...props} className="text-amber-400 text-2xl py-4">
-      {props.children}
-    </h1>
-  ),
-  h2: (props: ComponentPropsWithoutRef<"h2">) => (
-    <h2
-      {...props}
-      className="text-amber-400 text-2xl py-4"
-      id={props.children?.toString()}
-    >
-      {props.children}
-    </h2>
-  ),
-  code: async (props: ComponentPropsWithoutRef<"code">) => (
-    <code>
-      {parse(
-        await codeToHtml(props.children?.toString() || "", {
-          lang: "c++",
-          theme: "vitesse-dark",
-          transformers: [
-            {
-              pre(node) {
-                node.properties.class = node.properties.class +=
-                  " pl-8 rounded-xl py-4";
-              },
-            },
-          ],
-        })
-      )}
-    </code>
-  ),
-  a: (props: ComponentPropsWithoutRef<"a">) => (
-    <div className="pl-12 text-lg py-1 text-blue-800">
-      <a {...props}>{props.children}</a>
-    </div>
-  ),
-};
-
-<MDXRemote
-  source={content}
-  components={components}
-  options={{
-	mdxOptions: {
-	  rehypePlugins: [rehypeAutolinkHeadings],
-	},
-  }}
-/>
-```
 使用官方提供的工具
 ```ts
 // 目前无法实现动态路由，其他都没有问题。虽然可以 import Welcome from '@/markdown/welcome.mdx' 然后直接 <Welcome />。但无法实现根据当前路由读取 md 文档再显示的功能，因为无法动态 import
@@ -417,7 +362,7 @@ export default function Page() {
 // rehype-stringify 将语法树作为输入并将其转换为序列化的 HTML
 
 
-// npm i to-vfile rehype-stringify remark-gfm remark-rehype rehype-pretty-code shiki rehype-autolink-headings npm install rehype-slug
+// npm i to-vfile rehype-stringify remark-gfm remark-rehype rehype-pretty-code shiki rehype-autolink-headings rehype-slug
 // process(await read("example.md")); 的 read 函数是基于根目录的，
 // 即package.json所在目录
 import rehypeStringify from "rehype-stringify";
@@ -453,6 +398,65 @@ async function ok() {
 export default async function Home() {
   const c = await ok();
   return <div dangerouslySetInnerHTML={{ __html: c }} />;
+}
+
+
+
+// rehypeAddH2Class.ts，作用是添加样式
+import { visit } from "unist-util-visit";
+import type { Node } from "unist";
+import type { Element, Properties } from "hast";
+
+interface ExtendedProperties extends Properties {
+  className?: string[];
+}
+
+export default function rehypeAddH2Class() {
+  return (tree: Node) => {
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName === "h2") {
+        node.properties = node.properties || {};
+        const props = node.properties as ExtendedProperties;
+        props.className = props.className || [];
+        props.className.push("text-2xl py-2");
+      } else if (node.tagName === "p") {
+        node.properties = node.properties || {};
+        const props = node.properties as ExtendedProperties;
+        props.className = props.className || [];
+        props.className.push("text-xl");
+      } else if (node.tagName === "li") {
+        node.properties = node.properties || {};
+        const props = node.properties as ExtendedProperties;
+        props.className = props.className || [];
+        props.className.push("py-1.5");
+      } else if (node.tagName === "a") {
+        node.properties = node.properties || {};
+        const props = node.properties as ExtendedProperties;
+        props.className = props.className || [];
+        props.className.push("text-blue-600");
+      }
+    });
+  };
+}
+
+
+// globals.css，作用是添加样式
+pre {
+  overflow-x: auto;
+  padding: 1rem 0;
+  border-radius: 0.75rem;
+}
+
+pre [data-line] {
+  padding: 0 1rem;
+}
+/* 平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+/* 为所有标题设置滚动边距 */
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 56px; /* 你的偏移量 */
 }
 ```
 
