@@ -417,18 +417,23 @@ export default function Page() {
 // rehype-stringify 将语法树作为输入并将其转换为序列化的 HTML
 
 
-// npm i to-vfile rehype-stringify remark-gfm remark-rehype rehype-pretty-code shiki
+// npm i to-vfile rehype-stringify remark-gfm remark-rehype rehype-pretty-code shiki rehype-autolink-headings npm install rehype-slug
 // process(await read("example.md")); 的 read 函数是基于根目录的，
 // 即package.json所在目录
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import rehypePrettyCode from "rehype-pretty-code";
+import rehypePrettyCode, { Options } from "rehype-pretty-code";
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import { read } from "to-vfile";
 import { unified } from "unified";
+import rehypeAddH2Class from "@/utils/md-styles";
+
+const prettyCodeOptions: Options = {
+  theme: 'github-dark',
+};
 
 async function ok() {
   const file = await unified()
@@ -437,7 +442,8 @@ async function ok() {
     .use(remarkRehype)
     .use(rehypeSlug)
     .use(rehypeAutolinkHeadings)
-    .use(rehypePrettyCode)
+    .use(rehypeAddH2Class)
+    .use(rehypePrettyCode, prettyCodeOptions)
     .use(rehypeStringify)
     .process(await read("javascript基本语法.md"));
 
