@@ -76,4 +76,4 @@ oh-my-posh init pwsh --config 'C:\Users\leiyu\AppData\Local\Programs\oh-my-posh\
 ```
 M365Princess.omp.json是主题名，默认安装的主题可以在C:\Users\leiyu\AppData\Local\Programs\oh-my-posh\themes目录找到。
 主题预览可以前往https://ohmyposh.dev/docs/themes
-名称中带有minimal的主题不需要Nerd字体（Nerd字体需要另外安装，可以显示一些图标）。
+名称中带有minimal的主题不需要Nerd字体（Nerd字体需要另外安装，可以显示一些图标）

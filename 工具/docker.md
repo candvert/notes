@@ -3,7 +3,7 @@
 - [常用命令](#常用命令)
 - [数据卷](#数据卷)
 - [构建镜像](#构建镜像)
-- [Docker Compose](#Docker Compose)
+- [Docker Compose](#Docker%20Compose)
 
 ## 安装
 ```
@@ -100,6 +100,5 @@ docker build -t myImage:1.0 .
 ```
 ## Docker Compose
 ```shell
-# Docker Compose通过一个单独的docker-compose.yml文件来定义一组相关联的应用容器，帮助我们实
-# 现多个相互关联的Docker容器的快速部署
+# Docker Compose通过一个单独的docker-compose.yml文件来定义一组相关联的应用容器，帮助我们实现多个相互关联的Docker容器的快速部署
 ```

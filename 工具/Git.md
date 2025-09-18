@@ -115,8 +115,7 @@ git branch -M ok
 ```
 ## git push
 ```shell
-# -u或--set-upstream选项用于设置上游（upstream）分支。这意味着它将当前分支与远程分支关联，使得未来的git pull和git push命令
-# 可以省略远程和分支名称
+# -u或--set-upstream选项用于设置上游（upstream）分支。这意味着它将当前分支与远程分支关联，使得未来的git pull和git push命令可以省略远程和分支名称
 # 将远程的main分支和本地的master分支关联起来
 git push -u origin master:main
 # 将远程的main分支和本地的main分支关联起来

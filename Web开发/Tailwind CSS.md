@@ -127,11 +127,15 @@ top-0
 border-b
 border-l
 
+// 剪切所有超出容器宽度的内容
+overflow-x-hidden
+
 // flex，使用时要这样使用 flex justify-center items-center
 // flex-row 和 flex-col 必须和 flex 一起使用才会生效，也就是class="flex flex-row"
 // flex-1 可以单独使用，不需要和 flex 一起使用就能生效
 // flex 默认每个元素有一个 min-height，可以使用 min-h-0 来覆盖默认，允许元素尺寸小于内容
 // class="flex" 和 class="flex flex-row" 效果相同，默认为横向排列
+// flex 项目的默认 flex-shrink 值为 1，允许其收缩
 // 所有元素水平排列
 flex-row
 // 所有元素垂直排列
@@ -149,6 +153,8 @@ justify-evenly
 justify-between
 // 允许 flex item 根据需要增大或缩小，忽略其初始大小，可用于某一元素占据所有剩余空间
 flex-1
+// 不允许 flex item 增大或缩小，可用于 w-60 这种固定宽度
+flex-none
 // content-<xxx> 多行如何在垂直方向分布
 content-start
 content-center

@@ -11,35 +11,6 @@
 - [layout文件](#layout文件)
 
 - [处理md/mdx文件](#处理md/mdx文件)
-解析 Frontmatter (YAML格式的元数据)
-npm install remark-frontmatter
-
-从 Frontmatter 中提取数据
-npm install remark-mdx-frontmatter
-
-生成文章目录（TOC）
-npm install remark-toc
-
-代码语法高亮（这是目前最流行、效果最好的选择）
-npm install rehype-highlight
-或者使用 Shiki（效果更佳，但包体积稍大）
-npm install rehype-shiki
-生成文章目录（TOC）
-npm install remark-toc
-
-npm install remark-gfm
-
-允许在 MDX 中使用 HTML
-npm install rehype-raw
-
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeStringify from 'rehype-stringify'
-
-
-
 
 nextjs 具有基于文件的路由，基于文件的 api （即GET，POST等请求），基于文件的 MD/MDX （将 md/mdx 文件解析为组件并显示）
 ## 添加自定义字体next/font
