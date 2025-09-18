@@ -69,7 +69,7 @@ int main() {
 }
 ```
 ## 创建配置文件
-```
+```sh
 Doxygen使用配置文件Doxyfile设置所有选项。Doxyfile需位于根目录。
 
 创建一个模板配置文件：
@@ -79,7 +79,7 @@ doxygen -g <config-file>
 要记录全局对象（函数、typedef、枚举、宏等），必须记录定义它们的文件。即必须有@file结构命令在文件中
 ```
 ## 配置文件中的标签
-```
+```sh
 配置文件中都是形如"EXTRACT_ALL = YES"的格式，其中EXTRACT_ALL被称为标签
 
 如果EXTRACT_ALL设为YES，即使没有注释块也会生成文档，doxygen会认为所有实体（doxygen中的实体即为函数，类等）都有注释
@@ -110,9 +110,9 @@ SHOW_USED_FILES = NO
 
 Doxygen使用文件扩展名决定如何解析一个文件，文件扩展名见下表
 ```
-![](images/doxygen_1.png)
+![](/images/doxygen_1.png)
 ## 生成文档
-```
+```sh
 生成文档（默认会生成一个html目录和一个latex目录）：
 doxygen <config-file>
 如果省略文件名，会查找当前目录下的Doxyfile文件
@@ -120,7 +120,7 @@ doxygen <config-file>
 输出目录可以通过OUTPUT_DIRECTORY标签改变
 ```
 ## 注释块
-```
+```sh
 对代码中的每个实体来说有两种（某些情况下三种）类型的描述：简短描述和详细描述。
 对成员方法和函数来说有第三种描述，叫做in body描述，由成员方法或函数内部的所有注释块组成。
 
@@ -196,7 +196,7 @@ void foo(int v /**< [in] docs for input parameter v. */);
 要记录C++类的成员，还必须记录该类本身。命名空间也是如此。要记录全局C函数、typedef、枚举或预处理器定义，您必须首先记录包含它的文件（通常这将是一个头文件，因为该文件包含导出到其他源文件的信息）。
 ```
 ## 结构命令
-```
+```sh
 结构命令以一个\或@开头（\和@都可以使用），后跟命令名和一个或多个参数
 @class to ducument a class
 @struct to document a C-struct.

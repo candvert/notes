@@ -258,7 +258,7 @@ You can pass the state information to children components as props, but the logi
 {}
 ```
 在终端中，在项目根目录中运行以下命令：
-```
+```sh
 npm install react@latest react-dom@latest next@latest
 ```
 安装完成后，您应该能够在 package.json 文件中看到项目依赖项列表：
@@ -334,7 +334,7 @@ export default function HomePage() {
 ```
 在终端中运行 npm run dev
 当您访问 localhost:3000 时，您应该会看到以下错误：
-![[react_nextjs1.avif]]
+![](/images/react_nextjs1.avif)
 这是因为 Next.js 默认使用了 React 服务器组件，这是一个允许 React 在服务器端渲染的新功能。服务器组件不支持 useState，因此你需要使用客户端组件。
 app 文件夹中自动创建了一个名为 layout.js 的新文件。这是应用程序的主布局。您可以使用它来添加所有页面共享的 UI 元素（例如导航、页脚等）。
 ```typescript

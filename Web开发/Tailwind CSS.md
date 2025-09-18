@@ -1,5 +1,5 @@
 ## flex布局和grid布局
-```
+```sh
 flex​​ 擅长在​​一个方向​​（水平或垂直）上排列和对齐元素，它让元素具有弹性，能根据可用空间动态调整大小和顺序。它非常适合处理​​组件内部的布局
 
 grid​​ 则是一个​​二维系统​​，它允许你同时定义​​行和列​​，从而实现对整体结构的精确控制。它非常适合用于构建​​页面的宏观骨架和复杂的二维布局​​
@@ -8,7 +8,7 @@ grid​​ 则是一个​​二维系统​​，它允许你同时定义​​
 这种分工使代码逻辑更清晰。修改整体布局时，只需调整 grid；修改组件内部结构时，只需调整 flex，两者耦合度低，更易于维护和扩展。
 ```
 实现该布局：
-![[tailwind_3.png]]
+![](/images/tailwind_3.png)
 ```ts
 // main 标签中的 flex-1 是必须的。flex-1 允许 flex item 根据需要增大或缩小，忽略其初始大小
 <div className="flex flex-col min-h-screen">
@@ -26,7 +26,7 @@ grid​​ 则是一个​​二维系统​​，它允许你同时定义​​
 </div>
 ```
 实现该布局：
-![[tailwind_5.png]]
+![](/images/tailwind_5.png)
 ```ts
 <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
   <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full max-w-4xl h-96">
@@ -53,9 +53,9 @@ data-[slot=separator]​​: 这是一个​​属性选择器​​。它匹配
 ```
 ## 移除文字覆盖
 导航栏没有设置 bg-background
-![[tailwind_1.png]]
+![](/images/tailwind_1.png)
 导航栏设置 bg-background
-![[tailwind_2.png]]
+![](/images/tailwind_2.png)
 
 ```js
 在global.css中添加

@@ -13,7 +13,7 @@
 - [npm命令](#npm命令)
 - [App Router](#App%20Router)
 # React(version 19)，使用的框架为Next.js
-```
+```sh
 全栈框架不需要服务器
 Next.js 支持客户端渲染（CSR）、单页应用（SPA）和静态站点生成（SSG）。这些应用可以部署到 CDN 或静态托管服务（无需服务器）。此外，允许你根据实际需求，针对特定路由单独启用服务端渲染。
 可以将 Next.js 应用部署到任何支持 Node.js 或 Docker 容器的托管平台，或者部署到你自己的服务器。 Next.js 也支持静态导出，无需服务器。
@@ -436,7 +436,7 @@ npm run deploy
 // redux
 ```
 ## App Router
-```
+```sh
 Next.js中的App Router使用文件夹表示
 当访问http://localhost:3000时看到的是app文件夹下的page.js：
 app

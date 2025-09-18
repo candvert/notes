@@ -1,5 +1,5 @@
 ## Item 2: Prefer const, enum and inline to \#define
-```
+```sh
 	应该叫“优先选择编译器而不是预编译器”
 	如果#define ASPECT_RATIO 1.653，那么ASPECT_RATIO不会进入symbol table，那么出错信息会指向1.653，这样会不容易找到错误
 	

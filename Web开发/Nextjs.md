@@ -61,17 +61,17 @@ export default function Page() {
 ```
 ## 文件系统路由Routes
 Next.js 使用文件系统路由，其中​​文件夹用于创建嵌套路由。每个文件夹代表一个映射到 URL 段的路由段。
-![[nextjs1.avif]]
+![](/images/nextjs1.avif)
 您可以使用 layout.tsx 和 page.tsx 文件为每条路线创建单独的 UI。
 page.tsx 是一个特殊的 Next.js 文件，它导出一个 React 组件，并且它是让路由可访问所必需的。
-![[nextjs2.avif]]
+![](/images/nextjs2.avif)
 /app/dashboard/page.tsx 与 /dashboard 路径关联。
 ```typescript
 // Next.js的路由使用文件夹表示的，要使路由可以访问，则该文件夹下必须要有page.tsx文件
 ```
 
 在 Next.js 中，您可以使用特殊的 layout.tsx 文件来创建多个页面共享的 UI。也就是说下面的 page.tsx、customers/page.tsx、invoices/page.tsx 这三个页面共享布局  layout.tsx，可以在该布局中添加诸如导航栏，侧边栏等组件。
-![[nextjs3.avif]]
+![](/images/nextjs3.avif)
 <Layout /> 组件（即 layout.tsx 文件）接收一个 children prop。这个子组件可以是一个页面，也可以是另一个布局。
 /app/layout.tsx 称为根布局，每个 Next.js 应用程序都需要它。添加到根布局的任何 UI 都将在应用程序的所有页面之间共享。
 ## 文件系统api
@@ -164,7 +164,7 @@ SEO - 预渲染内容更容易被搜索引擎爬虫索引，因为页面加载�
 
 
 流式传输是一种数据传输技术，它允许您将路由分解为更小的“块”，并在它们准备就绪时逐步将它们从服务器流式传输到客户端。
-![[nextjs4.avif]]
+![](/images/nextjs4.avif)
 通过流式传输，您可以防止缓慢的数据请求阻塞整个页面。这使得用户能够查看页面的各个部分并进行交互，而无需等待所有数据加载完毕后再向用户显示任何 UI。
 流式传输与 React 的组件模型配合良好，因为每个组件都可以被视为一个块。
 在 Next.js 中，有两种实现流式传输的方式： 
@@ -174,7 +174,7 @@ SEO - 预渲染内容更容易被搜索引擎爬虫索引，因为页面加载�
 loading.tsx 是一个基于 React Suspense 构建的特殊 Next.js 文件。它允许你创建备用 UI，以便在页面内容加载时替代显示。您在loading.tsx中添加的任何UI都将作为静态文件的一部分嵌入，并首先发送。然后，其余的动态内容将从服务器流式传输到客户端。
 ## Route groups
 在 dashboard 文件夹内创建一个名为 /(overview) 的新文件夹。然后将你的loading.tsx 和 page.tsx 文件移动到该文件夹​​中：
-![[nextjs5.avif]]
+![](/images/nextjs5.avif)
 Route groups允许您将文件组织成逻辑组，而不会影响 URL 路径结构。当您使用括号 () 创建新文件夹时，其名称不会包含在 URL 路径中。因此，/dashboard/(overview)/page.tsx 会变成 /dashboard。
 ## React Suspense
 您还可以使用 React Suspense 更加细粒度地传输特定组件。
