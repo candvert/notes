@@ -10,7 +10,7 @@
 ### 使用draw.io（免费开源）进行绘制
 ### 使用PlantUML可以通过简洁的文本生成UML图形
 ## 类图
-```
+```sh
 只有类名是必须的，属性和方法都是可选的
 
 属性和方法前的+、-、#、~的含义：
@@ -24,21 +24,21 @@ in表示调用者需设置该参数并传递给函数，而函数不会修改该
 out表示调用者无需设置该参数，函数会修改该参数
 inout表示调用者需设置该参数并传递给函数，并且函数会修改该参数
 ```
-![](images/uml_1.png)
+![](/images/uml_1.png)
 ## 类之间的关系
-![](images/uml_2.png)
+![](/images/uml_2.png)
 ## Inheritance（继承）
-![](images/uml_3.png)
+![](/images/uml_3.png)
 ## Aggregation（聚合）
-![](images/uml_6.png)
+![](/images/uml_6.png)
 ## Composition（组合）
-![](images/uml_7.png)
+![](/images/uml_7.png)
 ## Dependency（依赖）
-![](images/uml_8.png)
+![](/images/uml_8.png)
 ## Realization（实现）
-![](images/uml_4.png)
+![](/images/uml_4.png)
 ## 基数
-```
+```sh
 0          0个对象
 0..1       0个或1个对象
 1          必须1个对象
@@ -47,12 +47,12 @@ inout表示调用者需设置该参数并传递给函数，并且函数会修改
 *          0个或多个对象
 1..*       1个或多个对象
 ```
-![](images/uml_10.png)
-![](images/uml_11.png)
+![](/images/uml_10.png)
+![](/images/uml_11.png)
 ## 示例
-![](images/uml_15.png)
+![](/images/uml_15.png)
 ## 时序图
-```
+```sh
 维基百科上的定义：A sequence diagram shows, as parallel vertical lines (lifelines), different processes or objects that live simultaneously, and, as horizontal arrows, the messages exchanged between them in the order in which they occur.
 
 水平方向表示涉及到的对象
@@ -68,6 +68,6 @@ neg         该片段显示了无效的交互
 
 ```
 ## 示例
-![](images/uml_9.png)
-![](images/uml_12.png)
-![](images/uml_13.png)
+![](/images/uml_9.png)
+![](/images/uml_12.png)
+![](/images/uml_13.png)

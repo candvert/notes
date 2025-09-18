@@ -6,7 +6,7 @@
 - [Docker Compose](#Docker%20Compose)
 
 ## 安装
-```
+```sh
 2025/2/1按下列步骤成功安装
 按照官网的步骤进行安装（有的步骤会出现问题，需要多试几次）：
 https://docs.docker.com/engine/install/ubuntu/
@@ -25,9 +25,9 @@ https://docs.docker.com/engine/install/ubuntu/
 }
 ```
 ## 基本原理
-![](images/docker_1.png)
+![](/images/docker_1.png)
 ## 常用命令
-```shell
+```sh
 # 从仓库拉取镜像
 docker pull mysql
 # 查看本地镜像
@@ -68,7 +68,7 @@ docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123 mysql:5.7
 docker run -d mysql
 ```
 ## 数据卷
-```shell
+```sh
 # 数据卷（volume）是一个虚拟目录，是容器内目录与宿主机目录之间映射的桥梁
 
 # 执行docker run命令时，使用-v 数据卷:容器内目录便可完成数据卷挂载
@@ -90,15 +90,15 @@ docker volume inspect
 docker volume prune
 ```
 ## 构建镜像
-![](images/docker_3.png)
+![](/images/docker_3.png)
 
 
-![](images/docker_2.png)
-```shell
+![](/images/docker_2.png)
+```sh
 # 结尾的.代表Dockfile所在的目录
 docker build -t myImage:1.0 .
 ```
 ## Docker Compose
-```shell
+```sh
 # Docker Compose通过一个单独的docker-compose.yml文件来定义一组相关联的应用容器，帮助我们实现多个相互关联的Docker容器的快速部署
 ```
