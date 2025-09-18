@@ -4,7 +4,7 @@
 - [vcpkg](#vcpkg)
 
 # gcc
-```
+```sh
 gcc -o <filename> 指定生成的文件名
 gcc -E 生成预处理后文件
 gcc -S 生成编译后的文件
@@ -25,7 +25,7 @@ gcc -finput-charset=UTF-8 指定源文件编码
 gcc -fexec-charset=GBK 指定运行时编码
 ```
 ## 静态和动态链接库
-```
+```sh
 静态链接库
 	命名 lib<name>.a
 	生成 ar rcs lib<name>.a file1.o file2.o
@@ -42,7 +42,7 @@ gcc -fexec-charset=GBK 指定运行时编码
 		 或gcc main.c <dir>/lib<name>.a
 ```
 # gdb
-```
+```sh
 首先要通过gcc或g++的-g选项生成可调试的程序
 b 打断点，可以b 函数名，b 行号
 r 运行
@@ -59,7 +59,7 @@ watch 跟踪变量，watch 变量
 info r查看寄存器的值
 ```
 # vcpkg
-```
+```sh
 Windows上安装：
 git clone git@github.com:microsoft/vcpkg.git
 执行克隆的仓库里的bootstrap-vcpkg.bat，然后目录下会出现vcpkg.exe
@@ -70,8 +70,8 @@ git clone git@github.com:microsoft/vcpkg.git
 使用vcpkg安装库后，visual studio会自动链接动态/静态库，但是使用opencv库时头文件包含目录仍需手动在属性中设置（可能是bug）
 若vcpkg所在目录为D:/Apps/vcpkg/vcpkg.exe，则安装的库（包括opencv）的头文件在D:\Apps\vcpkg\installed\x64-windows\include\opencv4
 ```
-![](images/cpp_compiler_1.png)
-```
+![](/images/cpp_compiler_1.png)
+```sh
 比如vcpkg所在目录为D:/Apps/vcpkg/vcpkg.exe，则
 cmake的项目要有-DCMAKE_TOOLCHAIN_FILE=D:/Apps/vcpkg/scripts/buildsystems/vcpkg.cmake
 

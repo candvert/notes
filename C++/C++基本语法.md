@@ -76,7 +76,7 @@
 - [C++的其他知识点](#C++的其他知识点)
 
 # C++标准变化
-![](images/cplusplus_18.png)
+![](/images/cplusplus_18.png)
 # C++中的预定义宏
 ```cpp
 // 参考网址：https://gcc.gnu.org/onlinedocs/cpp/Standard-Predefined-Macros.html
@@ -101,9 +101,9 @@ __FUNCTION__    // 由编译器提供，未由语言定义，g++和msvc都提供
 // 类型short、int、long、long long都是带符号的，通过在这些类型名前添加unsigned就可以得到无符号类型
 // 与其他整型不同，字符型被分为了三种：char、signed char和unsigned char
 ```
-![](images/cplusplus_19.png)
+![](/images/cplusplus_19.png)
 ## 转义序列
-```
+```sh
 C++语言规定的转义序列包括：
 换行符     \n      反斜线         \\
 双引号     \"      横向制表符       \t
@@ -125,7 +125,7 @@ C++语言规定的转义序列包括：
 // 1E-3F            // 单精度浮点型字面值，类型是float
 // 3.14159L         // 扩展精度浮点型字面值，类型是long double
 ```
-![](images/cplusplus_20.png)
+![](/images/cplusplus_20.png)
 ## 初始化
 ```cpp
 // 初始化不是赋值，初始化的含义是创建变量时赋予其一个初始值，而赋值的含义是把对象的当前值擦除，而以一个新值来替代
@@ -727,9 +727,9 @@ names.assign(oldstyle.cbegin(), oldstyle.cend());
 list<string> slist1(1);		// 1个元素，为空string
 slist1.assign(10, "Hiya!");	// 10个元素，每个都是"Hiya!"
 ```
-![](images/cplusplus_1.png)
-![](images/cplusplus_2.png)
-![](images/cplusplus_3.png)
+![](/images/cplusplus_1.png)
+![](/images/cplusplus_2.png)
+![](/images/cplusplus_3.png)
 ## vector
 ```cpp
 // 只有在执行insert操作时size与capacity相等，或者调用resize或reserve时给定的大小超过当前capacity，vector才可能重新分配内
@@ -772,7 +772,7 @@ array<int, 10> arr;
 ```cpp
 // forward_list不支持push_back()、pop_back()、back()
 ```
-![](images/cplusplus_4.png)
+![](/images/cplusplus_4.png)
 ## 容器适配器
 ```cpp
 // 顺序容器适配器：stack、queue、priority_queue
@@ -799,7 +799,7 @@ q.push(item);
 q.emplace(args);
 ```
 ## 获取内置数组迭代器
-```cppp
+```cpp
 #include <iostream>
 int arr[] = {1, 2, 3};
 find(begin(arr), end(arr), 2);
@@ -911,13 +911,13 @@ set_difference();		// 求两个容器的差集
 
 // pair类型定义在头文件utility中
 ```
-![](images/cplusplus_5.png)
-![](images/cplusplus_6.png)
-![](images/cplusplus_7.png)
-![](images/cplusplus_8.png)
-![](images/cplusplus_9.png)
-![](images/cplusplus_10.png)
-![](images/cplusplus_11.png)
+![](/images/cplusplus_5.png)
+![](/images/cplusplus_6.png)
+![](/images/cplusplus_7.png)
+![](/images/cplusplus_8.png)
+![](/images/cplusplus_9.png)
+![](/images/cplusplus_10.png)
+![](/images/cplusplus_11.png)
 ## 共享指针
 ```cpp
 // shared_ptr、unique_ptr、weak_ptr都定义在头文件memory中
@@ -935,13 +935,13 @@ const int *pci = new const int(1024);
 int *p1 = new int;					// 如果分配失败，new抛出std::bad_alloc
 int *p2 = new (nothrow) int;		// 如果分配失败，new返回一个空指针
 ```
-![](images/cplusplus_12.png)
-![](images/cplusplus_13.png)
-![](images/cplusplus_14.png)
-![](images/cplusplus_15.png)
+![](/images/cplusplus_12.png)
+![](/images/cplusplus_13.png)
+![](/images/cplusplus_14.png)
+![](/images/cplusplus_15.png)
 ## allocator类
-![](images/cplusplus_16.png)
-![](images/cplusplus_17.png)
+![](/images/cplusplus_16.png)
+![](/images/cplusplus_17.png)
 ## 拷贝构造函数
 ```cpp
 // 如果一个构造函数的第一个参数是自身类类型的引用，且任何额外参数都有默认值，则此构造函数是拷贝构造函数

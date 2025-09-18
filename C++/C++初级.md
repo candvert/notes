@@ -2,8 +2,8 @@
 
 ## 多线程
 C++11标准中引入了5个头文件来支持多线程编程，如下图所示：
-![](images/cplusplus_201.png)
-```
+![](/images/cplusplus_201.png)
+```sh
 两种方式利用并发提高性能
 
 1. 易并行（embarrassingly parallel）算法：
