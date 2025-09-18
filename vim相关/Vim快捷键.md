@@ -1,5 +1,5 @@
 ## 中文版
-```
+```sh
 u 撤销
 Enter 链接跳转
 K 打开该单词的帮助文档
@@ -201,7 +201,7 @@ d是一个操作符
 	$光标到行尾的内容
 ```
 ## 英文版
-```
+```sh
 CTRL-] jump to a tag under the cursor
 CTRL-O jump back
 x delete a character under the cursor

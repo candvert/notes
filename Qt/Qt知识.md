@@ -176,7 +176,7 @@ QScrollBar::add-page:vertical {
 
 用上面的qss后的样式
 
-![用上面的qss后的样式](images/qt_1.png)
+![用上面的qss后的样式](/images/qt_1.png)
 ## QWidget的constMenuEvent函数创建右键菜单
 ```cpp
 void contextMenuEvent(QContextMenuEvent *event) override {
@@ -842,8 +842,8 @@ QPushButton {
     min-height: 64px;
 }
 ```
-![](images/qss_1.png)
-![](images/qss_2.png)
+![](/images/qss_1.png)
+![](/images/qss_2.png)
 ## 布局
 ```cpp
 QVBoxLayout *todayLayout = new QVBoxLayout();
@@ -1189,7 +1189,7 @@ box->currentText();
 box->currentData().toString();
 ```
 ## 打包成exe
-```
+```sh
 windeployqt exe文件
 需要先把exe移到一个空文件夹下，运行命令后会在当前目录下生成exe启动所需的所有文件
 ```

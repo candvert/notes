@@ -129,6 +129,10 @@ git fetch 可获取远程所有最新更新，但不会自动合并到本地
 ```sh
 // 查看本地和远程仓库 main.txt文件的区别
 git diff main.txt
+--stat：仅显示更改的​​摘要统计​​（哪些文件被更改，增删行数）
+--name-only：仅显示​​被更改的文件名​​
+// 生成补丁
+git diff > my_changes.patch
 ```
 ## git tag
 ```sh

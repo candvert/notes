@@ -16,7 +16,7 @@
 - [进程间通信方式](#进程间通信方式)
 
 ## 流程图
-![](images/socket_1.png)
+![](/images/socket_1.png)
 ## 示例
 ### 服务器端
 ```cpp
@@ -244,7 +244,7 @@ int execl(const char *pathname, const char *arg, ... /*, (char *) NULL */);
 void exit(int status);
 ```
 ## 线程pthread
-```
+```sh
 同一进程内的所有线程共享：
 全局变量
 进程指令
@@ -354,7 +354,7 @@ int sem_destroy(sem_t *sem);
 int sigaction(int signum, const struct sigaction act, struct sigaction oldact);
 ```
 ## 其他函数
-```
+```sh
 // 成功返回0，出错返回-1
 #include <sys/socket.h>
 int getsockname(int sockfd, struct sockaddr *localaddr, socklen_t *addrlen);
@@ -396,7 +396,7 @@ getcwd
 calloc
 ```
 ## 进程间通信方式
-```
+```sh
 4种不同的进程间通信形式：
 （1）消息传递（管道、FIFO、消息队列）
 （2）同步（互斥锁、条件变量、读写锁、文件和记录锁、信号量）

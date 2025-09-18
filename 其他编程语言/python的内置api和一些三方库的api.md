@@ -22,7 +22,7 @@
 	- [os模块](#os模块)
 
 # python创建用于测试的http服务器
-```
+```sh
 mkdir test_server && cd test_server
 echo {"good": true} >> ok.json
 python -m http.server 8000

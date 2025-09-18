@@ -1,4 +1,4 @@
-```
+```sh
 date (print or set the system date and time)
 cal, ncal (displays a calendar)
 df (report file system disk space usage)
@@ -423,7 +423,7 @@ printf (format and print data)
 groff (a document formatting system)
 ```
 ## 设置bash终端提示符颜色
-```
+```sh
 vim ~/.bashrc
 在文件末尾添加：
 PS1='\[\e[1;31m\]\u@\h \[\e[0;32m\]\w \[\e[0m\]\$ '

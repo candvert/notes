@@ -34,7 +34,7 @@ Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
 
 理论上所有配置都可以放入init.lua中，但这样不是一个好的做法，因此划分不同的文件和目录来放不同的配置
 我的目录结构：
-```
+```sh
 nvim
 	- init.lua
 	lua
@@ -50,16 +50,16 @@ nvim
 			- ...
 ```
 ## 安装Neovim
-```
+```sh
 Window上：
 winget install Neovim.Neovim
 ```
 在安装完成之后，可以在终端使用nvim命令进入nvim，然后输入下面命令创建init.lua
-```
+```sh
 :exe 'edit' stdpath('config') .. '/init.lua'
 ```
 可以通过如下命令查看配置文件所在目录
-```
+```sh
 :echo stdpath('config')
 ```
 ## 安装插件管理器
@@ -141,7 +141,7 @@ return {
 ```
 对于Windows系统，mason.nvm要求必须有powershell、git、GNU tar、[7zip](https://www.7-zip.org/)
 现在打开 nvim 后就可以通过 :Mason 命令进行 LSP 服务器的安装了
-![[neovim_01.png]]
+![](/images/neovim_01.png)
 在光标所在行按 i 进行 LSP 服务器的安装
 需要注意安装 LSP 服务器前需要相关语言的编译器能在path中找到，比如在安装 python 的 LSP 服务器前需要将 python.exe 放入 path 中
 ## LSP客户端配置
@@ -271,7 +271,7 @@ return {
 可以使用 :NvimTreeOpen 命令打开文件explorer
 
 快捷键：
-```
+```sh
 使用:NvimTreeOpen或快捷键 e打开文件树
 下面都是打开文件树之后使用的快捷键
 g?                                   显示所有快捷键
@@ -336,7 +336,7 @@ s                                    运行脚本文件，或用外部编辑器�
 .                                    运行命令
 ```
 ## 常用命令
-```
+```sh
 输出配置文件所在目录
 :echo stdpath('config')
 
@@ -360,7 +360,7 @@ vim.keymap.set({ "n", "i" }, "<C-a>b", "<Cmd>lua print('hello world')<CR>", { si
 vim.keymap.set('n', 'good', ':help<CR>')
 ```
 ## Leader键
-```
+```sh
 Leader键是一个核心的自定义快捷键前缀
 Leader 键本身不执行操作，而是作为后续按键组合的前缀（例如 <leader>ff）。它允许用户创建大量不与默认快捷键冲突的自定义命令
 
@@ -480,7 +480,7 @@ return {
 }
 ```
 
-```
+```sh
 点击关闭图标或右键关闭buffer
 :h bufferline.nvim
 :h bufferline-configuration

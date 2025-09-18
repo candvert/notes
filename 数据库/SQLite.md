@@ -4,18 +4,18 @@
 - [数据类型](#数据类型)
 
 ## 简介
-```
+```sh
 SQLite是一个C语言库
 SQLite是世界上使用最多的数据库，所有手机都内置SQLite
 ```
 ## 下载
-```
+```sh
 下载网址：
 https://www.sqlite.org/download.html
 Windows上下载sqlite-tools-win-x64，其中包含命令行工具sqlite3.exe
 ```
 ## 命令行使用
-```
+```sh
 将命令行工具所在目录配置到环境变量后使用命令：
 sqlite3 data.db     打开或创建一个数据库
 或先sqlite3命令进入sqlite数据库再使用.open data.db打开数据库
@@ -44,7 +44,7 @@ insert into ok(name, age) values('Amily', 18);
 select * from ok;
 ```
 ## 数据类型
-```
+```sh
 SQLite使用动态类型系统，值的数据类型与值本身相关，而不是由包含它的列（column）决定
 从版本3.37.0开始，SQLite提供了严格类型执行的STRICT表，即和mysql相同每列的数据类型固定
 

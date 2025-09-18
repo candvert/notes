@@ -1,5 +1,5 @@
 ## 会话（session）
-```
+```sh
 终端输入tmux进入新会话
 终端输入tmux ls列出所有会话
 终端输入tmux attach会进入上次离开的会话
@@ -9,7 +9,7 @@ Ctrl+b d：离开当前会话
 Ctrl+b :kill-session关闭会话
 ```
 ## 窗口（Window）
-```
+```sh
 Ctrl+b c：创建一个新窗口
 Ctrl+b <number>：切换到指定窗口
 Ctrl+b p：切换到上一个窗口
@@ -19,7 +19,7 @@ Ctrl+b &：关闭当前窗口
 Ctrl+b ,：窗口重命名
 ```
 ## 窗格（Pane）
-```
+```sh
 Ctrl+b %：划分左右两个窗格
 Ctrl+b "：划分上下两个窗格
 Ctrl+b q：显示窗格编号

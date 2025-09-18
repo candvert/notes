@@ -1,4 +1,4 @@
-```
+```sh
 可以使用init.lua或init.vim作为配置文件，但同时只能存在一个
 
 
@@ -66,7 +66,7 @@ vim.keymap.del('n', '<Leader>ex1')
 vim.keymap.del({'n', 'c'}, '<Leader>ex2', {buffer = true})
 ```
 ## vim.lsp.config
-```
+```sh
 更新一个lsp客户端的配置
 
 ```

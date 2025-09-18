@@ -30,11 +30,11 @@
 
 # GDScript
 ## 输出
-```py
+```python
 print("hello world")
 ```
 ## 访问子节点
-```py
+```python
 # 比如下列文件结构
 # Node2D
 # 	Label
@@ -51,12 +51,12 @@ $Label/Weapon.text = "sword"
 @onready var weapon = get_node("Label/Weapon")
 ```
 ## 节点的函数
-```py
+```python
 @onready var weapon = get_node("Label/Weapon")
 weapon.get_path()		# 绝对路径
 ```
 ## input函数（当有按键按下等会调用）
-```py
+```python
 # 可以在 项目->项目设置->输入映射 中绑定action和按键
 func _input(event):
     # 判断触发action的按键是否按下
@@ -67,7 +67,7 @@ func _input(event):
         pass
 ```
 ## 变量
-```py
+```python
 var name = "john"
 var name := "john"
 var name: String = "john"
@@ -95,7 +95,7 @@ func eat(n: Node):
 eat(self)
 ```
 ## get和set
-```py
+```python
 var i := 42:
     set(value):
         i = value
@@ -103,11 +103,11 @@ var i := 42:
         return i
 ```
 ## await
-```py
+```python
 await  get_tree().create_timer(0.075).timeout	# 延迟0.075秒
 ```
 ## 数据类型和类型转换
-```py
+```python
 bool, int, float, String, Array, Dictionary, Vector2, Vector3, Color
 
 # 初始化Vector2
@@ -121,7 +121,7 @@ var i = int("42")
 var i = 12.0 as int
 ```
 ## 数组
-```py
+```python
 var arr = [0, 1, "nihao"]
 var arr: Array = [0, 1, "nihao"]
 var arr: Array[int] = [0, 1, 2]
@@ -134,7 +134,7 @@ arr.remove_at(0)
 arr.insert(2, 5)	# 参数1/索引，参数2/元素
 ```
 ## 字典
-```py
+```python
 var dic = {"name": "john", "age": 18, 0: "zero"}
 dic["name"]
 dic["hobby"] = "swim"
@@ -145,7 +145,7 @@ for item in dic:
 dic.keys()
 ```
 ## 枚举
-```py
+```python
 # 定义
 enum { ZERO, SECOND, THIRD }
 enum Colors { RED, BLUE = 42, DARK }
@@ -156,7 +156,7 @@ var color = Colors.RED
 @export var color : Colors
 ```
 ## 随机数
-```py
+```python
 var f = randf()					# 范围[0, 1]
 var f = randf_range(2.3, 4,5)	# 范围[2.3, 4.5]
 var i = randi() % 20			# 范围[0, 19]
@@ -170,7 +170,7 @@ speed = -20
 var i = clampi(speed, 1, 20)	# i为1
 ```
 ## 条件语句
-```py
+```python
 if 4 > 2:
     pass
 elif 2 > 3:
@@ -194,7 +194,7 @@ if i is int:
     pass
 ```
 ## 循环
-```py
+```python
 for number in range(3):
     pass
 
@@ -209,7 +209,7 @@ continue
 break
 ```
 ## 信号
-```py
+```python
 # 定义信号
 signal eat
 signal swim(person)
@@ -220,7 +220,7 @@ swim.emit("John")
 eat.connect(函数)
 ```
 ## 函数
-```py
+```python
 # 定义
 func run(name):
     print(name)
@@ -255,7 +255,7 @@ func _unhandled_input(event):
     pass
 ```
 ## 继承
-```py
+```python
 # (optional) icon to show in the editor dialogs:
 @icon("res://path/to/optional/icon.svg")
 
@@ -267,7 +267,7 @@ extends BaseClass		# 继承
 class_name Myclass extends BaseClass
 ```
 ## inner class
-```py
+```python
 extends Node
 
 # 创建一个实例
@@ -280,7 +280,7 @@ class Equipment:
     var weigth := 5
 ```
 # Godot
-```
+```python
 queue_free()从游戏中移除当前节点
 
 get_tree().reload_current_scene()重载当前场景，可用于玩家死亡后复活
@@ -288,25 +288,25 @@ get_tree().reload_current_scene()重载当前场景，可用于玩家死亡后�
 Engine.time_scale = 0.5让时间变为原来的一半
 ```
 
-```py
+```python
 # 可以看作对资源的引用
 const PLAYER = preload("res://player.scene")
 var player = PLAYER.instantiate()
 ```
 
-```py
+```python
 # 惯例
 func _process(delta):
     position.x += direction * SPEED * delta
 ```
 ## 人物scene
-```py
+```python
 # CharacterBody2D
 # 	- AnimatedSprite2D
 #	- CollisionShape2D
 ```
 ## 游戏scene
-```py
+```python
 # Node2D
 # 	- CharacterBody2D
 #		- Camera2D
@@ -314,7 +314,7 @@ func _process(delta):
 #	- AnimatableBody2D
 ```
 ## 移动平台scene
-```py
+```python
 # AnimatableBody2D
 # 	- Sprite2D
 #	- CollisionShape2D
@@ -325,11 +325,11 @@ func _process(delta):
 # AnimationPlayer
 ```
 ## Vector2
-```py
+```python
 var pos = Vector2.ZERO
 ```
 ## Input
-```py
+```python
 # 判断是否某个action被触发
 Input.is_action_just_pressed("action")
 
@@ -340,7 +340,7 @@ var direction = Input.get_axis("action1", "action2")
 var direction = Input.get_action_strength("left") - Input.get_action_strength("left")
 ```
 ## Node
-```py
+```python
 # 不处理节点
 process_mode = Node.PROCESS_MODE_DISABLED
 
@@ -351,7 +351,7 @@ process_mode = Node.PROCESS_MODE_DISABLED
 Array[Node] get_children(include_internal: bool = false) const		# 返回所有子节点
 ```
 ## CharacterBody2D
-```py
+```python
 # 属性
 Vector2 velocity				# 速度，默认Vector2(0, 0)
 
@@ -360,14 +360,14 @@ Vector2 velocity				# 速度，默认Vector2(0, 0)
 bool move_and_slide()			# 依据velocity移动物体
 ```
 ## 文件
-```py
+```python
 # 打开文件
 var file = FileAccess.open("D://a.json", FileAccess.WRITE)
 # 写入一行
 file.store_line("")
 ```
 ## Json
-```py
+```python
 # 序列化
 var dic: Dictionary = {"name", "john"}
 var s = JSON.stringify(dic)

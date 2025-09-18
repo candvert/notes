@@ -244,7 +244,7 @@ import QtQuick.Layouts    /* 布局 */
 import * as MathFunctions from "factorial.mjs";
 ```
 ## 注释
-```
+```sh
 和javascript的注释一样，用//或/**/
 ```
 ## 属性类型
@@ -259,7 +259,7 @@ import * as MathFunctions from "factorial.mjs";
 	enumeration属性
 ```
 ## id属性
-```
+```sh
 每个QML对象类型只有一个id属性
 id值只能以小写字母或下划线开头，并且只能包含字母，数字，下划线
 ```
@@ -1089,7 +1089,7 @@ Tumbler {
 }
 ```
 滚筒如下图所示
-![](images/qml_1.png)
+![](/images/qml_1.png)
 ## 输入一行文字TextInput
 ```css
 TextInput {
