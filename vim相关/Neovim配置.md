@@ -25,6 +25,7 @@
 	- [mini.pairs](#mini.pairs)
 	- [indent-blankline](indent-blankline)
 	- [vim-airline](vim-airline.md)
+	- [leap.nvim](#leap.nvim)
 重要的有两个东西，要使用一门语言就要安装这两个。
 一个是 LSP 服务器，提供代码提示等功能。通过Mason插件安装。
 一个是语法解析器，提供语法高亮等功能。通过修改nvim-treesitter配置文件安装。
@@ -109,6 +110,7 @@ require("lazy").setup({
 return {
 	'saghen/blink.cmp',
 	dependencies = { 'rafamadriz/friendly-snippets' },
+	version = '1.*',
 	opts = {
 		-- 设置enter键确认补全
 		keymap = { preset = 'super-tab' },
@@ -263,7 +265,12 @@ return {
 		"nvim-tree/nvim-web-devicons",
 	},
 	config = function()
-		require("nvim-tree").setup {}
+		require("nvim-tree").setup {
+			view = {
+				-- 宽度
+			    width = 24,
+			},
+		}
 		vim.keymap.set('n', '<leader>uf', ':NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
 	end,
 }
@@ -513,5 +520,15 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
     opts = {},
+}
+```
+## leap.nvim
+```lua
+return {
+	'ggandor/leap.nvim',
+	opts = {},
+	config = function()
+		require('leap').set_default_mappings()
+	end,
 }
 ```

@@ -129,7 +129,9 @@ border-l
 
 // 剪切所有超出容器宽度的内容
 overflow-x-hidden
-
+```
+## flex属性
+```js
 // flex，使用时要这样使用 flex justify-center items-center
 // flex-row 和 flex-col 必须和 flex 一起使用才会生效，也就是class="flex flex-row"
 // flex-1 可以单独使用，不需要和 flex 一起使用就能生效
@@ -163,7 +165,9 @@ content-between
 content-evenly
 // 元素填充所有可用空间
 content-stretch
+```
 
+```js
 // grid，使用时要这样使用 grid grid-rows-2 grid-cols-2 gap-2
 // grid-cols-[240px_minmax(0,1fr)] 的作用是创建一个​​两列网格​
 // 第一列​​：固定宽度为 240px
@@ -211,7 +215,7 @@ selection:bg-green-200
 // 字体间距
 tracking-tight
 ```
-
+## tailwind
 ```js
 // 放在css文件中
 @theme {
@@ -238,7 +242,7 @@ tracking-tight
 	@apply flex justify-center items-center
 }
 ```
-
+## 居中
 ```ts
 <div class="w-1/2 mx-auto"> <!-- 这个div的宽度是父容器的一半并且水平居中 -->
   居中内容
@@ -296,7 +300,7 @@ tracking-tight
 	<div className="h-20">b</div>;
 </div>
 ```
-隐藏scrollbar
+## 隐藏scrollbar
 ```ts
 /* global.css */
 .scrollbar-hide {

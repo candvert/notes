@@ -324,7 +324,7 @@ export default function Page() {
 
 // mdx-layout.tsx
 ```
-使用 remark 和 rehype 生态
+## 使用 remark 和 rehype 生态
 ```ts
 // unified 本身是一个相当小的模块，充当统一处理不同内容格式的接口。围绕某种格式，存在一个生态系统。例如 Markdown 的 Remark，Html 的 Rehype
 // remark-parse 定义了如何将 markdown 作为输入并将其转换为语法树
