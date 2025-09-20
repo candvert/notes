@@ -51,3 +51,23 @@ vim.diagnostic.config({
 	},
 })
 ```
+## 设置按键映射
+```lua
+-- mode参数为哪种模式，n为普通模式，i为插入模式，v为视图模式，c为命令行模式
+-- lhs为要更改的按键
+-- rhs为更改后的按键或者一个lua函数
+-- opts为一些选项
+vim.keymap.set({mode}, {lhs}, {rhs}, {opts})
+
+-- 普通模式和编辑模式下按Ctrl + a后b就运行:lua print('hello world')
+vim.keymap.set({ "n", "i" }, "<C-a>b", "<Cmd>lua print('hello world')<CR>", { silent = true, desc = "print" })
+
+-- 将:help命令设置为快捷键good
+vim.keymap.set('n', 'good', ':help<CR>')
+
+
+-- 禁用某个快捷键
+vim.keymap.del({modes}, {key})
+
+vim.keymap.del('n', 'Q')
+```

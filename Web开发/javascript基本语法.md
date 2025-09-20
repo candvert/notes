@@ -648,7 +648,7 @@ const data = "Manchester,London,Liverpool,Birmingham,Leeds,Carlisle"
 const cities = data.split(",")		// 返回新数组
 cities.join(',')					// 返回字符串
 
-// 
+// flatMap() 方法对数组中的每个元素应用给定的回调函数，然后将结果展开一级，返回一个新数组。它等价于在调用 map() 方法后再调用深度为 1 的 flat() 方法
 const arr1 = [1, 2, 1];
 const result = arr1.flatMap((num) => (num === 2 ? [2, 2] : 1));
 console.log(result);

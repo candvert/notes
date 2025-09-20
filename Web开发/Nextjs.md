@@ -10,7 +10,9 @@
 - [use client](#use%20client)
 - [layout文件](#layout文件)
 
+- [动态导入组件](#动态导入组件)
 - [处理md/mdx文件](#处理md/mdx文件)
+- [静态站点生成SSG](#静态站点生成SSG)
 
 nextjs 具有基于文件的路由，基于文件的 api （即GET，POST等请求），基于文件的 MD/MDX （将 md/mdx 文件解析为组件并显示）
 ## 添加自定义字体next/font
@@ -222,6 +224,37 @@ export default function RootLayout({
     </html>
   )
 }
+```
+## 动态导入组件
+```ts
+// 如果不是默认导出，没有 default 关键字
+// /components/footer.tsx
+export function Footer() {
+	return <div>footer</div>;
+}
+
+// page.tsx
+import dynamic from 'next/dynamic';
+
+const HeavyComponent = dynamic(() => import('@/components/footer').then((mod) => mod.Footer), {
+  loading: () => <p>Loading...</p>,
+});
+
+
+
+
+// 如果是默认导出，有 default 关键字
+// /components/footer.tsx
+export default function Footer() {
+	return <div>footer</div>;
+}
+
+// page.tsx
+import dynamic from 'next/dynamic';
+
+const HeavyComponent = dynamic(() => import('@/components/footer'), {
+  loading: () => <p>Loading...</p>,
+});
 ```
 ## 处理md/mdx文件
 使用官方提供的工具
@@ -442,5 +475,26 @@ Next.js 不会自动为你解码这些参数，因此你需要手动调用 decod
 export default function Home() {
 	const html = "<h1>hi<h1>";
 	return <div dangerouslySetInnerHTML={{ __html: html }} />;
+}
+```
+## 静态站点生成SSG
+```ts
+nextjs 的​​静态站点生成（SSG）会在构建时（build time）预生成所有页面的 HTML、CSS 和 JavaScript 文件，并可以直接部署到 CDN 上，从而实现极快的加载速度和良好的搜索引擎优化（SEO）效果
+
+nextjs 中的 generateStaticParams 函数允许你在构建时​​静态生成动态路由​​，而不是在用户请求时才动态生成。这能显著提升网站性能、减轻服务器压力，并对 SEO 更加友好
+
+// app/products/[category]/[product]/page.tsx
+export async function generateStaticParams() {
+  const products = await fetch('https://api.example.com/products').then((res) => res.json());
+
+  return products.map((product) => ({
+    category: product.categorySlug, // 匹配 [category]
+    product: product.id,             // 匹配 [product]
+  }));
+}
+
+export default function Page({ params }: { params: { category: string; product: string } }) {
+  const { category, product } = params;
+  // ...
 }
 ```

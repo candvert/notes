@@ -17,6 +17,7 @@
 	- [css3新增选择器](#css3新增选择器)
 	- [属性](#属性)
 	- [flex布局](#flex布局)
+	- [媒体查询](#媒体查询)
 	- [实现弹跳动画效果](#实现弹跳动画效果)
 	- [css的特性](#css的特性)
 
@@ -742,6 +743,29 @@ align-content: center;
 align-items: center;
 /* flex-flow复合属性，相当于同时设置flex-direction和flex-wrap */
 flex-flow: row wrap;
+```
+## 媒体查询
+```css
+/* min-width: 768px 的意思是应用于屏幕宽度超过 768px 的设备 */
+@media (min-width: 768px) {
+  pre {
+    font-size: 16px;
+  }
+}
+
+
+@media (height > 600px) {
+  body {
+    line-height: 1.4;
+  }
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 480px) and (resolution: 150dpi) {
+  body {
+    line-height: 1.4;
+  }
+}
 ```
 ## 实现弹跳动画效果
 ```css

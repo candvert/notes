@@ -6,6 +6,7 @@
 - [git remote](#git%20remote)
 - [git branch](#git%20branch)
 - [git push](#git%20push)
+- [git commit](#git%20commit)
 - [git status](#git%20status)
 - [git diff](#git%20diff)
 - [git tag](#git%20tag)
@@ -121,6 +122,10 @@ git push -u origin master:main
 # 将远程的main分支和本地的main分支关联起来
 git push -u origin main
 ```
+## git commit
+```sh
+
+```
 ## git fetch
 ```sh
 git fetch 可获取远程所有最新更新，但不会自动合并到本地
@@ -156,7 +161,7 @@ git tag -d <标签名>
 // 查看远程仓库的标签
 git ls-remote --tags origin
 // 删除远程仓库的标签
-git push origin --d <tagname>
+git push origin -d <tagname>
 ```
 ## git reset
 ```sh
