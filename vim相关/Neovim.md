@@ -1,6 +1,7 @@
 - [vim.diagnostic](#vim.diagnostic)
 ```sh
 :e $MYVIMRC 打开init.lua配置文件
+:term 打开终端窗口
 ```
 ## vim.diagnostic
 ```lua

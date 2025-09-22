@@ -29,8 +29,9 @@
 	- [rainbow-delimiters.nvim](#rainbow-delimiters.nvim)
 	- [none-ls](#none-ls)
 	- [lspsaga.nvim](#lspsaga.nvim)
+	- [toggleterm.nvim](#toggleterm.nvim)
 配置完成之后每增加一门语言的支持就要进行下面三项。
-一个是 LSP 服务器，提供代码提示等功能。通过Mason插件安装。命令为 :Mason。
+一个是 LSP 服务器，提供代码提示等功能。通过 Mason 插件安装。命令为 :Mason。
 一个是语法解析器，提供语法高亮等功能。通过修改 nvim-treesitter 配置文件安装。
 该语言的编译器，要添加进 path 中。
 ## 配置文件
@@ -642,5 +643,34 @@ return {
         require('lspsaga').setup({})
     end,
 
+}
+```
+## toggleterm.nvim
+```lua
+return {
+	'akinsho/toggleterm.nvim',
+	version = "*",
+	config = function()
+		require("toggleterm").setup({
+			open_mapping = [[<c-\>]],
+			--hide_numbers = true,
+			--shade_terminals = true,
+			--shading_factor = 2,
+			--start_in_insert = true,
+			--insert_mappings = true,
+			--persist_size = true,
+			direction = "float",
+			--close_on_exit = true,
+			--shell = vim.o.shell,
+			--float_opts = {
+			--	border = "curved",
+			--	winblend = 0,
+			--	highlights = {
+			--		border = "Normal",
+			--		background = "Normal",
+			--	},
+			--},
+		})
+	end,
 }
 ```
