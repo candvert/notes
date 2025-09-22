@@ -5,6 +5,8 @@
 - [Cargo.toml文件](#Cargo.toml文件)
 - [示例](#示例)
 
+- [重要概念](#重要概念)
+
 - [变量](#变量)
 - [静态变量](#静态变量)
 - [常量](#常量)
@@ -17,10 +19,10 @@
 - [String和&str](#String和&str)
 - [枚举](#枚举)
 - [Option枚举](#Option枚举)
+- [函数](#函数)
 - [结构体](#结构体)
 - [方法](#方法)
 - [关联函数](#关联函数)
-- [函数](#函数)
 - [crates](#crates)
 - [modules](#modules)
 - [将模块放进不同的文件](#将模块放进不同的文件)
@@ -80,6 +82,18 @@ rustup doc
 // ./main
 $ cargo new hello_cargo
 $ cd hello_cargo
+```
+## 重要概念
+```rust
+所有权
+Option枚举，用来表示其他语言中的 null
+package、crate、module、path
+Result<T, E>，用来进行错误处理，用来表示其他语言中的 exception
+trait
+生命周期
+闭包
+模式
+宏
 ```
 ## 变量
 ```rust
@@ -432,6 +446,34 @@ let y: Option<i8> = Some(5);
 
 let sum = x + y; // 报错
 ```
+## 函数
+```rust
+// 语句不返回值。表达式计算并产生一个值
+// 表达式可以是语句的一部分：例如语句 let y = 6; 中的 6 是一个表达式，它计算出的值是 6。函数调用是一个表达式。宏调用是一个表达式。用大括号创建的一个新的块作用域也是一个表达式
+// 如果在 five 函数中的 5 后面加上一个分号，把它从表达式变成语句，我们将看到一个错误，因为语句不返回值
+// fn five() -> i32 {
+//    5
+//}
+
+
+
+// 在函数签名中，必须声明每个参数的类型
+fn another_function() {
+    println!("Another function.");
+}
+
+fn print_labeled_measurement(value: i32, unit_label: char, s: &String) {
+    println!("The measurement is: {value}{unit_label}");
+}
+print_labeled_measurement(5, 'h');
+
+
+
+// 在 Rust 中，函数的返回值等同于函数体最后一个表达式的值
+fn five() -> i32 {
+    5
+}
+```
 ## 结构体
 ```rust
 struct User {
@@ -527,34 +569,6 @@ impl Rectangle {
     fn area(&self) -> u32 {
         self.width * self.height
     }
-}
-```
-## 函数
-```rust
-// 语句不返回值。表达式计算并产生一个值
-// 表达式可以是语句的一部分：例如语句 let y = 6; 中的 6 是一个表达式，它计算出的值是 6。函数调用是一个表达式。宏调用是一个表达式。用大括号创建的一个新的块作用域也是一个表达式
-// 如果在 five 函数中的 5 后面加上一个分号，把它从表达式变成语句，我们将看到一个错误，因为语句不返回值
-// fn five() -> i32 {
-//    5
-//}
-
-
-
-// 在函数签名中，必须声明每个参数的类型
-fn another_function() {
-    println!("Another function.");
-}
-
-fn print_labeled_measurement(value: i32, unit_label: char, s: &String) {
-    println!("The measurement is: {value}{unit_label}");
-}
-print_labeled_measurement(5, 'h');
-
-
-
-// 在 Rust 中，函数的返回值等同于函数体最后一个表达式的值
-fn five() -> i32 {
-    5
 }
 ```
 ## crates
