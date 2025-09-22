@@ -652,6 +652,7 @@ return {
 	version = "*",
 	config = function()
 		require("toggleterm").setup({
+			-- 快捷键 Ctrl + \ 打开终端
 			open_mapping = [[<c-\>]],
 			--hide_numbers = true,
 			--shade_terminals = true,

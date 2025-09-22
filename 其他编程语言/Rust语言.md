@@ -19,7 +19,19 @@
 - [Option枚举](#Option枚举)
 - [结构体](#结构体)
 - [方法](#方法)
+- [关联函数](#关联函数)
 - [函数](#函数)
+- [crates](#crates)
+- [modules](#modules)
+- [将模块放进不同的文件](#将模块放进不同的文件)
+- [path](#path)
+- [use](#use)
+
+- [vector](#vector)
+- [String](#String)
+- [HashMap](#HashMap)
+- [错误处理](#错误处理)
+- [trait](#trait)
 ## 安装
 ```sh
 只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 构建工具
@@ -274,6 +286,7 @@ match dice_roll {
 
 
 // if let
+// 可以将 if let 看作 match 的一个语法糖，只考虑一种情况，而忽略其他情况
 let mut count = 0;
 if let Coin::Quarter(state) = coin {
 	println!("State quarter from {state:?}!");
@@ -285,6 +298,7 @@ if let Coin::Quarter(state) = coin {
 ```rust
 // 所有权让 Rust 无需垃圾回收即可保障内存安全
 // 以 C++ 进行类比，所有权就是一个指针，指向分配在堆上的内存，拷贝变量时只会复制指针的值即浅拷贝，与 C++ 不同的是，拷贝后原先的变量不再有效。这样就可以防止出现两次 free 变量，即所有权规则中的“值在任一时刻有且只有一个所有者”
+// 字符串字面值被储存在程序的二进制输出中，因此它们也是字符串 slices
 
 // 所有权规则：
 // 1. Rust 中的每一个值都有一个所有者（owner）
@@ -470,6 +484,9 @@ fn main() {
 ```
 ## 方法
 ```rust
+// 方法的第一个参数总是 self，它代表调用该方法的结构体实例
+// 所有在 impl 块中定义的函数被称为关联函数
+// 每个结构体都允许拥有多个 impl 块
 #[derive(Debug)]
 struct Rectangle {
     width: u32,
@@ -492,6 +509,24 @@ fn main() {
         "The area of the rectangle is {} square pixels.",
         rect1.area()
     );
+}
+```
+## 关联函数
+```rust
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+	// 在 impl 中不以 self 作为参数的函数就是关联函数
+	fn say() {
+		println!("Rectangle");
+	}
+
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
 }
 ```
 ## 函数
@@ -521,4 +556,199 @@ print_labeled_measurement(5, 'h');
 fn five() -> i32 {
     5
 }
+```
+## crates
+```rust
+创建一个 package 包含一个 binary crate：cargo new my-binary-app
+创建一个 package 包含一个 library crate：cargo new my-lib --lib
+crates 分为两种：binary crate 和 library crate
+一个 package 可以包含多个 binary crate 和一个可选的 library crate
+src/main.rs crate 和 src/lib.rs crate 的名称和 package 名称相同
+A crate is the smallest amount of code that the Rust compiler considers at a time.
+The crate root is a source file that the Rust compiler starts from. Such as src/lib.rs for a library crate or src/main.rs for a binary crate.
+一个 package 可以通过将文件放入 src/bin 目录来包含多个 binary crate，每个文件都是一个 binary crate
+```
+## modules
+```rust
+// lib.rs 文件：
+mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() { println!("hi"); }
+        fn seat_at_table() { println!("hi"); }
+    }
+    mod serving {
+        fn take_order() { println!("hi"); }
+        fn serve_order() { println!("hi"); }
+        fn take_payment() { println!("hi"); }
+    }
+}
+mod back_of_house {
+	mod cooking {
+		fn cook() { println!("hi"); }
+	}
+}
+// 则该 library crate 中定义了 front_of_house 模块和 back_of_house 模块
+// 该 library crate 的模块树
+crate
+ ├── front_of_house
+ │  ├── hosting
+ │  │   ├── add_to_waitlist
+ │  │   └── seat_at_table
+ │  └── serving
+ │     ├── take_order
+ │     ├── serve_order
+ │     └── take_payment
+ └── back_of_house
+    └── cooking
+	   └── seat_at_table
+```
+## 将模块放进不同的文件
+```rust
+// src/lib.rs 文件原本的内容：
+mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() { println!("hi"); }
+    }
+}
+// src/lib.rs
+mod front_of_house;
+// src/front_of_house.rs
+pub mod hosting;
+// src/front_of_house/hosting.rs
+pub fn add_to_waitlist() { println!("hi"); }
+```
+## path
+```rust
+// path 包括绝对路径和相对路径
+// lib.rs 文件：
+mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() {}
+    }
+}
+pub fn eat_at_restaurant() {
+    // 绝对路径
+    crate::front_of_house::hosting::add_to_waitlist();
+    // 相对路径
+    front_of_house::hosting::add_to_waitlist();
+}
+```
+## use
+```rust
+use std::io::Result as IoResult;
+pub use std::io::Result as IoResult; // 和 js 的 export 相似，导出一个名称
+
+use std::io;
+use std::io::Write
+use std::io::{self, Write}; // 和上面两句效果相同
+use std::collections::*;
+```
+
+```rust
+私有边界（privacy boundary）
+模块不仅可以组织代码，还可以定义私有边界。
+如果想把函数或 struct 等设为私有，可以将它放到某个模块中。
+Rust 中所有的条目（函数，方法，struct，enum，模块，常量）默认是私有的。
+父级模块无法访问子模块中的私有条目
+子模块里可以使用所有祖先模块中的条目
+
+super 用来访问父级模块路径中的内容
+
+pub 放在 struct 前：
+	struct 是公共的
+	struct 的字段默认是私有的
+pub 放在 enum 前：
+	enum 是公共的
+	enum 的变体也都是公共的
+```
+## vector
+```rust
+let v: Vec<i32> = Vec::new();
+let v = vec![1, 2, 3];
+v.push(5);
+let third: &i32 = &v[2];
+let third: Option<&i32> = v.get(2);
+
+
+// 错误的使用
+// 在 vector 的结尾增加新元素时，在没有足够空间将所有元素依次相邻存放的情况下，可能会要求分配新内存并将老的元素拷贝到新的空间中。这时，第一个元素的引用就指向了被释放的内存。借用规则阻止程序陷入这种状况。
+let mut v = vec![1, 2, 3, 4, 5];
+let first = &v[0];
+v.push(6);
+println!("The first element is: {first}"); // 报错
+
+
+
+// 遍历
+let v = vec![100, 32, 57];
+for i in &v {
+	println!("{i}");
+}
+
+let mut v = vec![100, 32, 57];
+for i in &mut v {
+	*i += 50;
+}
+```
+## String
+```rust
+let mut s = String::new();
+
+let data = "initial contents";
+let s = data.to_string();
+// 该方法也可直接用于字符串字面值：
+let s = "initial contents".to_string();
+
+let s = String::from("initial contents");
+
+let mut s = String::from("foo");
+s.push_str("bar");
+
+let mut s = String::from("lo");
+s.push('l');
+
+let s1 = String::from("tic");
+let s2 = String::from("tac");
+let s3 = String::from("toe");
+let s = format!("{s1}-{s2}-{s3}");
+
+for c in "Зд".chars() {
+    println!("{c}");
+}
+for b in "Зд".bytes() {
+    println!("{b}");
+}
+```
+## HashMap
+```rust
+// 所有的键必须是相同类型，值也必须都是相同类型
+// 每个唯一的键只能同时关联一个值
+// 如果我们插入了一个键值对，接着用相同的键插入一个不同的值，与这个键相关联的旧值将被替换
+use std::collections::HashMap;
+let mut scores = HashMap::new();
+scores.insert(String::from("Blue"), 10);
+scores.insert(String::from("Yellow"), 50);
+
+let team_name = String::from("Blue");
+let score = scores.get(&team_name).copied().unwrap_or(0);
+
+for (key, value) in &scores {
+	println!("{key}: {value}");
+}
+```
+## 错误处理
+```rust
+// Rust 将错误分为两大类：可恢复的（recoverable）和 不可恢复的（unrecoverable）错误。
+// Rust 有 Result<T, E> 类型，用于处理可恢复的错误，还有 panic! 宏，在程序遇到不可恢复的错误时停止执行。
+// backtrace 是一个执行到目前位置所有被调用的函数的列表
+// Result 枚举和其变体也被导入到了 prelude 中
+
+// 主动调用 panic!
+fn main() {
+    panic!("crash and burn");
+}
+```
+## trait
+```rust
+// trait 类似于其他语言中的常被称为 接口（interfaces）的功能，虽然有一些不同
 ```
