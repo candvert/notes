@@ -36,7 +36,7 @@
 - [trait](#trait)
 ## 安装
 ```sh
-只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 构建工具
+只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 编译器 rustc
 Windows 上还需要通过 Visual Studio Installer 安装 MSVC 和 Windwos 11 SDK 两项
 ```
 ![](/images/rust_1.png)
@@ -54,8 +54,10 @@ cargo rm <package_name>
 cargo build
 检查项目有没有错误
 cargo check
-
+发布版本
 cargo build --release
+运行测试
+cargo test
 ```
 ## Rustup命令
 ```sh
@@ -65,6 +67,7 @@ rustup --help
 rustup update
 卸载
 rustup self uninstall
+查看文档
 rustup doc
 ```
 ## 使用vscode开发
@@ -312,6 +315,7 @@ if let Coin::Quarter(state) = coin {
 ```rust
 // 所有权让 Rust 无需垃圾回收即可保障内存安全
 // 以 C++ 进行类比，所有权就是一个指针，指向分配在堆上的内存，拷贝变量时只会复制指针的值即浅拷贝，与 C++ 不同的是，拷贝后原先的变量不再有效。这样就可以防止出现两次 free 变量，即所有权规则中的“值在任一时刻有且只有一个所有者”
+// 也可以看作为 C++ 中的移动
 // 字符串字面值被储存在程序的二进制输出中，因此它们也是字符串 slices
 
 // 所有权规则：
@@ -319,9 +323,8 @@ if let Coin::Quarter(state) = coin {
 // 2. 值在任一时刻有且只有一个所有者
 // 3. 当所有者离开作用域，这个值将被丢弃
 let mut s = String::from("hello");
-s.push_str(", world!"); // push_str() 在字符串后追加字面值
-println!("{s}"); // 将打印 `hello, world!`
-// Rust 中的 String 会进行浅拷贝，与 C++ 不同的是，拷贝后原先的变量不再有效，所以如果使用下面的变量 s1 会报错
+println!("{s}");
+// 下面代码中 s1 的所有权转移到 s2 了，所以 s1 不再有效
 let s1 = String::from("hello");
 let s2 = s1;
 println!("{s1}, world!"); // 报错
@@ -330,7 +333,7 @@ println!("{s1}, world!"); // 报错
 
 
 
-// 借用（也称引用），把所有权的变量看作指针，则 Rust 中的借用相当于指针的指针
+// 借用（也称引用），把拥有所有权的变量看作指针，则 Rust 中的借用相当于指针的指针
 // （默认）不允许修改借用的值
 let s1 = String::from("hello");
 let len = calculate_length(&s1);
@@ -435,15 +438,16 @@ enum Message {
 // 不过拥有一个可以编码存在或不存在概念的枚举
 // 这个枚举是 Option<T>，而且它定义于标准库中
 // Option<T> 枚举是如此有用以至于它甚至被包含在了 prelude 之中，无需将其显式引入作用域
+
+// 标准库中的定义
 enum Option<T> {
     None,
     Some(T),
 }
-// 保证安全，因为 x 和 y 的类型不同，所以 x + y 会报错
+// 下面代码中因为 x 和 y 的类型不同，所以 x + y 会报错
 // 这样只要一个值不是 Option<T> 类型，你就可以安全的认定它的值不为空
 let x: i8 = 5;
 let y: Option<i8> = Some(5);
-
 let sum = x + y; // 报错
 ```
 ## 函数
@@ -551,6 +555,17 @@ fn main() {
         "The area of the rectangle is {} square pixels.",
         rect1.area()
     );
+}
+
+
+// 泛型方法
+struct Game<T> {
+	name: String
+}
+impl<T> Game<T> {
+	fn play(&self) {
+		println!("I'm playing");
+	}
 }
 ```
 ## 关联函数
@@ -764,5 +779,90 @@ fn main() {
 ```
 ## trait
 ```rust
-// trait 类似于其他语言中的常被称为 接口（interfaces）的功能，虽然有一些不同
+// trait 类似于其他语言中的接口（interfaces）
+trait Person {
+	fn get_name(&self) -> String;
+	fn say(&self) {
+		println!("Hello, {}", self.get_name());
+	}
+}
+struct Player {
+	name: String
+}
+impl Person for Player {
+	fn get_name(&self) -> String {
+		self.name.clone()
+	}
+}
+
+
+
+pub fn notify(item: &impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+
+
+pub fn notify<T: Summary>(item: &T) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+
+
+pub fn notify(item: &(impl Summary + Display)) {
+pub fn notify<T: Summary + Display>(item: &T) {
+
+
+
+
+fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
+fn some_function<T, U>(t: &T, u: &U) -> i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+```
+## 生命周期
+```rust
+// 生命周期用于保证引用在我们需要的整个期间内都是有效的
+// Rust 中的每一个引用都有其生命周期（lifetime），也就是引用保持有效的作用域
+// 生命周期的主要目标是避免悬垂引用
+// Rust 编译器有一个借用检查器（borrow checker），它比较作用域来确保所有的借用都是有效的
+// 生命周期注解有着一个不太常见的语法：生命周期参数名称必须以撇号（'）开头，其名称通常全是小写
+// 函数或方法的参数的生命周期被称为输入生命周期（input lifetimes），而返回值的生命周期被称为输出生命周期（output lifetimes）
+
+
+// 函数签名表达如下限制：也就是这两个参数和返回的引用存活的一样久。（两个）参数和返回的引用的生命周期是相关的
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() { x } else { y }
+}
+
+
+
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+impl<'a> ImportantExcerpt<'a> {
+    fn level(&self) -> i32 {
+        3
+    }
+}
+
+
+
+// 有一种特殊的生命周期：'static，其生命周期能够存活于整个程序期间。所有的字符串字面值都拥有 'static 生命周期，我们也可以选择像下面这样标注出来：
+let s: &'static str = "I have a static lifetime.";
+```
+## 自动化测试
+```rust
+// Rust 中的测试就是一个带有 test 属性注解的函数。属性（attribute）是关于 Rust 代码片段的元数据
+// 为了将一个函数变成测试函数，需要在 fn 行之前加上 #[test]
+pub fn add(left: u64, right: u64) -> u64 {
+    left + right
+}
+#[test]
+fn it_works() {
+	let result = add(2, 2);
+	assert_eq!(result, 4);
+}
 ```
