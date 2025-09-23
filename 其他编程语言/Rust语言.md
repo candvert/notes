@@ -7,6 +7,7 @@
 
 - [重要的点](#重要的点)
 - [重要概念](#重要概念)
+- [没用的点但是面试会问](#没用的点但是面试会问)
 
 - [变量](#变量)
 - [静态变量](#静态变量)
@@ -23,7 +24,7 @@
 - [函数](#函数)
 - [结构体](#结构体)
 - [方法](#方法)
-- [关联函数](#关联函数)
+- [不是方法的关联函数](#不是方法的关联函数)
 - [crates](#crates)
 - [modules](#modules)
 - [将模块放进不同的文件](#将模块放进不同的文件)
@@ -132,6 +133,7 @@ Rust 并不会尝试自动地将非布尔值转换为布尔值。必须总是显
 就字符串字面值来说，我们在编译时就知道其内容，所以文本被直接硬编码进最终的可执行文件中
 引用在其生命周期内保证指向某个特定类型的有效值
 // 我自己总结的：生命周期的概念是为了保证引用总是有效的，也就是防止悬垂指针
+“字符串 slice” 的类型声明写作 &str
 ```
 ## 重要概念
 ```rust
@@ -147,6 +149,13 @@ trait
 闭包
 模式
 宏
+```
+## 没用的点但是面试会问
+```rust
+字符串字面值就是 slice
+还记得字符串字面值被储存在二进制文件中吗
+let s = "Hello, world!";
+这里 s 的类型是 &str：它是一个指向二进制程序特定位置的 slice。这也就是为什么字符串字面值是不可变的；&str 是一个不可变引用。
 ```
 ## 变量
 ```rust
@@ -444,29 +453,29 @@ let slice = &s[..];
 // 数组 slice
 let a = [1, 2, 3, 4, 5];
 let slice = &a[1..3];
-assert_eq!(slice, &[2, 3]);
 ```
 ## String和&str
 String 实际存储的是指向下标为0的元素的指针和字符串长度，以及 capacity
 &str 实际存储的是指向某个元素的指针和该切片的长度
 ```rust
 let s = String::from("hello world");
-
-let hello = &s[0..5];
-let world = &s[6..11];
+let world = &s[6..];
 ```
 ![[rust_2.svg]]
 ## 枚举
 ```rust
+// 定义
 enum IpAddrKind {
     V4,
     V6,
 }
+// 使用
 let four = IpAddrKind::V4;
 let six = IpAddrKind::V6;
 fn route(ip_kind: IpAddrKind) {}
 route(IpAddrKind::V4);
 route(IpAddrKind::V6);
+
 
 
 // 
@@ -478,17 +487,17 @@ let home = IpAddr::V4(String::from("127.0.0.1"));
 let loopback = IpAddr::V6(String::from("::1"));
 
 
+
+
 // 
-struct Ipv4Addr {
-    // --snip--
-}
-struct Ipv6Addr {
-    // --snip--
-}
 enum IpAddr {
-    V4(Ipv4Addr),
-    V6(Ipv6Addr),
+	V4(u8, u8, u8, u8),
+	V6(String),
 }
+let home = IpAddr::V4(127, 0, 0, 1);
+let loopback = IpAddr::V6(String::from("::1"));
+
+
 
 
 // 
@@ -547,12 +556,14 @@ fn five() -> i32 {
 ```
 ## 结构体
 ```rust
+// 定义
 struct User {
     active: bool,
     username: String,
     email: String,
     sign_in_count: u64,
 }
+// 实例化
 let mut user1 = User {
 	username: String::from("someusername123"),
 	email: String::from("someone@example.com"),
@@ -560,6 +571,9 @@ let mut user1 = User {
 	active: true,
 };
 user1.email = String::from("anotheremail@example.com");
+
+
+
 
 // 字段初始化简写语法，因为 username 和 email 参数与结构体字段同名
 fn build_user(email: String, username: String) -> User {
@@ -570,6 +584,8 @@ fn build_user(email: String, username: String) -> User {
         sign_in_count: 1,
     }
 }
+
+
 // 结构体更新语法，使用旧实例的大部分值但改变其部分值来创建一个新的结构体实例
 let user2 = User {
 	email: String::from("another@example.com"),
@@ -582,25 +598,26 @@ let user2 = User {
 // 元组结构体
 struct Color(i32, i32, i32);
 struct Point(i32, i32, i32);
-
 fn main() {
     let black = Color(0, 0, 0);
     let origin = Point(0, 0, 0);
+	let Point(x, y, z) = origin;
 }
+
+
 
 // 类单元结构体
 struct AlwaysEqual;
-
 fn main() {
     let subject = AlwaysEqual;
 }
 ```
 ## 方法
 ```rust
-// 方法的第一个参数总是 self，它代表调用该方法的结构体实例
 // 所有在 impl 块中定义的函数被称为关联函数
+// 方法的第一个参数总是 self，它代表调用该方法的结构体实例
+// 在 impl 中不以 self 作为参数的函数被称为不是方法的关联函数
 // 每个结构体都允许拥有多个 impl 块
-#[derive(Debug)]
 struct Rectangle {
     width: u32,
     height: u32,
@@ -635,7 +652,7 @@ impl<T> Game<T> {
 	}
 }
 ```
-## 关联函数
+## 不是方法的关联函数
 ```rust
 struct Rectangle {
     width: u32,
@@ -643,7 +660,7 @@ struct Rectangle {
 }
 
 impl Rectangle {
-	// 在 impl 中不以 self 作为参数的函数就是关联函数
+	// 在 impl 中不以 self 作为参数的函数就是不是方法的关联函数
 	fn say() {
 		println!("Rectangle");
 	}
