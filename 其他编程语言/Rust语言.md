@@ -147,7 +147,6 @@ Result<T, E>，用来进行错误处理，用来表示其他语言中的 excepti
 trait
 生命周期
 闭包
-模式
 宏
 ```
 ## 没用的点但是面试会问
@@ -325,14 +324,13 @@ let mut count = 0;
 ```
 ## match语句
 ```rust
+// match 的分支必须覆盖了所有的可能性
 enum Coin {
     Penny,
     Nickel,
     Dime,
     Quarter,
 }
-
-fn value_in_cents(coin: Coin) -> u8 {
 fn value_in_cents(coin: Coin) -> u8 {
     match coin {
         Coin::Penny => {
@@ -344,11 +342,26 @@ fn value_in_cents(coin: Coin) -> u8 {
         Coin::Quarter => 25,
     }
 }
+
+
+
+
+// 匹配 Option<T>
+fn plus_one(x: Option<i32>) -> Option<i32> {
+	match x {
+		None => None,
+		Some(i) => Some(i + 1),
+	}
 }
+let five = Some(5);
+let six = plus_one(five);
+let none = plus_one(None);
 
 
 
-// 
+
+
+// 通配模式
 let dice_roll = 9;
 match dice_roll {
 	3 => add_fancy_hat(),
@@ -358,13 +371,26 @@ match dice_roll {
 
 
 
-// 
+// _ 占位符
 let dice_roll = 9;
 match dice_roll {
 	3 => add_fancy_hat(),
 	7 => remove_fancy_hat(),
 	_ => reroll(),
 }
+
+
+
+
+// 使用单元值作为 _ 分支的代码，表示不想运行任何代码
+let dice_roll = 9;
+match dice_roll {
+	3 => add_fancy_hat(),
+	7 => remove_fancy_hat(),
+	_ => (),
+}
+
+
 
 
 
@@ -507,6 +533,13 @@ enum Message {
     Write(String),
     ChangeColor(i32, i32, i32),
 }
+impl Message {
+	fn call(&self) {
+		// 在这里定义方法体
+	}
+}
+let m = Message::Write(String::from("hello"));
+m.call();
 ```
 ## Option枚举
 ```rust
@@ -514,12 +547,17 @@ enum Message {
 // 不过拥有一个可以编码存在或不存在概念的枚举
 // 这个枚举是 Option<T>，而且它定义于标准库中
 // Option<T> 枚举是如此有用以至于它甚至被包含在了 prelude 之中，无需将其显式引入作用域
+// 另外，它的变体也是如此：可以不需要 Option:: 前缀来直接使用 Some 和 None
 
 // 标准库中的定义
 enum Option<T> {
     None,
     Some(T),
 }
+// 示例
+let some_number = Some(5);
+let some_char = Some('e');
+let absent_number: Option<i32> = None;
 // 下面代码中因为 x 和 y 的类型不同，所以 x + y 会报错
 // 这样只要一个值不是 Option<T> 类型，你就可以安全的认定它的值不为空
 let x: i8 = 5;
