@@ -34,6 +34,8 @@
 - [HashMap](#HashMap)
 - [错误处理](#错误处理)
 - [trait](#trait)
+- [生命周期](#生命周期)
+- [自动化测试](#自动化测试)
 ## 安装
 ```sh
 只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 编译器 rustc
@@ -80,11 +82,22 @@ rustup doc
 ```
 ## 示例
 ```rust
-// 文件名包含多个单词，应当使用下划线来分隔单词。例如命名为 hello_world.rs
-// rustc main.rs
-// ./main
+// 文件名若包含多个单词，应当使用下划线来分隔单词。例如命名为 hello_world.rs
 $ cargo new hello_cargo
 $ cd hello_cargo
+$ cd src
+$ nvim main.rs
+use std::io;
+
+fn main() {
+    let mut x = String::new();
+    println!("Please enter:");
+    io::stdin()
+        .read_line(&mut x)
+        .expect("Failed");
+    println!("{x}");
+}
+$ cargo run
 ```
 ## 重要概念
 ```rust
