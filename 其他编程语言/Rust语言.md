@@ -861,15 +861,22 @@ use std::collections::*;
 ```
 ## vector
 ```rust
+// 新建一个空 vector
 let v: Vec<i32> = Vec::new();
+// 使用 vec! 宏创建 vector
 let v = vec![1, 2, 3];
+// 添加元素
 v.push(5);
+// 移除元素
+v.pop();
+// 访问元素
 let third: &i32 = &v[2];
+// 使用 get 访问元素，当 get 方法被传递了一个数组外的索引时，会返回 None
 let third: Option<&i32> = v.get(2);
 
 
 // 错误的使用
-// 在 vector 的结尾增加新元素时，在没有足够空间将所有元素依次相邻存放的情况下，可能会要求分配新内存并将老的元素拷贝到新的空间中。这时，第一个元素的引用就指向了被释放的内存。借用规则阻止程序陷入这种状况。
+// 在 vector 的结尾增加新元素时，在没有足够空间将所有元素依次相邻存放的情况下，可能会要求分配新内存并将老的元素拷贝到新的空间中。这时，第一个元素的引用就指向了被释放的内存。借用规则阻止程序陷入这种状况
 let mut v = vec![1, 2, 3, 4, 5];
 let first = &v[0];
 v.push(6);
@@ -882,7 +889,7 @@ let v = vec![100, 32, 57];
 for i in &v {
 	println!("{i}");
 }
-
+// 遍历
 let mut v = vec![100, 32, 57];
 for i in &mut v {
 	*i += 50;
@@ -890,29 +897,47 @@ for i in &mut v {
 ```
 ## String
 ```rust
-let mut s = String::new();
+// String 是一个 Vec<u8> 的封装
 
+// 新建一个空 String
+let mut s = String::new();
+// 使用 to_string 方法从字符串字面值创建 String
 let data = "initial contents";
 let s = data.to_string();
 // 该方法也可直接用于字符串字面值：
 let s = "initial contents".to_string();
-
+// 使用 String::from 函数从字符串字面值创建 String
 let s = String::from("initial contents");
-
-let mut s = String::from("foo");
+// 附加字符串
 s.push_str("bar");
-
-let mut s = String::from("lo");
+// 使用 push 将一个字符加入 String 值中
 s.push('l');
+// 使用 + 运算符将两个 String 值合并到一个新的 String 值中
+let s1 = String::from("Hello, ");
+let s2 = String::from("world!");
+let s3 = s1 + &s2; // 注意 s1 被移动了，不能继续使用
 
+
+// 使用 format! 宏
 let s1 = String::from("tic");
 let s2 = String::from("tac");
 let s3 = String::from("toe");
 let s = format!("{s1}-{s2}-{s3}");
 
+
+
+// Rust 的字符串不支持索引
+// 因为字符串是使用 UTF-8 编码的，不能保证一个字节存储一个字符
+let hello = "вствуйте";
+let s = &hello[0..1]; // 报错，因为这些字母都是两个字节长的
+
+
+
+// 使用 chars 函数来访问每个字符
 for c in "Зд".chars() {
     println!("{c}");
 }
+// bytes 方法返回每一个原始字节
 for b in "Зд".bytes() {
     println!("{b}");
 }
@@ -1218,7 +1243,10 @@ where
 ```
 ## 自动化测试
 ```rust
-// Rust 中的测试就是一个带有 test 属性注解的函数。属性（attribute）是关于 Rust 代码片段的元数据
+// Rust 中的测试就是一个带有 test 属性注解的函数。属性（attribute）是 Rust 代码片段的元数据
+// cargo test 命令会运行项目中所有的测试
+// 当测试函数中出现 panic 时测试就失败了。每一个测试都在一个新线程中运行，当主线程发现测试线程异常了，就将对应测试标记为失败
+// assert! 宏由标准库提供，需要向 assert! 宏提供一个求值为布尔值的参数。如果值是 true，assert! 什么也不做，同时测试会通过。如果值为 false，assert! 调用 panic! 宏
 // 为了将一个函数变成测试函数，需要在 fn 行之前加上 #[test]
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
@@ -1228,4 +1256,79 @@ fn it_works() {
 	let result = add(2, 2);
 	assert_eq!(result, 4);
 }
+
+
+
+// 对于自定义的结构体和枚举，需要实现 PartialEq 才能断言它们的值是否相等。需要实现 Debug 才能在断言失败时打印它们的值。因为这两个 trait 都是派生 trait，通常可以直接在结构体或枚举上添加 #[derive(PartialEq, Debug)] 注解
+// assert_eq! 宏
+assert_eq!(result, 4);
+// assert_ne! 宏
+assert_ne!(result, 4);
+// 自定义失败信息
+assert!(
+	result.contains("Carol"),
+	"Greeting did not contain name, value was `{result}`"
+);
+
+
+
+
+
+// 在测试中使用 Result<T, E>
+#[test]
+fn it_works() -> Result<(), String> {
+	let result = add(2, 2);
+
+	if result == 4 {
+		Ok(())
+	} else {
+		Err(String::from("two plus two does not equal four"))
+	}
+}
+
+
+
+// 当运行多个测试时，Rust 默认使用线程来并行运行
+// 这里将测试线程设置为 1，告诉程序不要使用任何并行机制
+$ cargo test -- --test-threads=1
+// 显示成功测试的输出
+$ cargo test -- --show-output
+// 测试单个函数
+$ cargo test <function_name>
+// 运行了所有名字中带有 add 的测试
+$ cargo test add
+// 忽略测试，在函数前添加 #[ignore] 属性
+#[test]
+#[ignore]
+fn expensive_test() {
+	// code that takes an hour to run
+}
+// 只运行被忽略的测试
+$ cargo test -- --ignored
+// 不管是否忽略都要运行全部测试
+$ cargo test -- --include-ignored
+
+
+
+
+
+
+// 单元测试
+// 单元测试位于与源码相同的文件中
+// 规范是在每个文件中创建包含测试函数的 tests 模块，并使用 cfg(test) 标注模块
+
+
+
+
+
+// 集成测试
+// 为了编写集成测试，需要在项目根目录创建一个 tests 目录，与 src 同级
+// Cargo 会将该目录中的每一个文件当作单独的 crate 来编译
+// tests 目录中的子目录不会被作为单独的 crate 编译或作为一个测试结果部分出现在测试输出中
+// 如果项目是二进制 crate 并且只包含 src/main.rs 而没有 src/lib.rs，这样就不可能在 tests 目录创建集成测试
+// 如果一个单元测试失败，则不会有任何集成测试和文档测试的输出，因为这些测试只会在所有单元测试都通过后才会执行
+
+// 运行某个特定集成测试文件中的所有测试
+// 这个命令只运行 tests/integration_test.rs 文件中的测试
+$ cargo test --test integration_test
 ```
