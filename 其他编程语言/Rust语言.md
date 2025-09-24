@@ -1163,12 +1163,14 @@ impl<T: Display> ToString for T {
 ```
 ## 生命周期
 ```rust
+// 生命周期是另一类泛型
 // 生命周期用于保证引用在我们需要的整个期间内都是有效的
 // Rust 中的每一个引用都有其生命周期（lifetime），也就是引用保持有效的作用域
 // 生命周期的主要目标是避免悬垂引用
 // Rust 编译器有一个借用检查器（borrow checker），它比较作用域来确保所有的借用都是有效的
-// 生命周期注解有着一个不太常见的语法：生命周期参数名称必须以撇号（'）开头，其名称通常全是小写
+// 生命周期参数名称必须以撇号（'）开头，其名称通常全是小写
 // 函数或方法的参数的生命周期被称为输入生命周期（input lifetimes），而返回值的生命周期被称为输出生命周期（output lifetimes）
+// 当从函数返回一个引用，返回值的生命周期参数需要与一个参数的生命周期参数相匹配
 
 
 // 函数签名表达如下限制：也就是这两个参数和返回的引用存活的一样久。（两个）参数和返回的引用的生命周期是相关的
@@ -1178,9 +1180,13 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
 
 
 
+// 结构体定义中的生命周期注解
 struct ImportantExcerpt<'a> {
     part: &'a str,
 }
+
+
+// impl 块
 impl<'a> ImportantExcerpt<'a> {
     fn level(&self) -> i32 {
         3
@@ -1191,6 +1197,24 @@ impl<'a> ImportantExcerpt<'a> {
 
 // 有一种特殊的生命周期：'static，其生命周期能够存活于整个程序期间。所有的字符串字面值都拥有 'static 生命周期，我们也可以选择像下面这样标注出来：
 let s: &'static str = "I have a static lifetime.";
+
+
+
+
+
+// 在同一函数中指定泛型类型参数、trait bounds 和生命周期的语法
+use std::fmt::Display;
+fn longest_with_an_announcement<'a, T>(
+    x: &'a str,
+    y: &'a str,
+    ann: T,
+) -> &'a str
+where
+    T: Display,
+{
+    println!("Announcement! {ann}");
+    if x.len() > y.len() { x } else { y }
+}
 ```
 ## 自动化测试
 ```rust
