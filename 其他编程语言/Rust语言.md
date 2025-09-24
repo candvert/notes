@@ -395,12 +395,27 @@ match dice_roll {
 
 
 // if let
-// 可以将 if let 看作 match 的一个语法糖，只考虑一种情况，而忽略其他情况
-let mut count = 0;
+// 可以将 if let 看作 match 的一个语法糖，当值匹配某一模式时执行代码而忽略所有其他值
+let config_max = Some(3u8);
+if let Some(max) = config_max {
+	println!("The maximum is configured to be {max}");
+}
+// if let 和 else 表达式
 if let Coin::Quarter(state) = coin {
 	println!("State quarter from {state:?}!");
 } else {
-	count += 1;
+	println!("hi");
+}
+
+
+// let...else语法，当模式匹配时将匹配到的值绑定到外层作用域，也就相当于定义了一个新变量，如下面的 state
+let Coin::Quarter(state) = coin else {
+	return None;
+};
+if state.existed_in(1900) {
+	Some(format!("{state:?} is pretty old, for America!"))
+} else {
+	Some(format!("{state:?} is relatively new."))
 }
 ```
 ## 所有权ownership
@@ -710,17 +725,35 @@ impl Rectangle {
 ```
 ## crates
 ```rust
-创建一个 package 包含一个 binary crate：cargo new my-binary-app
-创建一个 package 包含一个 library crate：cargo new my-lib --lib
-crates 分为两种：binary crate 和 library crate
-一个 package 可以包含多个 binary crate 和一个可选的 library crate
-src/main.rs crate 和 src/lib.rs crate 的名称和 package 名称相同
-A crate is the smallest amount of code that the Rust compiler considers at a time.
-The crate root is a source file that the Rust compiler starts from. Such as src/lib.rs for a library crate or src/main.rs for a binary crate.
-一个 package 可以通过将文件放入 src/bin 目录来包含多个 binary crate，每个文件都是一个 binary crate
+创建一个库：cargo new --lib read
+crates 分为两种：二进制 crate 和库 crate
+库 crate 与其他编程语言中 “library” 概念一致
+包（package）是提供一系列功能的一个或者多个 crate 的捆绑。一个包会包含一个 Cargo.toml 文件，阐述如何去构建这些 crate
+一个包可以包含多个二进制 crate 和一个可选的库 crate
+当编译一个 crate, 编译器首先在 crate 根文件（通常，对于一个库 crate 而言是 src/lib.rs，对于一个二进制 crate 而言是 src/main.rs）中寻找需要被编译的代码
+一个包可以通过将文件放入 src/bin 目录来包含多个二进制 crate，每个文件都是一个独立的二进制 crate
+
+
+
+
+声明模块: 在 crate 根文件中，你可以声明一个新模块；比如，用 mod garden; 声明了一个叫做 garden 的模块。编译器会在下列路径中寻找模块代码：
+内联，用大括号替换 mod garden 后跟的分号
+在文件 src/garden.rs
+在文件 src/garden/mod.rs
+
+
+
+声明子模块: 在除了 crate 根节点以外的任何文件中，你可以定义子模块。比如，你可能在 src/garden.rs 中声明 mod vegetables;。编译器会在以父模块命名的目录中寻找子模块代码：
+内联，直接在 mod vegetables 后方不是一个分号而是一个大括号
+在文件 src/garden/vegetables.rs
+在文件 src/garden/vegetables/mod.rs
 ```
 ## modules
 ```rust
+//  Rust 中，所有项（函数、方法、结构体、枚举、模块和常量）默认对父模块都是私有的
+// 如果我们在一个结构体定义的前面使用了 pub，这个结构体会变成公有的，但是这个结构体的字段仍然是私有的
+// 如果我们将枚举设为公有，则它的所有变体都将变为公有
+// 父模块中的项不能使用子模块中的私有项，但是子模块中的项可以使用它们父模块中的项
 // lib.rs 文件：
 mod front_of_house {
     mod hosting {
@@ -738,8 +771,9 @@ mod back_of_house {
 		fn cook() { println!("hi"); }
 	}
 }
-// 则该 library crate 中定义了 front_of_house 模块和 back_of_house 模块
-// 该 library crate 的模块树
+// 该库 crate 定义了 front_of_house 模块和 back_of_house 模块
+// 该库 crate 的模块树
+// 注意，整个模块树都植根于名为 crate 的隐式模块下
 crate
  ├── front_of_house
  │  ├── hosting
@@ -773,8 +807,8 @@ pub fn add_to_waitlist() { println!("hi"); }
 // path 包括绝对路径和相对路径
 // lib.rs 文件：
 mod front_of_house {
-    mod hosting {
-        fn add_to_waitlist() {}
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
     }
 }
 pub fn eat_at_restaurant() {
@@ -782,6 +816,18 @@ pub fn eat_at_restaurant() {
     crate::front_of_house::hosting::add_to_waitlist();
     // 相对路径
     front_of_house::hosting::add_to_waitlist();
+}
+
+
+// super 开始的相对路径
+fn deliver_order() {}
+mod back_of_house {
+    fn fix_incorrect_order() {
+        cook_order();
+        super::deliver_order();
+    }
+
+    fn cook_order() {}
 }
 ```
 ## use
@@ -796,15 +842,6 @@ use std::collections::*;
 ```
 
 ```rust
-私有边界（privacy boundary）
-模块不仅可以组织代码，还可以定义私有边界。
-如果想把函数或 struct 等设为私有，可以将它放到某个模块中。
-Rust 中所有的条目（函数，方法，struct，enum，模块，常量）默认是私有的。
-父级模块无法访问子模块中的私有条目
-子模块里可以使用所有祖先模块中的条目
-
-super 用来访问父级模块路径中的内容
-
 pub 放在 struct 前：
 	struct 是公共的
 	struct 的字段默认是私有的
