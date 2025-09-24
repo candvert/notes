@@ -1087,30 +1087,79 @@ impl Person for Player {
 
 
 
+// item 参数支持任何实现了 Summary trait 的类型
 pub fn notify(item: &impl Summary) {
     println!("Breaking news! {}", item.summarize());
 }
-
-
-
+// Trait Bound 语法，这种更冗长的写法与上面的代码等价
 pub fn notify<T: Summary>(item: &T) {
     println!("Breaking news! {}", item.summarize());
 }
 
 
-
-pub fn notify(item: &(impl Summary + Display)) {
-pub fn notify<T: Summary + Display>(item: &T) {
-
-
+// item 参数支持任何实现了 Summary trait 和 Display trait 的类型
+pub fn notify(item: &(impl Summary + Display)) { }
+pub fn notify<T: Summary + Display>(item: &T) { }
 
 
-fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
+
+// Trait Bound 语法
+fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 { }
+// 通过 where 简化 trait bound
 fn some_function<T, U>(t: &T, u: &U) -> i32
 where
     T: Display + Clone,
     U: Clone + Debug,
-{
+{ }
+
+
+
+// 返回实现了 trait 的类型
+fn returns_summarizable() -> impl Summary {
+    SocialPost {
+        username: String::from("horse_ebooks"),
+    }
+}
+// 但不能返回不同类型，下面这段代码是错误的
+fn returns_summarizable(switch: bool) -> impl Summary {
+    if switch {
+        NewsArticle {
+            headline: String::from("Penguin"),
+        }
+    } else {
+        SocialPost {
+            username: String::from("horse_ebooks"),
+    }
+}
+
+
+
+
+
+// 使用 trait bound 有条件地实现方法
+use std::fmt::Display;
+struct Pair<T> {
+    x: T,
+    y: T,
+}
+// 只有那些为 T 类型实现了 Display trait 和 PartialOrd trait 的 Pair<T> 才会实现 cmp_display 方法：
+impl<T: Display + PartialOrd> Pair<T> {
+    fn cmp_display(&self) {
+        if self.x >= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
+    }
+}
+
+
+
+
+// 标准库为任何实现了 Display trait 的类型实现了 ToString trait
+impl<T: Display> ToString for T {
+    // --snip--
+}
 ```
 ## 生命周期
 ```rust
