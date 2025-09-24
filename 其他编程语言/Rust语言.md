@@ -27,7 +27,7 @@
 - [不是方法的关联函数](#不是方法的关联函数)
 - [crates](#crates)
 - [modules](#modules)
-- [将模块放进不同的文件](#将模块放进不同的文件)
+- [将模块拆分成多个文件](#将模块拆分成多个文件)
 - [path](#path)
 - [use](#use)
 
@@ -35,6 +35,8 @@
 - [String](#String)
 - [HashMap](#HashMap)
 - [错误处理](#错误处理)
+- [?运算符](#?运算符)
+- [泛型](#泛型)
 - [trait](#trait)
 - [生命周期](#生命周期)
 - [自动化测试](#自动化测试)
@@ -80,7 +82,12 @@ rustup doc
 ```
 ## Cargo.toml文件
 ```rust
+rand = "0.8.5" // 添加依赖
 
+
+当出现 panic 时，程序默认会开始 展开（unwinding），这意味着 Rust 会回溯栈并清理它遇到的每一个函数的数据，不过这个回溯并清理的过程有很多工作。如果你想要在 release 模式中 panic 时直接终止，可添加：
+[profile.release]
+panic = 'abort'
 ```
 ## 示例
 ```rust
@@ -787,7 +794,7 @@ crate
     └── cooking
 	   └── seat_at_table
 ```
-## 将模块放进不同的文件
+## 将模块拆分成多个文件
 ```rust
 // src/lib.rs 文件原本的内容：
 mod front_of_house {
@@ -832,22 +839,25 @@ mod back_of_house {
 ```
 ## use
 ```rust
+// 使用 as 关键字取别名
 use std::io::Result as IoResult;
-pub use std::io::Result as IoResult; // 和 js 的 export 相似，导出一个名称
 
+
+// 重导出，和 js 的 export 相似，导出一个名称
+pub use std::io::Result as IoResult;
+
+
+
+// 嵌套路径
+use std::cmp::Ordering;
 use std::io;
-use std::io::Write
-use std::io::{self, Write}; // 和上面两句效果相同
+use std::{cmp::Ordering, io};
+// 嵌套路径
+use std::io;
+use std::io::Write;
+use std::io::{self, Write};
+// 导入所有项
 use std::collections::*;
-```
-
-```rust
-pub 放在 struct 前：
-	struct 是公共的
-	struct 的字段默认是私有的
-pub 放在 enum 前：
-	enum 是公共的
-	enum 的变体也都是公共的
 ```
 ## vector
 ```rust
@@ -926,14 +936,135 @@ for (key, value) in &scores {
 ```
 ## 错误处理
 ```rust
-// Rust 将错误分为两大类：可恢复的（recoverable）和 不可恢复的（unrecoverable）错误。
-// Rust 有 Result<T, E> 类型，用于处理可恢复的错误，还有 panic! 宏，在程序遇到不可恢复的错误时停止执行。
+// Rust 将错误分为两大类：可恢复的（recoverable）和不可恢复的（unrecoverable）错误。
+// Rust 没有异常。相反，它有 Result<T, E> 类型，用于处理可恢复的错误，还有 panic! 宏，在程序遇到不可恢复的错误时停止执行
+// 有两种方法造成 panic：执行会造成代码 panic 的操作（比如访问超过数组结尾的内容）或者显式调用 panic! 宏
 // backtrace 是一个执行到目前位置所有被调用的函数的列表
-// Result 枚举和其变体也被导入到了 prelude 中
 
-// 主动调用 panic!
+
+// 主动调用 panic! 宏
 fn main() {
     panic!("crash and burn");
+}
+
+
+
+
+// Result 枚举和其变体被导入到了 prelude 中
+// 标准库中的 Result 枚举
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+
+
+
+
+// 如果 Result 值是变体 Ok，unwrap 会返回 Ok 中的值。如果 Result 是变体 Err，unwrap 会为我们调用 panic!
+let greeting_file = File::open("hello.txt").unwrap();
+// expect
+let greeting_file = File::open("hello.txt")
+	.expect("hello.txt should be included in this project");
+```
+## ?运算符
+```rust
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -> Result<String, io::Error> {
+	// 如果成功，代码继续；若出错，直接返回错误 Err
+    let mut username_file = File::open("hello.txt")?;
+    let mut username = String::new();
+    username_file.read_to_string(&mut username)?;
+    Ok(username)
+}
+
+
+// 简化上面代码
+File::open("hello.txt")?.read_to_string(&mut username)?;
+
+
+
+// 在 Option<T> 值上使用 ? 运算符
+fn last_char_of_first_line(text: &str) -> Option<char> {
+    text.lines().next()?.chars().last()
+}
+
+
+
+
+// main 函数返回错误
+// 可以将 Box<dyn Error> 理解为 “任何类型的错误”
+use std::error::Error;
+use std::fs::File;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let greeting_file = File::open("hello.txt")?;
+
+    Ok(())
+}
+```
+## 泛型
+```rust
+// 函数
+fn largest<T>(list: &[T]) -> &T { }
+
+// 结构体
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+// 枚举
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+
+// 在 Point<T> 结构体上实现方法 x，它返回 T 类型的字段 x 的引用
+struct Point<T> {
+    x: T,
+    y: T,
+}
+impl<T> Point<T> {
+    fn x(&self) -> &T {
+        &self.x
+    }
+}
+// 只实现 Point<f32> 类型上的方法
+impl Point<f32> {
+    fn distance_from_origin(&self) -> f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+
+
+
+
+
+
+// 方法使用了与结构体定义中不同类型的泛型
+struct Point<X1, Y1> {
+    x: X1,
+    y: Y1,
+}
+
+impl<X1, Y1> Point<X1, Y1> {
+    fn mixup<X2, Y2>(self, other: Point<X2, Y2>) -> Point<X1, Y2> {
+        Point {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+
+fn main() {
+    let p1 = Point { x: 5, y: 10.4 };
+    let p2 = Point { x: "Hello", y: 'c' };
+
+    let p3 = p1.mixup(p2);
+
+    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
 }
 ```
 ## trait
