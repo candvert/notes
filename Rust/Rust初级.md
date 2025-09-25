@@ -1551,4 +1551,27 @@ tx.send(val).unwrap();
 let received = rx.recv().unwrap();
 // 克隆发送端
 let tx1 = tx.clone();
+
+
+
+
+
+
+
+
+
+// 互斥锁
+use std::sync::Mutex;
+let m = Mutex::new(5);
+{
+	let mut num = m.lock().unwrap();
+	*num = 6;
+}
+// 使用 Arc<T> 包装一个 Mutex<T> 能够实现在多线程之间共享所有权
+// Mutex<T> 提供了内部可变性
+```
+## async和await
+```rust
+let data = fetch_data_from(url).await;
+println!("{data}");
 ```
