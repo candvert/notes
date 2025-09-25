@@ -40,6 +40,8 @@
 - [trait](#trait)
 - [生命周期](#生命周期)
 - [自动化测试](#自动化测试)
+- [闭包](#闭包)
+- [迭代器](#迭代器)
 ## 安装
 ```sh
 只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 编译器 rustc
@@ -946,18 +948,30 @@ for b in "Зд".bytes() {
 ```rust
 // 所有的键必须是相同类型，值也必须都是相同类型
 // 每个唯一的键只能同时关联一个值
+// 对于像 String 这样拥有所有权的值，其值将被移动而哈希 map 会成为这些值的所有者
+// HashMap 默认使用一种叫做 SipHash 的哈希函数，它可以抵御涉及哈希表的拒绝服务（Denial of Service, DoS）攻击。可以指定一个不同的 hasher 来切换为其它哈希函数。hasher 是一个实现了 BuildHasher trait 的类型
 // 如果我们插入了一个键值对，接着用相同的键插入一个不同的值，与这个键相关联的旧值将被替换
+
+
+// 新建一个哈希 map
 use std::collections::HashMap;
 let mut scores = HashMap::new();
-scores.insert(String::from("Blue"), 10);
-scores.insert(String::from("Yellow"), 50);
 
+// 插入值
+scores.insert(String::from("Blue"), 10);
+
+// 获取值，get 方法返回 Option<&V>，如果某个键在哈希 map 中没有对应的值，get 会返回 None
 let team_name = String::from("Blue");
 let score = scores.get(&team_name).copied().unwrap_or(0);
 
+// 遍历
 for (key, value) in &scores {
 	println!("{key}: {value}");
 }
+
+// 使用 entry 方法只在键没有对应值时插入
+// Entry 的 or_insert 方法在键对应的值存在时就返回这个值的可变引用，如果不存在则将参数作为新值插入并返回新值的可变引用
+scores.entry(String::from("Yellow")).or_insert(50);
 ```
 ## 错误处理
 ```rust
@@ -1331,4 +1345,70 @@ $ cargo test -- --include-ignored
 // 运行某个特定集成测试文件中的所有测试
 // 这个命令只运行 tests/integration_test.rs 文件中的测试
 $ cargo test --test integration_test
+```
+## 闭包
+```rust
+// Option<T> 上的 unwrap_or_else 方法由标准库定义。它接受一个无参闭包作为参数。如果 Option<T> 是 Some 变体，则 unwrap_or_else 返回 Some 中的值。如果 Option<T> 是 None 变体，则 unwrap_or_else 调用闭包并返回闭包的返回值
+
+
+// 闭包语法
+let add_one_v2 = |x: u32| -> u32 { x + 1 };
+let add_one_v3 = |x|             { x + 1 };
+let add_one_v4 = |x|               x + 1  ;
+
+
+
+// 对于闭包定义，编译器会为每个参数和返回值推断出一个具体类型
+// 第一次使用 String 值调用 example_closure 时，编译器推断出 x 的类型以及闭包的返回类型为 String。接着这些类型被锁定进闭包 example_closure 中，如果尝试对同一闭包使用不同类型则就会得到类型错误
+let example_closure = |x| x;
+let s = example_closure(String::from("hello"));
+let n = example_closure(5); // 报错
+
+
+
+// 使用 move 来强制闭包为线程获取 list 的所有权
+let list = vec![1, 2, 3];
+thread::spawn(move || println!("From thread: {list:?}"))
+	.join()
+	.unwrap();
+
+
+
+
+// 闭包会自动、渐进地实现一个、两个或全部三个 Fn trait
+// FnOnce 适用于只能被调用一次的闭包。所有闭包至少都实现了这个 trait，因为所有闭包都能被调用。一个会将捕获的值从闭包体中移出的闭包只会实现 FnOnce trait，因为它只能被调用一次
+// FnMut 适用于不会将捕获的值移出闭包体，但可能会修改捕获值的闭包。这类闭包可以被调用多次
+// Fn 适用于既不将捕获的值移出闭包体，也不修改捕获值的闭包，同时也包括不从环境中捕获任何值的闭包。这类闭包可以被多次调用而不会改变其环境
+
+
+
+
+
+
+
+// 使用 sort_by_key 对长方形按宽度排序
+let mut list = [
+	Rectangle { width: 10, height: 1 },
+	Rectangle { width: 3, height: 5 },
+	Rectangle { width: 7, height: 12 },
+];
+list.sort_by_key(|r| r.width);
+```
+## 迭代器
+```rust
+// 迭代器都实现了名为 Iterator 的定义于标准库的 trait
+// 如果我们需要一个获取所有权并返回拥有所有权的迭代器，则可以调用 into_iter 而不是 iter。类似地，如果我们希望迭代可变引用，可以调用 iter_mut 而不是 iter
+// 创建一个迭代器
+let v1 = vec![1, 2, 3];
+let mut v1_iter = v1.iter();
+
+v1_iter.next()
+
+
+
+
+// 因为所有的迭代器都是惰性的，你必须调用一个消费适配器方法，才能从这些迭代器适配器的调用中获取结果
+// 调用迭代器适配器 map 方法创建一个新迭代器，接着调用 collect 方法消费新迭代器并创建一个 vector
+let v1: Vec<i32> = vec![1, 2, 3];
+let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
 ```
