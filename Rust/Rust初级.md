@@ -5,6 +5,7 @@
 - [Cargo.toml文件](#Cargo.toml文件)
 - [示例](#示例)
 
+- [单二进制文件输出](#单二进制文件输出)
 - [重要的点](#重要的点)
 - [重要概念](#重要概念)
 - [没用的点但是面试会问](#没用的点但是面试会问)
@@ -66,6 +67,8 @@ cargo check
 cargo build --release
 运行测试
 cargo test
+安装二进制程序
+cargo install <program_name>
 ```
 ## Rustup命令
 ```sh
@@ -109,6 +112,10 @@ fn main() {
     println!("{x}");
 }
 $ cargo run
+```
+## 单二进制文件输出
+```rust
+Rust 的“单二进制文件输出”指的是 Rust 编译器能够将你的程序代码及其所有必要的依赖项打包成一个独立的、可直接运行的可执行文件。这个文件包含了程序运行所需的一切，你不需要额外安装运行时环境（如 Java 的 JVM 或 Python 的解释器）或管理一堆依赖库文件
 ```
 ## 重要的点
 ```rust
@@ -1411,4 +1418,137 @@ v1_iter.next()
 // 调用迭代器适配器 map 方法创建一个新迭代器，接着调用 collect 方法消费新迭代器并创建一个 vector
 let v1: Vec<i32> = vec![1, 2, 3];
 let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+```
+## 智能指针
+```rust
+// 最简单直接的智能指针是 box，其类型是 Box<T>
+// Box<T> 类型是一个智能指针，因为它实现了 Deref trait，它允许 Box<T> 值被当作引用对待
+// 实现 Deref trait 允许我们定制解引用运算符 *，通过这种方式实现 Deref trait 的智能指针可以被当作常规引用来对待
+
+
+
+// 每次当我们在代码中使用 * 时， * 运算符都被替换成了先调用 deref 方法再接着使用 * 解引用的操作
+// Deref trait，由标准库提供，要求实现名为 deref 的方法，其借用 self 并返回一个内部数据的引用
+use std::ops::Deref;
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+
+
+
+
+
+// 函数和方法的隐式 Deref 强制转换
+// 只能作用于实现了 Deref trait 的类型。当这种特定类型的引用作为实参传递给和形参类型不同的函数或方法时将自动进行。这时会有一系列的 deref 方法被调用，把我们提供的类型转换成了参数所需的类型
+// 利用 Deref 强制转换并没有运行时开销
+
+
+
+
+
+
+
+// 指定在值离开作用域时应该执行的代码的方式是实现 Drop trait。Drop trait 要求实现一个叫做 drop 的方法，它获取一个 self 的可变引用
+// Drop trait 包含在 prelude 中，因此无需将其引入作用域
+// Rust 并不允许我们主动调用 Drop trait 的 drop 方法；当我们希望在作用域结束之前就强制释放变量的话，我们应该使用的是由标准库提供的 std::mem::drop 函数
+struct CustomSmartPointer {
+    data: String,
+}
+impl Drop for CustomSmartPointer {
+    fn drop(&mut self) {
+        println!("Dropping CustomSmartPointer with data!");
+    }
+}
+
+
+
+
+
+
+// Rc<T> 引用计数智能指针
+// 启用多所有权需要显式地使用 Rust 类型 Rc<T>
+// 注意 Rc<T> 只能用于单线程场景
+```
+## 内部可变性模式
+```rust
+// 内部可变性（Interior mutability）是 Rust 中的一个设计模式，它允许你即使在有不可变引用时也可以改变数据，这通常是借用规则所不允许的。为了改变数据，该模式在数据结构中使用 unsafe 代码来模糊 Rust 通常的可变性和借用规则。不安全代码表明我们在手动检查这些规则而不是让编译器替我们检查
+// RefCell<T> 遵循内部可变性模式
+// 类似于 Rc<T>，RefCell<T> 只能用于单线程场景
+// 令一个值在其方法内部能够修改自身，而在其他代码中仍视为不可变，是很有用的。RefCell<T> 是一个获得内部可变性的方法。RefCell<T> 并没有完全绕开借用规则，编译器中的借用检查器允许内部可变性并相应地在运行时检查借用规则。如果违反了这些规则，会出现 panic 而不是编译错误。
+```
+## 线程
+```rust
+// 使用 spawn 创建新线程
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+}
+
+
+
+
+// 可以将 thread::spawn 的返回值储存在变量中。thread::spawn 的返回值类型是 JoinHandle<T>。JoinHandle<T> 是一个拥有所有权的值，当对其调用 join 方法时，它会等待其线程结束
+let handle = thread::spawn(|| {
+	for i in 1..10 {
+		println!("hi number {i} from the spawned thread!");
+		thread::sleep(Duration::from_millis(1));
+	}
+});
+handle.join().unwrap();
+
+
+
+
+
+
+
+
+
+// move 关键字经常用于传递给 thread::spawn 的闭包，因为闭包会获取从环境中取得的值的所有权，因此会将这些值的所有权从一个线程传送到另一个线程
+let v = vec![1, 2, 3];
+let handle = thread::spawn(move || {
+	println!("Here's a vector: {v:?}");
+});
+handle.join().unwrap();
+
+
+
+
+
+
+// 为了实现消息传递并发，Rust 标准库提供了一个信道（channel）实现。信道是一个通用编程概念，表示数据从一个线程发送到另一个线程
+// 信道有两个组成部分：一个发送端和一个接收端
+// 代码中的一部分调用发送端的方法以及希望发送的数据，另一部分则检查接收端收到的消息。当发送端或接收端任一被丢弃时可以认为信道被关闭了
+
+// 创建一个信道，并将其两端赋值给 tx 和 rx
+use std::sync::mpsc;
+let (tx, rx) = mpsc::channel();
+// mpsc::channel 函数的 mpsc 是 多生产者，单消费者（multiple producer, single consumer）的缩写
+// 也就是一个信道可以有多个产生值的发送端，但只能有一个消费这些值的接收端
+// mpsc::channel 函数返回一个元组：第一个元素是发送端，而第二个元素是接收端
+// 发送 "hi"
+let val = String::from("hi");
+tx.send(val).unwrap();
+// 如果接收端已经被丢弃了，将没有发送值的目标，发送操作会返回错误
+// 接收内容
+let received = rx.recv().unwrap();
+// 克隆发送端
+let tx1 = tx.clone();
 ```
