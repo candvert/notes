@@ -1,5 +1,6 @@
 - [std_path_Path](#std_path_Path)
 - [std_fs](#std_fs)
+- [std_env](#std_env)
 ```rust
 // 对于集合可以将参数写成这种类型 args: &[String]
 fn main() {
@@ -242,4 +243,9 @@ metadata.len();
 // 返回最后访问时间
 // 返回 Result<SystemTime>
 metadata.accessed();
+```
+## std_env
+```rust
+use std::env;
+let args: Vec<String> = env::args().collect();
 ```

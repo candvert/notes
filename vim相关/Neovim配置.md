@@ -625,6 +625,7 @@ return {
 	dependencies = { "nvim-lua/plenary.nvim" },
 	event = "VeryLazy",
     keys = {
+		-- 设置按键 <leader>lf 格式化代码
         { "<leader>lf", vim.lsp.buf.format },
     },
 	config = function()

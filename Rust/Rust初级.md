@@ -1273,12 +1273,9 @@ where
 // 当测试函数中出现 panic 时测试就失败了。每一个测试都在一个新线程中运行，当主线程发现测试线程异常了，就将对应测试标记为失败
 // assert! 宏由标准库提供，需要向 assert! 宏提供一个求值为布尔值的参数。如果值是 true，assert! 什么也不做，同时测试会通过。如果值为 false，assert! 调用 panic! 宏
 // 为了将一个函数变成测试函数，需要在 fn 行之前加上 #[test]
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
 #[test]
 fn it_works() {
-	let result = add(2, 2);
+	let result = 4;
 	assert_eq!(result, 4);
 }
 
