@@ -1,15 +1,24 @@
+- [下载安装](#下载安装)
+- [打开设置](#打开设置)
+- [设置背景图片](#设置背景图片)
+- [修改透明度和半透明纹理](#修改透明度和半透明纹理)
+- [设置专注模式快捷键（即隐藏标题栏）](#设置专注模式快捷键（即隐藏标题栏）)
+- [设置启动时窗口大小](#设置启动时窗口大小)
+- [快捷键](#快捷键)
+- [oh-my-posh美化](#oh-my-posh美化)
 ## 下载安装
 可以从microsoft store下载
 ![](/images/window_01.png)
-## 修改默认设置
+## 打开设置
 之后windows上打开的命令行工具和powershell都会变为Windows Terminal。
 
 打开Windows Terminal之后按Ctrl + ,或点击下图的图标打开设置。
 ![](/images/window_02.png)
+## 设置背景图片
+![](/images/window_03.png)
 
-
-
-修改透明度和半透明纹理
+![](/images/window_09.png)
+## 修改透明度和半透明纹理
 ![](/images/window_03.png)
 ![](/images/window_04.png)
 效果：
@@ -17,15 +26,14 @@
 
 
 
-设置专注模式快捷键（即隐藏标题栏）
+## 设置专注模式快捷键（即隐藏标题栏）
 ![](/images/window_06.png)
 ![](/images/window_07.png)
 
 
 
-设置启动时窗口大小
+## 设置启动时窗口大小
 ![](/images/window_08.png)
-
 
 ## 快捷键
 ```sh

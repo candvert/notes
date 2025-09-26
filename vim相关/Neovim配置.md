@@ -181,6 +181,14 @@ return {
 				on_dir(project_root)
 			end,
 		}
+
+
+		-- 启用 rust_analyzer 的嵌入提示（即以灰色字体提示类型）
+        vim.lsp.config['rust_analyzer'] = {
+            on_attach = function(client, bufnr)
+                vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+            end
+        }
 	end,
 }
 ```
@@ -269,7 +277,14 @@ return {
 	"folke/tokyonight.nvim",
 	lazy = false,
 	priority = 1000,
-	opts = {},
+	-- 将背景设置为透明
+	--opts = {
+	--	transparent = true,
+	--	styles = {
+	--		sidebars = "transparent",
+	--		floats = "transparent",
+	--	},
+	--},
 }
 ```
 在 init.lua 文件里面设置主题

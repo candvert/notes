@@ -1,3 +1,5 @@
+- [std_path_Path](#std_path_Path)
+- [std_fs](#std_fs)
 ```rust
 // 对于集合可以将参数写成这种类型 args: &[String]
 fn main() {
@@ -152,4 +154,92 @@ cargo run -p adder
 
 
 // 所有来自 cargo install 的二进制文件都安装到 Rust 安装根目录的 bin 文件夹中
+```
+## std_path_Path
+
+```rust
+let path = Path::new("./foo/bar.txt");
+path.parent();
+path.file_stem();
+path.extension();
+path.to_str();
+path.is_absolute();
+path.is_relative();
+path.file_name();
+path.starts_with("/e");
+path.ends_with("resolv.conf");
+path.file_prefix();
+path.join("passwd");
+path.exists();
+path.is_file();
+path.is_dir();
+```
+## std_fs
+
+```rust
+// 创建目录
+// 返回 Result<()>
+fs::create_dir("/some/dir");
+// 如果缺少目录及其所有父目录，则递归创建它们
+// 返回 Result<()>
+fs::create_dir_all("/some/dir");
+
+// fs::read_dir 返回迭代器
+// 返回 Result<ReadDir>
+// 用 for 循环对 ReadDir 进行迭代会返回 io::Result<DirEntry>
+// DirEntry 有 path 和 file_name 方法
+for entry in fs::read_dir("dir")? {
+	let entry = entry?;
+	// entry.path() 返回的是 read_dir 中的目录和文件名拼接的路径
+	// 返回 PathBuf
+	let source_path = entry.path();
+	// entry.file_name() 返回文件名
+	let name = entry.file_name();
+}
+
+// 将文件的全部内容读入字节 vector
+// 返回 Result<Vec<u8>>
+fs::read("image.jpg");
+// 将文件的全部内容读入字符串
+// 返回 Result<String>
+fs::read_to_string("message.txt");
+// 删除空目录
+// 返回 Result<()>
+fs::remove_dir("/some/dir");
+// 删除目录和其中所有内容
+// 返回 Result<()>
+fs::remove_dir_all("/some/dir");
+// 删除文件
+// 返回 Result<()>
+fs::remove_file("a.txt");
+// 将文件或目录重命名
+// 返回 Result<()>
+fs::rename("a.txt", "b.txt");
+// 复制文件，会复制其权限
+// 返回 Result<u64>，返回的是复制的总字节数
+fs::copy("foo.txt", "bar.txt");
+// 判断文件或目录是否存在
+// 返回 Result<bool>
+fs::exists("does_not_exist.txt");
+// 向文件写入内容，如果文件不存在会创建文件并写入
+// 返回 Result<()>
+fs::write("foo.txt", b"Lorem ipsum");
+
+
+
+// 获取元数据
+// 返回 Result<Metadata>
+let metadata = fs::metadata("foo.txt");
+// 返回最后修改时间
+// 返回 Result<SystemTime>
+metadata.modified();
+// 返回创建时间
+// 返回 Result<SystemTime>
+metadata.created();
+// 返回文件的大小（以字节为单位）
+// 返回 u64
+metadata.len();
+// 返回最后访问时间
+// 返回 Result<SystemTime>
+metadata.accessed();
 ```
