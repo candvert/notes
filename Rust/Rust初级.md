@@ -43,6 +43,10 @@
 - [自动化测试](#自动化测试)
 - [闭包](#闭包)
 - [迭代器](#迭代器)
+- [智能指针](#智能指针)
+- [内部可变性模式](#内部可变性模式)
+- [线程](#线程)
+- [async和await](#async和await)
 ## 安装
 ```sh
 只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 编译器 rustc
@@ -1572,6 +1576,22 @@ let m = Mutex::new(5);
 ```
 ## async和await
 ```rust
-let data = fetch_data_from(url).await;
-println!("{data}");
+// Rust 异步编程的关键元素是 futures 和 Rust 的 async 与 await 关键字
+// future 是一个现在可能还没有准备好但将在未来某个时刻准备好的值
+//  Rust 中，我们称实现了 Future trait 的类型为 future。每个 future 会维护自身的进度状态信息以及对 “ready” 的定义
+// async 关键字可以用于代码块和函数，表明它们可以被中断并恢复
+// 在一个 async 块或 async 函数中，可以使用 await 关键字来 await 一个 future（即等待其就绪）
+// 检查一个 future 并查看其值是否已经准备就绪的过程被称为 轮询（polling）
+let response_text = trpl::get(url).await.text().await;
+async fn main() { }
+
+
+// main 不能标记为 async 的原因是异步代码需要一个 运行时：即一个管理执行异步代码细节的 Rust crate
+// 每一个执行异步代码的 Rust 程序必须至少有一个设置运行时并执行 futures 的地方
+// 大部分支持异步的语言会打包一个运行时在语言中，Rust 则不是
+// 每一个 await point，也就是代码使用 await 关键字的地方，代表将控制权交还给运行时的地方。为此 Rust 需要记录异步代码块中涉及的状态，这样运行时可以去执行其他工作，并在准备好时回来继续推进当前的任务。编写代码来手动控制不同状态之间的转换是非常乏味且容易出错的，特别是之后增加了更多功能和状态的时候。相反，Rust 编译器自动创建并管理异步代码的状态机数据结构。最终需要某个组件来执行状态机，而这个组件就是运行时。
+```
+## 模式与模式匹配
+```rust
+
 ```
