@@ -8,8 +8,8 @@
 
 Deno 是一个 JavaScript、TypeScript 和 WebAssembly 运行时。Deno 运行时原生支持 TypeScript、JSX 和现代 ECMAScript 功能，无需任何配置。构建、测试和部署应用程序所需的基本工具均已开箱即用。
 
-Deno 提供了一个用 TypeScript 编写的标准库
-包和标准库使用 [JSR](https://jsr.io/) 仓库
+Deno 提供了一个用 TypeScript 编写的标准库。
+包和标准库从 [JSR](https://jsr.io/) 仓库安装。
 ## 安装
 ```sh
 # PowerShell (Windows):

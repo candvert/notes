@@ -1,4 +1,5 @@
 - [安装](#安装)
+- [配置国内镜像](#配置国内镜像)
 - [Cargo命令](#Cargo命令)
 - [Rustup命令](#Rustup命令)
 - [使用vscode开发](#使用vscode开发)
@@ -53,6 +54,10 @@
 Windows 上还需要通过 Visual Studio Installer 安装 MSVC 和 Windwos 11 SDK 两项
 ```
 ![](/images/rust_1.png)
+## 配置国内镜像
+```sh
+访问 https://rsproxy.cn 查看如何配置
+```
 ## Cargo命令
 ```sh
 创建一个新项目

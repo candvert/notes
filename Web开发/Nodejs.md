@@ -5,7 +5,6 @@
 - [gray-matter依赖](#gray-matter依赖)
 - [zod依赖](#zod依赖)
 - [swr依赖](#swr依赖)
-- [sugar-high依赖](#sugar-high依赖)
 - [next-mdx-remote依赖](#next-mdx-remote依赖)
 
 Node.js 是一个开源且跨平台的 JavaScript 运行时环境。Node.js 在浏览器之外运行 V8 JavaScript 引擎（Google Chrome 的核心）。这使得 Node.js 性能非常出色。
@@ -146,6 +145,7 @@ dns.resolveMx('string')
 ```
 ## gray-matter依赖
 ```js
+// 作用：提取 mdx 文档的元数据
 // example.html文件的内容：
 ---
 title: Hello
@@ -170,7 +170,7 @@ console.log(matter(str));
 ```
 ## zod依赖
 ```typescript
-// zod的作用是验证数据类型和格式
+// 作用：验证数据类型和格式
 // 先定义一个模式
 import * as z from "zod"; 
  
@@ -283,43 +283,6 @@ function Profile() {
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
   return <div>hello {data.name}!</div>
-}
-```
-## sugar-high依赖
-```typescript
-// 超轻量级 JSX 语法高亮器，压缩和 gzip 压缩后约 1KB
-import { highlight } from 'sugar-high'
-
-const codeHTML = highlight(code)
-
-document.querySelector('pre > code').innerHTML = codeHTML
-
-// 自定义高亮颜色，放进global.css
-/**
- * Types that sugar-high have:
- *
- * identifier
- * keyword
- * string
- * Class, number and null
- * property
- * entity
- * jsx literals
- * sign
- * comment
- * break
- * space
- */
-:root {
-  --sh-class: #2d5e9d;
-  --sh-identifier: #354150;
-  --sh-sign: #8996a3;
-  --sh-property: #0550ae;
-  --sh-entity: #249a97;
-  --sh-jsxliterals: #6266d1;
-  --sh-string: #00a99a;
-  --sh-keyword: #f47067;
-  --sh-comment: #a19595;
 }
 ```
 ## next-mdx-remote
