@@ -1,9 +1,8 @@
 - [下载安装](#下载安装)
 - [打开设置](#打开设置)
-- [设置背景图片](#设置背景图片)
-- [修改透明度和半透明纹理](#修改透明度和半透明纹理)
-- [设置专注模式快捷键（即隐藏标题栏）](#设置专注模式快捷键（即隐藏标题栏）)
+- [设置背景图片和不透明度](#设置背景图片和不透明度)
 - [设置启动时窗口大小](#设置启动时窗口大小)
+- [隐藏滚动条](#隐藏滚动条)
 - [快捷键](#快捷键)
 - [oh-my-posh美化](#oh-my-posh美化)
 ## 下载安装
@@ -14,55 +13,39 @@
 
 打开Windows Terminal之后按Ctrl + ,或点击下图的图标打开设置。
 ![](/images/window_02.png)
-## 设置背景图片
+## 设置背景图片和不透明度
 ![](/images/window_03.png)
 
 ![](/images/window_09.png)
-## 修改透明度和半透明纹理
-![](/images/window_03.png)
-![](/images/window_04.png)
-效果：
-![](/images/window_05.png)
-
-
-
-## 设置专注模式快捷键（即隐藏标题栏）
-![](/images/window_06.png)
-![](/images/window_07.png)
-
-
 
 ## 设置启动时窗口大小
 ![](/images/window_08.png)
 
+## 隐藏滚动条
+![](/images/window_10.png)
+
 ## 快捷键
 ```sh
-win + `                                            显示/隐藏Quark窗口
-ctrl + 滚轮                                         缩放字体
 F11                                                全屏
+ctrl + 滚轮                                         缩放字体
+win + `                                            显示/隐藏Quark窗口
 ```
 ## oh-my-posh美化
-打开Windows Terminal后按win + x选择“终端管理员”。输入下列命令。
+打开Windows Terminal后按win + x选择“终端管理员”。输入下列命令
 ```sh
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
 ```
-作用​​：允许运行本地脚本。
+作用​​：允许运行本地脚本
 
 通过下列命令验证是否生效。
 ```sh
 Get-ExecutionPolicy -List
 ```
-输出中CurrentUser应为RemoteSigned。
+输出中CurrentUser应为RemoteSigned
 
-
-
-
-安装oh-my-posh
-```sh
-winget install JanDeDobbeleer.OhMyPosh --source winget --scope user --force
-```
-
-之后输入下列命令（默认使用的shell是powershell，如果是其他shell则要输入其他命令）
+从microsoft store下载oh-my-posh
+![](/images/window_01.png)
+打开powershell后输入下列命令
 ```sh
 New-Item -Path $PROFILE -Type File -Force
 notepad $PROFILE

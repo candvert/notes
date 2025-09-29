@@ -6,6 +6,7 @@
 - [zod依赖](#zod依赖)
 - [swr依赖](#swr依赖)
 - [next-mdx-remote依赖](#next-mdx-remote依赖)
+- [better-sqlite3](#better-sqlite3)
 
 Node.js 是一个开源且跨平台的 JavaScript 运行时环境。Node.js 在浏览器之外运行 V8 JavaScript 引擎（Google Chrome 的核心）。这使得 Node.js 性能非常出色。
 运行javascript文件，只需在 shell 中输入 node xxx.js
@@ -16,6 +17,10 @@ node server.js
 ```js
 // require()函数在node中用于导入模块，或导入json文件内容。一般只在node中使用，因为浏览器和主流标准使用import/export语法
 const path = require('path')
+```
+## 查看版本
+```sh
+node -v
 ```
 ## fs模块
 ```js
@@ -285,7 +290,7 @@ function Profile() {
   return <div>hello {data.name}!</div>
 }
 ```
-## next-mdx-remote
+## next-mdx-remote依赖
 ```typescript
 // 将下面内容复制到next.config.js中
 const nextConfig = {
@@ -313,4 +318,43 @@ export async function getStaticProps() {
   const mdxSource = await serialize(source)
   return { props: { source: mdxSource } }
 }
+```
+## better-sqlite3
+```ts
+import Database from 'better-sqlite3';
+// 连接数据库，若不存在，则创建数据库
+// 传递 ":memory:" 作为第一个参数来创建 in-memory 数据库
+// 可以通过传递空字符串（或省略所有参数）来创建临时数据库
+const db = new Database('a.db');
+
+
+// 创建表
+db.exec(
+  "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER)",
+);
+
+
+// 使用 db.prepare()创建语句对象，然后通过 run(), get(), all()等方法执行
+const insertStmt = db.prepare('INSERT INTO users (username, email) VALUES (?, ?)');
+const result = insertStmt.run('zhangsan', 'abc@qq.com');
+// get(): 获取查询结果的第一行
+const selectUser = db.prepare('SELECT * FROM users WHERE id = ?');
+const user = selectUser.get(1);
+// all(): 获取所有结果行
+const selectAll = db.prepare('SELECT * FROM users');
+const allUsers = selectAll.all();
+
+
+// 更新数据
+const updateStmt = db.prepare('UPDATE users SET email = ? WHERE id = ?');
+updateStmt.run('new_email@qq.com', 1);
+// 删除数据
+const deleteStmt = db.prepare('DELETE FROM users WHERE id = ?');
+deleteStmt.run(1);
+
+
+// 关闭连接
+db.close();
+
+// db.transaction()方法创建一个事务函数
 ```

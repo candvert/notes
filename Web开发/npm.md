@@ -49,8 +49,12 @@ package-lock.json 是 npm 自动生成和维护的文件（不需要开发者编
 如果没有 lock 文件，则根据 package.json 的依赖规则来安装，并生成新的 package-lock.json。
 ## npm的常用命令
 ```shell
+# 创建 nextjs 项目
+npx create-next-app@latest
 # 查看版本
 npm -v
+# 更新版本
+npm install -g npm@latest
 # 初始化项目，生成一个 package.json 文件（-y 表示用默认值）
 npm init -y
 # 安装依赖
