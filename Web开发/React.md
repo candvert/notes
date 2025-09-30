@@ -10,6 +10,10 @@
 - [props](#props)
 - [使用Hook](#使用Hook)
 
+- [Ref语法](#Ref语法)
+- [useEffect](#useEffect)
+- [React.FC](#React.FC)
+
 - [npm命令](#npm命令)
 - [App Router](#App%20Router)
 # React(version 19)，使用的框架为Next.js
@@ -246,6 +250,58 @@ export default function Home() {
 	    </div>
     );
 }
+```
+## Ref语法
+```ts
+// React 的 ref 语法​​核心作用是​​获取对该 DOM 元素实例的直接引用​​
+// 当 React 组件完成渲染并且该 <div>被实际创建并插入到 DOM 后，React 会自动将 containerRef.current的值​​指向这个真实的 DOM 元素​​。之后，你就可以通过 containerRef.current直接访问和操作这个 DOM 节点
+import { useRef } from 'react';
+const refContainer = useRef(initialValue);
+// ​​参数​​ initialValue：引用对象 current属性的初始值，可以是任意类型，如 null、数字、字符串、对象等
+// 返回值​​：一个普通的 JavaScript 对象，形如 { current: initialValue }。这个对象在组件的​​整个生命周期内保持不变​​，无论组件重新渲染多少次，返回的都是同一个对象
+// useRef不能直接用于自定义函数组件
+'use client';
+import React, { useRef } from 'react';
+function TextInputWithFocusButton() {
+  const inputEl = useRef(null);
+  const onButtonClick = () => {
+    // `current` 指向已挂载到 DOM 上的 input 元素
+    inputEl.current.focus();
+  };
+  return (
+    <>
+      <input ref={inputEl} type="text" />
+      <button onClick={onButtonClick}>聚焦输入框</button>
+    </>
+  );
+}
+```
+## useEffect
+```ts
+// 常用于监听浏览器事件（如窗口缩放、键盘事件）
+// 第二个参数为空数组 []​​ 表示仅在组件​​挂载后（Mount）​​ 执行一次
+useEffect(() => { return () => { } }, []);
+// 当 useEffect执行时，它可以返回一个函数，这个函数会在以下两种情况下被调用：
+​​// 组件卸载时​​：当组件从 DOM 中被移除时，React 会执行清理函数
+​​// 依赖项变化时​​：如果 useEffect有依赖项数组，当依赖项发生变化导致副作用重新执行时，React 会先执行前一次的清理函数，再运行新的副作用
+```
+## React.FC
+```ts
+interface Image3DRotateProps {
+  src: string;
+  alt: string;
+  className?: string;
+  perspective?: number;
+  maxRotation?: number;
+}
+
+const Image3DRotate: React.FC<Image3DRotateProps> = ({
+  src,
+  alt,
+  className = '',
+  perspective = 1000,
+  maxRotation = 30,
+}) => { };
 ```
 ## npm命令
 ```typescript

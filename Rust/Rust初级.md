@@ -1,5 +1,6 @@
 - [安装](#安装)
 - [配置国内镜像](#配置国内镜像)
+- [运行单个文件](#运行单个文件)
 - [Cargo命令](#Cargo命令)
 - [Rustup命令](#Rustup命令)
 - [使用vscode开发](#使用vscode开发)
@@ -57,6 +58,11 @@ Windows 上还需要通过 Visual Studio Installer 安装 MSVC 和 Windwos 11 SD
 ## 配置国内镜像
 ```sh
 访问 https://rsproxy.cn 查看如何配置
+```
+## 运行单个文件
+```sh
+rustc a.rs
+./a
 ```
 ## Cargo命令
 ```sh

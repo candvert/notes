@@ -662,6 +662,12 @@ html {
     transform: rotate(60deg);	/* 旋转60度 */
     transform-origin: left bottom;	/* 旋转的中心点 */
     transform-origin: 10px 20px;	/* 旋转的中心点 */
+
+	background-image:
+		linear-gradient(to bottom, rgba(255, 255, 0, 0.5), rgba(0, 0, 255, 0.5)),
+		url("cat-front.png");
+
+	background-image: radial-gradient(cyan 0%, transparent 20%, salmon 40%);
 };
 
 

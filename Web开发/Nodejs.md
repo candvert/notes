@@ -6,7 +6,8 @@
 - [zod依赖](#zod依赖)
 - [swr依赖](#swr依赖)
 - [next-mdx-remote依赖](#next-mdx-remote依赖)
-- [better-sqlite3](#better-sqlite3)
+- [better-sqlite3依赖](#better-sqlite3依赖)
+- [react-icons依赖](#react-icons依赖)
 
 Node.js 是一个开源且跨平台的 JavaScript 运行时环境。Node.js 在浏览器之外运行 V8 JavaScript 引擎（Google Chrome 的核心）。这使得 Node.js 性能非常出色。
 运行javascript文件，只需在 shell 中输入 node xxx.js
@@ -319,7 +320,7 @@ export async function getStaticProps() {
   return { props: { source: mdxSource } }
 }
 ```
-## better-sqlite3
+## better-sqlite3依赖
 ```ts
 import Database from 'better-sqlite3';
 // 连接数据库，若不存在，则创建数据库
@@ -357,4 +358,12 @@ deleteStmt.run(1);
 db.close();
 
 // db.transaction()方法创建一个事务函数
+```
+## react-icons依赖
+```ts
+// 安装
+// npm install react-icons --save
+
+import { SiObsidian } from "react-icons/si";
+<SiObsidian className="w-8 h-8" />
 ```

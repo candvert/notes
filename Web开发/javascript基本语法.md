@@ -599,6 +599,24 @@ video.play()
 // 调整音量（范围为[0, 1]）
 video.volume = 0.6 
 ```
+getBoundingClientRect
+```js
+let elem = document.querySelector("div");
+let rect = elem.getBoundingClientRect();
+react.left
+react.right
+react.top
+react.bottom
+```
+MouseEvent
+```js
+const handleMouseMove = (e: MouseEvent) => {
+	const x = e.clientX;
+	const x2 = e.screenX;
+	const y = e.clientY;
+	const y2 = e.screenY;
+}
+```
 # api和框架
 ## 内置api
 ```js

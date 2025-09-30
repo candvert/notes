@@ -5,6 +5,8 @@
 - [隐藏滚动条](#隐藏滚动条)
 - [快捷键](#快捷键)
 - [oh-my-posh美化](#oh-my-posh美化)
+
+- [快捷键](#快捷键)
 ## 下载安装
 可以从microsoft store下载
 ![](/images/window_01.png)
@@ -23,13 +25,6 @@
 
 ## 隐藏滚动条
 ![](/images/window_10.png)
-
-## 快捷键
-```sh
-F11                                                全屏
-ctrl + 滚轮                                         缩放字体
-win + `                                            显示/隐藏Quark窗口
-```
 ## oh-my-posh美化
 打开Windows Terminal后按win + x选择“终端管理员”。输入下列命令
 ```sh
@@ -68,3 +63,17 @@ oh-my-posh init pwsh --config 'C:\Users\leiyu\AppData\Local\Programs\oh-my-posh\
 M365Princess.omp.json是主题名，默认安装的主题可以在C:\Users\leiyu\AppData\Local\Programs\oh-my-posh\themes目录找到。
 主题预览可以前往https://ohmyposh.dev/docs/themes
 名称中带有minimal的主题不需要Nerd字体（Nerd字体需要另外安装，可以显示一些图标）
+
+
+## 快捷键
+```sh
+F11                                                全屏
+ctrl + 滚轮                                         缩放字体
+ctrl + tab                                         切换窗口
+ctrl + shift + t                                   新建窗口
+ctrl + shift + w                                   关闭窗口
+
+
+
+win + `                                            显示/隐藏Quark窗口
+```

@@ -1,62 +1,17 @@
-## flex布局和grid布局
-```sh
-flex​​ 擅长在​​一个方向​​（水平或垂直）上排列和对齐元素，它让元素具有弹性，能根据可用空间动态调整大小和顺序。它非常适合处理​​组件内部的布局
+- [属性](#属性)
+- [flex布局和grid布局](#flex布局和grid布局)
+- [移除文字覆盖](#移除文字覆盖)
+- [flex属性](#flex属性)
+- [css文件](#css文件)
+- [居中](#居中)
+- [可以直接使用的博客布局](#可以直接使用的博客布局)
+- [隐藏scrollbar](#隐藏scrollbar)
 
-grid​​ 则是一个​​二维系统​​，它允许你同时定义​​行和列​​，从而实现对整体结构的精确控制。它非常适合用于构建​​页面的宏观骨架和复杂的二维布局​​
+- [鼠标移动到按钮上按钮放大](#鼠标移动到按钮上按钮放大)
+- [随鼠标移动的光晕](#随鼠标移动的光晕)
+- [图片随鼠标3D旋转](#图片随鼠标3D旋转)
 
-混合使用 flex 和 grid 正成为最佳实践：grid 构建宏观骨架，flex 处理微观排列​​：这是最常见的组合方式。使用 ​​grid 定义页面的整体结构​​（例如，划分出页头、侧边栏、主内容区、页脚等区域），然后在​​各个 grid 区域内部，使用 flex 来排列其子元素​​（例如，在导航区域内水平排列链接，在卡片区域内垂直排列图文内容）。这样，grid 负责大局的排兵布阵，flex 负责内部的精细调整。
-这种分工使代码逻辑更清晰。修改整体布局时，只需调整 grid；修改组件内部结构时，只需调整 flex，两者耦合度低，更易于维护和扩展。
-```
-实现该布局：
-![](/images/tailwind_3.png)
-```ts
-// main 标签中的 flex-1 是必须的。flex-1 允许 flex item 根据需要增大或缩小，忽略其初始大小
-<div className="flex flex-col min-h-screen">
-	<header>
-		<p className="bg-amber-700">a</p>
-	</header>
-	<main className="flex-1 grid grid-cols-12 gap-4">
-		<p className="col-span-2 bg-blue-700">b</p>
-		<p className="col-span-8 bg-yellow-500">c</p>
-		<p className="col-span-2 bg-cyan-600">d</p>
-	</main>
-	<footer>
-		<p className="bg-purple-700">e</p>
-	</footer>
-</div>
-```
-实现该布局：
-![](/images/tailwind_5.png)
-```ts
-<div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-  <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full max-w-4xl h-96">
-	<div className="row-span-2 bg-purple-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold">
-	  01
-	</div>
-	<div className="bg-purple-200 flex items-center justify-center text-gray-800 text-2xl font-bold">
-	  02
-	</div>
-	<div className="bg-purple-500 flex items-center justify-center text-white text-2xl font-bold">
-	  03
-	</div>
-  </div>
-</div>
-```
-
-```js
-sticky top-0 可以让元素固定在顶部，只有 sticky 而没 top-0 就没有固定的效果，保留原来位置
-fixed 会导致悬浮，也就是说其他元素会和该元素在同一位置，没有“实体”，不占有原来位置
-relative 偏移是相对于原位置的，偏移后仍保留原来位置
-absolute 偏移是相对于祖先元素的，祖先元素需要有除静态定位的其他定位，如果没有祖先元素，则相对于document偏移。偏移后不占有原来位置
-​​
-data-[slot=separator]​​: 这是一个​​属性选择器​​。它匹配所有具有 slot属性、且该属性值​​等于​​ separator 的 HTML 元素。例如，它会匹配：<div data-slots="separator">或 <span slot="separator">。
-```
-## 移除文字覆盖
-导航栏没有设置 bg-background
-![](/images/tailwind_1.png)
-导航栏设置 bg-background
-![](/images/tailwind_2.png)
-
+## 属性
 ```js
 在global.css中添加
 @import "tailwindcss";
@@ -120,6 +75,7 @@ border-blue-200
 // medium round
 rounded-md
 rounded-full
+rounded-[20%] // 只适合用于正方形元素上
 
 top-0
 
@@ -127,9 +83,71 @@ top-0
 border-b
 border-l
 
+
+// 对元素应用外部框阴影
+shadow-xl
+
 // 剪切所有超出容器宽度的内容
 overflow-x-hidden
 ```
+## flex布局和grid布局
+```sh
+flex​​ 擅长在​​一个方向​​（水平或垂直）上排列和对齐元素，它让元素具有弹性，能根据可用空间动态调整大小和顺序。它非常适合处理​​组件内部的布局
+
+grid​​ 则是一个​​二维系统​​，它允许你同时定义​​行和列​​，从而实现对整体结构的精确控制。它非常适合用于构建​​页面的宏观骨架和复杂的二维布局​​
+
+混合使用 flex 和 grid 正成为最佳实践：grid 构建宏观骨架，flex 处理微观排列​​：这是最常见的组合方式。使用 ​​grid 定义页面的整体结构​​（例如，划分出页头、侧边栏、主内容区、页脚等区域），然后在​​各个 grid 区域内部，使用 flex 来排列其子元素​​（例如，在导航区域内水平排列链接，在卡片区域内垂直排列图文内容）。这样，grid 负责大局的排兵布阵，flex 负责内部的精细调整。
+这种分工使代码逻辑更清晰。修改整体布局时，只需调整 grid；修改组件内部结构时，只需调整 flex，两者耦合度低，更易于维护和扩展。
+```
+实现该布局：
+![](/images/tailwind_3.png)
+```ts
+// main 标签中的 flex-1 是必须的。flex-1 允许 flex item 根据需要增大或缩小，忽略其初始大小
+<div className="flex flex-col min-h-screen">
+	<header>
+		<p className="bg-amber-700">a</p>
+	</header>
+	<main className="flex-1 grid grid-cols-12 gap-4">
+		<p className="col-span-2 bg-blue-700">b</p>
+		<p className="col-span-8 bg-yellow-500">c</p>
+		<p className="col-span-2 bg-cyan-600">d</p>
+	</main>
+	<footer>
+		<p className="bg-purple-700">e</p>
+	</footer>
+</div>
+```
+实现该布局：
+![](/images/tailwind_5.png)
+```ts
+<div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full max-w-4xl h-96">
+	<div className="row-span-2 bg-purple-500 rounded-lg flex items-center justify-center text-white text-2xl font-bold">
+	  01
+	</div>
+	<div className="bg-purple-200 flex items-center justify-center text-gray-800 text-2xl font-bold">
+	  02
+	</div>
+	<div className="bg-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+	  03
+	</div>
+  </div>
+</div>
+```
+
+```js
+sticky top-0 可以让元素固定在顶部，只有 sticky 而没 top-0 就没有固定的效果，保留原来位置
+fixed 会导致悬浮，也就是说其他元素会和该元素在同一位置，没有“实体”，不占有原来位置
+relative 偏移是相对于原位置的，偏移后仍保留原来位置
+absolute 偏移是相对于祖先元素的，祖先元素需要有除静态定位的其他定位，如果没有祖先元素，则相对于document偏移。偏移后不占有原来位置
+​​
+data-[slot=separator]​​: 这是一个​​属性选择器​​。它匹配所有具有 slot属性、且该属性值​​等于​​ separator 的 HTML 元素。例如，它会匹配：<div data-slots="separator">或 <span slot="separator">。
+```
+## 移除文字覆盖
+导航栏没有设置 bg-background
+![](/images/tailwind_1.png)
+导航栏设置 bg-background
+![](/images/tailwind_2.png)
 ## flex属性
 ```js
 // flex，使用时要这样使用 flex justify-center items-center
@@ -215,7 +233,7 @@ selection:bg-green-200
 // 字体间距
 tracking-tight
 ```
-## tailwind
+## css文件
 ```js
 // 放在css文件中
 @theme {
@@ -316,4 +334,154 @@ tracking-tight
 <div class="overflow-auto scrollbar-hide">
   <!-- 可滚动但无滚动条 -->
 </div>
+```
+## 鼠标移动到按钮上按钮放大
+```ts
+// shadow-md 作用：对元素应用外部框阴影
+// transform 开启变换
+// hover:scale-110 悬浮则放大按钮 10%
+// active:scale-105 点击则放大按钮 5%
+// transition-transform 让 transform 是平滑过渡的
+// duration-200 动画时间为 0.2s
+<button className="bg-violet-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transform hover:scale-110 active:scale-105 transition-transform duration-200">
+hello
+</button>
+```
+## 随鼠标移动的光晕
+![](/images/tailwind_7.png)
+```ts
+"use client";
+
+import React, { useRef, useEffect, useState } from "react";
+
+const MouseGlowEffect = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      container.style.setProperty("--mouse-x", `${x}px`);
+      container.style.setProperty("--mouse-y", `${y}px`);
+    };
+
+    const handleMouseEnter = () => setIsHovering(true);
+    const handleMouseLeave = () => setIsHovering(false);
+
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseenter", handleMouseEnter);
+    container.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseenter", handleMouseEnter);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      className="
+        w-32 h-32 bg-violet-200 text-white font-bold py-3 px-6 rounded-[20%] shadow-md transform hover:scale-110 active:scale-105 transition-transform duration-200
+      "
+      style={{
+        // 定义 CSS 变量
+        ["--mouse-x" as any]: "0px",
+        ["--mouse-y" as any]: "0px",
+        ...(isHovering
+          ? {
+              backgroundImage: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), 
+  rgba(255, 255, 0, 0.75), transparent 10%)`,
+            }
+          : {}),
+      }}
+    >
+    </div>
+  );
+};
+
+export default MouseGlowEffect;
+
+```
+## 图片随鼠标3D旋转
+![](/images/tailwind_6.png)
+```ts
+// rotateX(30deg) 让图片绕横坐标旋转 30 度
+// object-cover 调整元素内容的大小以覆盖其容器
+// transition-transform duration-100 ease-out 鼠标移动时变换 rotateX 和 rotateY 属性
+// timerRef 的作用是鼠标离开后在500毫秒后清除图片的transition属性。这样做的目的是在复位动画完成后，移除过渡效果，确保鼠标再次移动到元素上时旋转响应即时
+'use client';
+import React, { useRef, useEffect, MouseEvent } from 'react';
+
+interface Image3DRotateProps {
+  src: string;
+  perspective?: number;
+  maxRotation?: number;
+}
+
+const Image3DRotate: React.FC<Image3DRotateProps> = ({
+  src,
+  maxRotation = 45,
+}) => {
+  const imgRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (!imgRef.current || !containerRef.current) return;
+
+    const container = containerRef.current;
+    const img = imgRef.current;
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const offsetX = (e.clientX - centerX) / (rect.width / 2);
+    const offsetY = (e.clientY - centerY) / (rect.height / 2);
+    const rotateY = offsetX * maxRotation;
+    const rotateX = offsetY * -maxRotation;
+
+    img.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)` 
+  };
+
+  const handleMouseLeave = () => {
+    if (!imgRef.current) return;
+    const img = imgRef.current;
+    img.style.transition = 'transform 0.5s ease-out';
+    img.style.transform = `rotateX(0) rotateY(0)` 
+
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      if (imgRef.current) imgRef.current.style.transition = '';
+    }, 500);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <img
+        ref={imgRef}
+        src={src}
+        className="w-40 h-40 object-cover transition-transform duration-100 ease-out"
+      />
+    </div>
+  );
+};
+
+export default Image3DRotate;
 ```
