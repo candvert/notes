@@ -165,6 +165,7 @@ Rust 并不会尝试自动地将非布尔值转换为布尔值。必须总是显
 引用在其生命周期内保证指向某个特定类型的有效值
 // 我自己总结的：生命周期的概念是为了保证引用总是有效的，也就是防止悬垂指针
 “字符串 slice” 的类型声明写作 &str
+常规引用是一个指针类型
 ```
 ## 重要概念
 ```rust
@@ -561,7 +562,7 @@ let loopback = IpAddr::V6(String::from("::1"));
 
 
 
-// 
+// 枚举值所需的空间等于储存其最大变体的空间大小
 enum IpAddr {
 	V4(u8, u8, u8, u8),
 	V6(String),
@@ -1083,6 +1084,7 @@ enum Result<T, E> {
 }
 
 // 在 Point<T> 结构体上实现方法 x，它返回 T 类型的字段 x 的引用
+// 在impl<T> Point<T>中，第一个<T>是​​声明泛型参数​​，第二个<T>是​​使用泛型参数​​
 struct Point<T> {
     x: T,
     y: T,
@@ -1433,15 +1435,20 @@ let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
 ```
 ## 智能指针
 ```rust
-// 最简单直接的智能指针是 box，其类型是 Box<T>
-// Box<T> 类型是一个智能指针，因为它实现了 Deref trait，它允许 Box<T> 值被当作引用对待
-// 实现 Deref trait 允许我们定制解引用运算符 *，通过这种方式实现 Deref trait 的智能指针可以被当作常规引用来对待
+// 常规引用是一个指针类型
+// 最简单的智能指针类型是 Box<T>
+// Box<T> 实现了 Deref trait， Deref trait 允许我们定制解引用运算符 *
+// 在堆上储存一个 i32 值
+let b = Box::new(5);
 
 
 
-// 每次当我们在代码中使用 * 时， * 运算符都被替换成了先调用 deref 方法再接着使用 * 解引用的操作
+
+
 // Deref trait，由标准库提供，要求实现名为 deref 的方法，其借用 self 并返回一个内部数据的引用
+// 每次当我们在代码中使用 * 时， * 运算符都被替换成了先调用 deref 方法再接着使用 * 解引用的操作。也就是输入 *y 时，Rust 事实上在底层运行了 *(y.deref())
 use std::ops::Deref;
+struct MyBox<T>(T);
 impl<T> Deref for MyBox<T> {
     type Target = T;
 
@@ -1456,15 +1463,19 @@ impl<T> Deref for MyBox<T> {
 
 
 // 函数和方法的隐式 Deref 强制转换
-// 只能作用于实现了 Deref trait 的类型。当这种特定类型的引用作为实参传递给和形参类型不同的函数或方法时将自动进行。这时会有一系列的 deref 方法被调用，把我们提供的类型转换成了参数所需的类型
-// 利用 Deref 强制转换并没有运行时开销
-
-
-
-
-
-
-
+// 只能作用于实现了 Deref trait 的类型。当这种特定类型的引用作为实参传递给和形参类型不同的函数或方法时将自动进行。这时会有一系列的 deref 方法被调用，把我们提供的类型转换成了参数所需的类型。这些解析都发生在编译时，所以利用 Deref 强制转换并没有运行时开销
+fn hello(name: &str) {
+    println!("Hello, {name}!");
+}
+// Deref 强制转换使得用 MyBox<String> 类型值的引用调用 hello 成为可能
+let m = MyBox::new(String::from("Rust"));
+hello(&m);
+// 如果 Rust 没有 Deref 强制转换则必须编写的代码
+let m = MyBox::new(String::from("Rust"));
+hello(&(*m)[..]);
+```
+## Drop trait
+```rust
 // 指定在值离开作用域时应该执行的代码的方式是实现 Drop trait。Drop trait 要求实现一个叫做 drop 的方法，它获取一个 self 的可变引用
 // Drop trait 包含在 prelude 中，因此无需将其引入作用域
 // Rust 并不允许我们主动调用 Drop trait 的 drop 方法；当我们希望在作用域结束之前就强制释放变量的话，我们应该使用的是由标准库提供的 std::mem::drop 函数
@@ -1476,15 +1487,25 @@ impl Drop for CustomSmartPointer {
         println!("Dropping CustomSmartPointer with data!");
     }
 }
-
-
-
-
-
-
+```
+## 引用计数智能指针
+```rust
 // Rc<T> 引用计数智能指针
 // 启用多所有权需要显式地使用 Rust 类型 Rc<T>
 // 注意 Rc<T> 只能用于单线程场景
+enum List {
+    Cons(i32, Rc<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    let b = Cons(3, Rc::clone(&a));
+    let c = Cons(4, Rc::clone(&a));
+}
 ```
 ## 内部可变性模式
 ```rust
