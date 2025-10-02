@@ -46,7 +46,7 @@
 - [闭包](#闭包)
 - [迭代器](#迭代器)
 - [智能指针](#智能指针)
-- [内部可变性模式](#内部可变性模式)
+- [内部可变性](#内部可变性)
 - [线程](#线程)
 - [async和await](#async和await)
 ## 安装
@@ -448,6 +448,15 @@ if state.existed_in(1900) {
 	Some(format!("{state:?} is pretty old, for America!"))
 } else {
 	Some(format!("{state:?} is relatively new."))
+}
+
+
+
+// while let
+// 只要模式匹配就一直进行 while 循环
+let (tx, rx) = std::sync::mpsc::channel();
+while let Ok(value) = rx.recv() {
+	println!("{value}");
 }
 ```
 ## 所有权ownership
@@ -1435,6 +1444,9 @@ let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
 ```
 ## 智能指针
 ```rust
+// 常用的智能指针有 Box<T>、Rc<T>、RefCell<T>、Weak<T>、Mutex<T>、Arc<T>
+
+
 // 常规引用是一个指针类型
 // 最简单的智能指针类型是 Box<T>
 // Box<T> 实现了 Deref trait， Deref trait 允许我们定制解引用运算符 *
@@ -1505,14 +1517,26 @@ fn main() {
     let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
     let b = Cons(3, Rc::clone(&a));
     let c = Cons(4, Rc::clone(&a));
+	println!("count：{}", Rc::strong_count(&a));
 }
 ```
-## 内部可变性模式
+## 内部可变性
 ```rust
-// 内部可变性（Interior mutability）是 Rust 中的一个设计模式，它允许你即使在有不可变引用时也可以改变数据，这通常是借用规则所不允许的。为了改变数据，该模式在数据结构中使用 unsafe 代码来模糊 Rust 通常的可变性和借用规则。不安全代码表明我们在手动检查这些规则而不是让编译器替我们检查
-// RefCell<T> 遵循内部可变性模式
-// 类似于 Rc<T>，RefCell<T> 只能用于单线程场景
-// 令一个值在其方法内部能够修改自身，而在其他代码中仍视为不可变，是很有用的。RefCell<T> 是一个获得内部可变性的方法。RefCell<T> 并没有完全绕开借用规则，编译器中的借用检查器允许内部可变性并相应地在运行时检查借用规则。如果违反了这些规则，会出现 panic 而不是编译错误。
+// 在不可变值内部改变值就是内部可变性模式
+// RefCell<T> 只能用于单线程场景
+// RefCell<T> 在运行时检查借用规则。如果违反了这些规则，会出现 panic 而不是编译错误
+// RefCell<T> 正是用于当你确信代码遵守借用规则，而编译器不能理解和确定的时候
+// 因为 RefCell<T> 允许在运行时执行可变借用检查，所以我们可以在即便 RefCell<T> 自身是不可变的情况下修改其内部的值
+
+
+
+// borrow 方法返回 Ref<T> 类型的智能指针，borrow_mut 方法返回 RefMut<T> 类型的智能指针
+// borrow 和 borrow_mut 方法属于 RefCell<T> 安全 API 的一部分
+// 每次调用 borrow，RefCell<T> 将活动的不可变借用计数加一。当 Ref<T> 值离开作用域时，不可变借用计数减一。就像编译时借用规则一样，RefCell<T> 在任何时候只允许有多个不可变借用或一个可变借用
+use std::cell::RefCell;
+let v = RefCell::new(vec![]);
+v.borrow_mut().push(String::from("hello"));
+println!("{v.borrow().len()}");
 ```
 ## 线程
 ```rust
@@ -1537,6 +1561,7 @@ fn main() {
 
 
 
+// 使用 join 等待线程结束
 // 可以将 thread::spawn 的返回值储存在变量中。thread::spawn 的返回值类型是 JoinHandle<T>。JoinHandle<T> 是一个拥有所有权的值，当对其调用 join 方法时，它会等待其线程结束
 let handle = thread::spawn(|| {
 	for i in 1..10 {
@@ -1554,21 +1579,19 @@ handle.join().unwrap();
 
 
 
+// 将 move 闭包与线程一同使用
 // move 关键字经常用于传递给 thread::spawn 的闭包，因为闭包会获取从环境中取得的值的所有权，因此会将这些值的所有权从一个线程传送到另一个线程
 let v = vec![1, 2, 3];
 let handle = thread::spawn(move || {
 	println!("Here's a vector: {v:?}");
 });
 handle.join().unwrap();
-
-
-
-
-
-
-// 为了实现消息传递并发，Rust 标准库提供了一个信道（channel）实现。信道是一个通用编程概念，表示数据从一个线程发送到另一个线程
+```
+## 信道
+```rust
+// Rust 标准库提供了一个信道（channel）实现。信道是一个通用编程概念，表示数据从一个线程发送到另一个线程
 // 信道有两个组成部分：一个发送端和一个接收端
-// 代码中的一部分调用发送端的方法以及希望发送的数据，另一部分则检查接收端收到的消息。当发送端或接收端任一被丢弃时可以认为信道被关闭了
+// 当发送端或接收端任一被丢弃时可以认为信道被关闭了
 
 // 创建一个信道，并将其两端赋值给 tx 和 rx
 use std::sync::mpsc;
@@ -1576,32 +1599,41 @@ let (tx, rx) = mpsc::channel();
 // mpsc::channel 函数的 mpsc 是 多生产者，单消费者（multiple producer, single consumer）的缩写
 // 也就是一个信道可以有多个产生值的发送端，但只能有一个消费这些值的接收端
 // mpsc::channel 函数返回一个元组：第一个元素是发送端，而第二个元素是接收端
-// 发送 "hi"
-let val = String::from("hi");
-tx.send(val).unwrap();
+// 将 tx 移动到一个新建的线程中并发送 "hi"
+thread::spawn(move || {
+	let val = String::from("hi");
+	tx.send(val).unwrap();
+});
 // 如果接收端已经被丢弃了，将没有发送值的目标，发送操作会返回错误
+// send 函数获取其参数的所有权并移动这个值归接收端所有
 // 接收内容
 let received = rx.recv().unwrap();
 // 克隆发送端
 let tx1 = tx.clone();
-
-
-
-
-
-
-
-
-
+// 将 rx 当作一个迭代器
+for received in rx {
+	println!("Got: {received}");
+}
+```
+## `Mutex<T>`
+```rust
+// Mutex<T> 提供了内部可变性
 // 互斥锁
 use std::sync::Mutex;
 let m = Mutex::new(5);
 {
+	// 使用 lock 方法来获取锁
 	let mut num = m.lock().unwrap();
 	*num = 6;
 }
-// 使用 Arc<T> 包装一个 Mutex<T> 能够实现在多线程之间共享所有权
-// Mutex<T> 提供了内部可变性
+
+
+
+
+// 原子引用计数 Arc<T>
+// 原子类型可以安全地在线程间共享
+// Arc::new(Mutex::new(0)) 能够实现在多线程之间共享所有权
+let counter = Arc::new(Mutex::new(0));
 ```
 ## async和await
 ```rust
@@ -1609,20 +1641,36 @@ let m = Mutex::new(5);
 // future 是一个现在可能还没有准备好但将在未来某个时刻准备好的值
 //  Rust 中，我们称实现了 Future trait 的类型为 future。每个 future 会维护自身的进度状态信息以及对 “ready” 的定义
 // async 关键字可以用于代码块和函数，表明它们可以被中断并恢复
-// 在一个 async 块或 async 函数中，可以使用 await 关键字来 await 一个 future（即等待其就绪）
+// 在一个 async 块或 async 函数中，可以使用 await 关键字来 await 一个 future（即等待其就绪）。也就是唯一可以使用 await 关键字的地方是 async 函数或者代码块中
 // 检查一个 future 并查看其值是否已经准备就绪的过程被称为 轮询（polling）
-let response_text = trpl::get(url).await.text().await;
-async fn main() { }
+// 在大多数情况下，编写异步 Rust 代码时，我们使用 async 和 await 关键字。Rust 将其编译为等同于使用 Future trait 的代码
+// Rust 中的 futures 是 惰性（lazy）的：在你使用 await 请求之前它们不会执行任何操作
+use trpl::Html;
+async fn page_title(url: &str) -> Option<String> {
+    let response_text = trpl::get(url).await.text().await;
+    Html::parse(&response_text)
+        .select_first("title")
+        .map(|title_element| title_element.inner_html())
+}
 
 
-// main 不能标记为 async 的原因是异步代码需要一个 运行时：即一个管理执行异步代码细节的 Rust crate
+// main 不能标记为 async 的原因是异步代码需要一个运行时：即一个管理执行异步代码细节的 Rust crate
 // 每一个执行异步代码的 Rust 程序必须至少有一个设置运行时并执行 futures 的地方
 // 大部分支持异步的语言会打包一个运行时在语言中，Rust 则不是
 // 每一个 await point，也就是代码使用 await 关键字的地方，代表将控制权交还给运行时的地方。为此 Rust 需要记录异步代码块中涉及的状态，这样运行时可以去执行其他工作，并在准备好时回来继续推进当前的任务。编写代码来手动控制不同状态之间的转换是非常乏味且容易出错的，特别是之后增加了更多功能和状态的时候。相反，Rust 编译器自动创建并管理异步代码的状态机数据结构。最终需要某个组件来执行状态机，而这个组件就是运行时。
 ```
+## trait对象
+```rust
+// Rust 需要在运行时使用 trait 对象中的指针来知晓需要调用哪个方法。这种查找会带来运行时开销
+pub trait Draw {
+    fn draw(&self);
+}
+// Box<dyn Draw>为 trait 对象，其实就是指针
+let v: Vec<Box<dyn Draw>> = Vec::new();;
+```
 ## 模式与模式匹配
 ```rust
-// 模式有效的位置：
+// 模式有效的所有位置：
 // match 分支
 // if let 条件表达式
 // while let 条件循环
@@ -1631,8 +1679,11 @@ async fn main() { }
 // 函数参数
 
 
-// 模式有两种形式：refutable（可反驳的）和 irrefutable（不可反驳的）。能匹配任何传递的可能值的模式被称为是不可反驳的（irrefutable）。一个例子就是 let x = 5; 语句中的 x，因为 x 可以匹配任何值所以不可能会失败。对某些可能的值进行匹配会失败的模式被称为是可反驳的（refutable）。一个这样的例子便是 if let Some(x) = a_value 表达式中的 Some(x)；如果变量 a_value 中的值是 None 而不是 Some，那么 Some(x) 模式不能匹配
-// 函数参数、let 语句和 for 循环只能接受不可反驳的模式，因为当值不匹配时，程序无法进行有意义的操作。if let 和 while let 表达式可以接受可反驳和不可反驳的模式，但编译器会对不可反驳的模式发出警告，因为根据定义它们旨在处理可能的失败：条件表达式的功能在于它能够根据成功或失败来执行不同的操作。
+// 模式有两种形式：refutable（可反驳的）和 irrefutable（不可反驳的）
+// 一定可以匹配成功的是不可反驳的，比如 let x = 5;
+// 可能会匹配失败的是可反驳的，比如 if let Some(x) = a_value { }
+// 函数参数、let 语句和 for 循环只能接受不可反驳的模式，因为当值不匹配时，程序无法进行有意义的操作
+// if let 和 while let 表达式可以接受可反驳和不可反驳的模式
 
 
 
