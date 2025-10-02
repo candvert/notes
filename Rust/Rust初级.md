@@ -1679,6 +1679,9 @@ let v: Vec<Box<dyn Draw>> = Vec::new();;
 // 函数参数
 
 
+
+
+
 // 模式有两种形式：refutable（可反驳的）和 irrefutable（不可反驳的）
 // 一定可以匹配成功的是不可反驳的，比如 let x = 5;
 // 可能会匹配失败的是可反驳的，比如 if let Some(x) = a_value { }
@@ -1688,32 +1691,161 @@ let v: Vec<Box<dyn Draw>> = Vec::new();;
 
 
 
+
+
+
 // 模式语法：
-// 匹配字面值
-// 匹配命名变量
-// 多个模式
+// 1. 匹配字面值
+match x {
+	1 => println!("one"),
+	2 => println!("two"),
+	3 => println!("three"),
+	_ => println!("anything"),
+}
+// 2. 匹配命名变量
+let x = Some(5);
+match x {
+	Some(y) => println!("Matched, y = {y}"),
+	_ => println!("Default case, x = {x:?}"),
+}
+// 3. 多个模式，在 match 表达式中，可以使用 | 语法匹配多个模式
 match x {
         1 | 2 => println!("one or two"),
         3 => println!("three"),
         _ => println!("anything"),
     }
-// 通过 ..= 匹配值范围
+// 4. 通过 ..= 匹配值范围，只允许用于数字或 char 值
 match x {
 	1..=5 => println!("one through five"),
 	_ => println!("something else"),
 }
-// 解构并分解值
-// 解构结构体
+match x {
+	'a'..='j' => println!("early ASCII letter"),
+	'k'..='z' => println!("late ASCII letter"),
+	_ => println!("something else"),
+}
+// 5. 解构并分解值，可以使用模式来解构结构体、枚举和元组
+// （1）解构结构体
 let p = Point { x: 0, y: 7 };
 let Point { x: a, y: b } = p;
-// 解构枚举
-// 解构嵌套的结构体和枚举
-// 解构结构体和元组
-// 忽略模式中的值
-// 使用 _ 忽略整个值
-// 使用嵌套的 _ 忽略部分值
-// 通过在变量名开头加 _ 来忽略未使用的变量
-// 用 .. 忽略剩余值
-// 匹配守卫提供的额外条件
-// @ 绑定
+println!("{a}, {b}");
+// 简写
+let p = Point { x: 0, y: 7 };
+let Point { x, y } = p;
+println!("{x}, {y}");
+// 解构和匹配模式中的字面值
+let p = Point { x: 0, y: 7 };
+match p {
+	Point { x, y: 0 } => println!("On the x axis at {x}"),
+	Point { x: 0, y } => println!("On the y axis at {y}"),
+	Point { x, y } => {
+		println!("On neither axis: ({x}, {y})");
+	}
+}
+// （2）解构枚举
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+let msg = Message::ChangeColor(0, 160, 255);
+match msg {
+	Message::Quit => {
+		println!("The Quit variant has no data to destructure.");
+	}
+	Message::Move { x, y } => {
+		println!("Move in the x direction {x} and in the y direction {y}");
+	}
+	Message::Write(text) => {
+		println!("Text message: {text}");
+	}
+	Message::ChangeColor(r, g, b) => {
+		println!("Change color to red {r}, green {g}, and blue {b}");
+	}
+}
+// （3）解构嵌套的结构体和枚举
+enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
+let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+match msg {
+	Message::ChangeColor(Color::Rgb(r, g, b)) => {
+		println!("Change color to red {r}, green {g}, and blue {b}");
+	}
+	Message::ChangeColor(Color::Hsv(h, s, v)) => {
+		println!("Change color to hue {h}, saturation {s}, value {v}");
+	}
+	_ => (),
+}
+// （4）解构结构体和元组
+let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
+// 6. 忽略模式中的值
+// （1）使用 _ 忽略整个值
+fn foo(_: i32, y: i32) {
+    println!("This code only uses the y parameter: {y}");
+}
+// （2）使用嵌套的 _ 忽略部分值
+let mut setting_value = Some(5);
+let new_setting_value = Some(10);
+match (setting_value, new_setting_value) {
+	(Some(_), Some(_)) => {
+		println!("Can't overwrite an existing customized value");
+	}
+	_ => {
+		setting_value = new_setting_value;
+	}
+}
+// （3）通过在变量名开头加 _ 来忽略未使用的变量，因为如果创建了一个变量却不在任何地方使用它，Rust 通常会给你一个警告
+let _x = 5;
+// （4）用 .. 忽略剩余值，.. 模式会忽略模式中剩余的任何没有显式匹配的值部分
+struct Point {
+	x: i32,
+	y: i32,
+	z: i32,
+}
+let origin = Point { x: 0, y: 0, z: 0 };
+match origin {
+	Point { x, .. } => println!("x is {x}"),
+}
+// .. 会扩展为所需要的值的数量
+let numbers = (2, 4, 8, 16, 32);
+match numbers {
+	(first, .., last) => {
+		println!("Some numbers: {first}, {last}");
+	}
+}
+// 7. 匹配守卫提供的额外条件
+// 匹配守卫（match guard）是一个指定于 match 分支模式之后的额外 if 条件，它也必须被满足才能选择此分支。匹配守卫用于表达比单独的模式所能允许的更为复杂的情况
+// 仅在 match 表达式中可用，不能用于 if let 或 while let 表达式
+let num = Some(4);
+match num {
+	Some(x) if x % 2 == 0 => println!("The number {x} is even"),
+	Some(x) => println!("The number {x} is odd"),
+	None => (),
+}
+// 8. @ 绑定
+// at 运算符（@）允许我们在创建一个存放值的变量的同时测试其值是否匹配模式
+// 这里我们测试 Message::Hello 的 id 字段是否位于 3..=7 范围内，同时将其值绑定到 id_variable 变量中
+// 第二个分支只在模式中指定了一个范围，id 字段的值可以是 10、11 或 12。不过不能使用 id 字段中的值，因为没有将 id 值保存进一个变量
+enum Message {
+	Hello { id: i32 },
+}
+let msg = Message::Hello { id: 5 };
+match msg {
+	Message::Hello {
+		id: id_variable @ 3..=7,
+	} => println!("Found an id in range: {id_variable}"),
+	Message::Hello { id: 10..=12 } => {
+		println!("Found an id in another range")
+	}
+	Message::Hello { id } => println!("Found some other id: {id}"),
+}
 ```
