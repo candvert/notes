@@ -46,9 +46,16 @@
 - [闭包](#闭包)
 - [迭代器](#迭代器)
 - [智能指针](#智能指针)
+- [Drop trait](#Drop%20trait)
+- [引用计数智能指针](#引用计数智能指针)
 - [内部可变性](#内部可变性)
 - [线程](#线程)
+- [信道](#信道)
+- [`Mutex<T>`](#`Mutex<T>`)
 - [async和await](#async和await)
+- [trait对象](#trait对象)
+- [模式与模式匹配](#模式与模式匹配)
+- [不安全Rust](#不安全Rust)
 ## 安装
 ```sh
 只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 编译器 rustc
@@ -1848,4 +1855,8 @@ match msg {
 	}
 	Message::Hello { id } => println!("Found some other id: {id}"),
 }
+```
+## 不安全Rust
+```rust
+
 ```
