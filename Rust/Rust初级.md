@@ -1961,5 +1961,136 @@ unsafe impl Foo for i32 {
 ```
 ## 高级trait
 ```rust
+// 关联类型
+// 关联类型将一个类型占位符与 trait 相关联
+// trait 的实现必须提供一个类型来替代关联类型占位符
+// Iterator trait 的定义中带有关联类型 Item
+pub trait Iterator {
+    type Item;
+    fn next(&mut self) -> Option<Self::Item>;
+}
+impl Iterator for Counter {
+    type Item = u32;
+    fn next(&mut self) -> Option<Self::Item> { }
+}
 
+
+
+
+
+// 默认泛型类型参数
+trait Add<Rhs=Self> {
+    type Output;
+    fn add(self, rhs: Rhs) -> Self::Output;
+}
+// 使用
+// 如果实现 Add trait 时不指定 Rhs 的具体类型，Rhs 的类型将默认为 Self
+use std::ops::Add;
+struct Point {
+    x: i32,
+    y: i32,
+}
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -> Point {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+// 实现 Add trait 时指定 Rhs 的具体类型而不是使用默认类型
+use std::ops::Add;
+struct Millimeters(u32);
+struct Meters(u32);
+impl Add<Meters> for Millimeters {
+    type Output = Millimeters;
+    fn add(self, other: Meters) -> Millimeters {
+        Millimeters(self.0 + (other.0 * 1000))
+    }
+}
+
+
+
+
+
+
+// 运算符重载
+// 通过实现 std::ops 中列出的运算符相关 trait 来重载运算符
+use std::ops::Add;
+struct Millimeters(u32);
+struct Meters(u32);
+impl Add<Meters> for Millimeters {
+    type Output = Millimeters;
+    fn add(self, other: Meters) -> Millimeters {
+        Millimeters(self.0 + (other.0 * 1000))
+    }
+}
+
+
+
+
+
+
+
+// 在同名方法之间消歧义
+// 当两个 trait 定义为拥有 fly 方法，并在定义有 fly 方法的 Human 类型上实现这两个 trait
+trait Pilot { fn fly(&self); }
+trait Wizard { fn fly(&self); }
+struct Human;
+impl Pilot for Human {
+    fn fly(&self) { println!("This is your captain speaking."); }
+}
+impl Wizard for Human { fn fly(&self) { println!("Up!"); } }
+impl Human {
+    fn fly(&self) { println!("*waving arms furiously*"); }
+}
+// 当此时调用 Human 实例的 fly 时，编译器默认调用直接实现在该类型上的方法
+let person = Human;
+person.fly();
+// 调用 Pilot trait 或 Wizard trait 的 fly 方法
+Pilot::fly(&person);
+Wizard::fly(&person);
+
+
+
+
+
+
+// Dog 类型上定义有 baby_name 方法，并实现了拥有 baby_name 方法的 Animal trait
+trait Animal { fn baby_name() -> String; }
+struct Dog;
+impl Dog { fn baby_name() -> String { String::from("Spot") } }
+impl Animal for Dog { fn baby_name() -> String { String::from("puppy") } }
+// 在 main 调用了 Dog::baby_name 函数，它直接调用了定义于 Dog 之上的关联函数
+fn main() { println!("A baby dog is called a {}", Dog::baby_name()); }
+// 使用完全限定语法来指定我们希望调用的是 Dog 上 Animal trait 实现中的 baby_name 函数
+println!("A baby dog is called a {}", <Dog as Animal>::baby_name());
+
+
+
+
+
+
+
+
+// 超 trait
+// 指定 OutlinePrint trait 需要 Display trait
+// 因为我们已经指定 OutlinePrint 需要 Display trait，因而可以使用自动为任何实现了 Display 的类型提供的 to_string 方法
+use std::fmt;
+trait OutlinePrint: fmt::Display {
+    fn outline_print(&self) {
+		self.to_string();
+	}
+}
+
+
+
+
+
+
+// 使用 newtype 模式
+// 这种将现有类型简单封装进另一个结构体的方式被称为 newtype 模式
+struct Millimeters(u32);
 ```
