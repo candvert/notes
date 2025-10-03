@@ -56,6 +56,11 @@
 - [trait对象](#trait对象)
 - [模式与模式匹配](#模式与模式匹配)
 - [不安全Rust](#不安全Rust)
+- [高级trait](#高级trait)
+- [类型别名](#类型别名)
+- [函数指针](#函数指针)
+- [返回闭包](#返回闭包)
+- [宏](#宏)
 ## 安装
 ```sh
 只需安装 Rustup，其会附带包管理器 Cargo 和 Rust 编译器 rustc
@@ -2093,4 +2098,111 @@ trait OutlinePrint: fmt::Display {
 // 使用 newtype 模式
 // 这种将现有类型简单封装进另一个结构体的方式被称为 newtype 模式
 struct Millimeters(u32);
+// Wrapper 是一个新类型，它并不具备其所封装值的方法
+// 需要自行实现所需的方法
+struct Wrapper(Vec<String>);
+```
+## 类型别名
+```rust
+type Kilometers = i32;
+
+
+type Result<T> = std::result::Result<T, std::io::Error>;
+fn write() -> Result<usize>;
+fn flush() -> Result<()>;
+
+
+
+
+
+// Rust 有一个叫做 ! 的特殊类型，它没有值
+// 可以在函数从不返回的时候充当返回值
+// 不能创建 ! 类型的值，所以 bar 也不可能返回值
+fn bar() -> ! { }
+// match 的分支必须返回相同的类型，continue 的值是 !，类型为 ! 的表达式可以被强制转换为任意其他类型
+let guess: u32 = match guess.trim().parse() {
+	Ok(num) => num,
+	Err(_) => continue,
+};
+// panic! 是 ! 类型
+```
+## 函数指针
+```rust
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+fn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {
+    f(arg) + f(arg)
+}
+fn main() {
+    let answer = do_twice(add_one, 5);
+    println!("The answer is: {answer}");
+}
+
+
+
+
+
+// 每一个枚举成员也变成了一个构造函数
+enum Status {
+	Value(u32),
+	Stop,
+}
+let list_of_statuses: Vec<Status> = (0u32..20).map(Status::Value).collect();
+```
+## 返回闭包
+```rust
+// 使用 impl Trait 语法从函数返回闭包
+fn returns_closure() -> impl Fn(i32) -> i32 {
+    |x| x + 1
+}
+fn returns_initialized_closure(init: i32) -> impl Fn(i32) -> i32 {
+    move |x| x + init
+}
+// returns_closure 和 returns_initialized_closure，它们都返回 impl Fn(i32) -> i32
+// 每当返回一个 impl Trait，Rust 会创建一个独特的不透明类型
+// 所以即使这些函数都返回了实现了相同 trait（ Fn(i32) -> i32）的闭包，Rust 为我们生成的不透明类型也是不同的
+// 所以下面代码会报错
+let handlers = vec![returns_closure(), returns_initialized_closure(123)];
+// 可以使用 trait 对象来解决
+fn returns_closure() -> Box<dyn Fn(i32) -> i32> {
+    Box::new(|x| x + 1)
+}
+fn returns_initialized_closure(init: i32) -> Box<dyn Fn(i32) -> i32> {
+    Box::new(move |x| x + init)
+}
+```
+## 宏
+```rust
+// 包括使用 macro_rules! 的声明宏
+// 和三种过程宏
+// 1. 自定义 #[derive] 宏，用于在结构体和枚举上通过添加 derive 属性生成代码
+// 2. 类属性宏，定义可用于任意项的自定义属性
+// 3. 类函数宏，看起来像函数，但操作的是作为其参数传递的 token
+
+
+
+
+// Rust 最常用的宏形式是声明宏
+// 一个 vec! 宏定义的简化版本
+#[macro_export]
+macro_rules! vec {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
+}
+// #[macro_export] 注解表明只要导入了定义这个宏的 crate，该宏就应该是可用的。如果没有该注解，这个宏不能被引入作用域
+// 接着使用 macro_rules! 和宏名称开始宏定义
+// vec! 宏的结构和 match 表达式的结构类似。此处有一个分支模式 ( $( $x:expr ),* ) ，后跟 => 以及和模式相关的代码块。如果模式匹配，该相关代码块将被展开
+
+
+// 宏模式语法
+// 首先，一对括号包含了整个模式。我们使用美元符号（$）在宏系统中声明一个变量来包含匹配该模式的 Rust 代码。美元符号明确表明这是一个宏变量而不是普通 Rust 变量。之后是一对括号，其捕获了符合括号内模式的值用以在替代代码中使用。$() 内则是 $x:expr ，其匹配 Rust 的任意表达式，并将该表达式命名为 $x
+// 在 $()* 部分，temp_vec.push($x) 会针对模式中每次匹配到 $() 的部分，生成零次或多次，取决于模式匹配到多少次。$x 由每个与之相匹配的表达式所替换
 ```
