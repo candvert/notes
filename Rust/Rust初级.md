@@ -217,9 +217,10 @@ let guess: u32 = 5;
 ```
 ## 静态变量
 ```rust
-// static 变量是在运行时分配内存的
-// 可以使用 unsafe 修改
 // 静态变量的生命周期为整个程序的运行周期
+// 静态变量只能储存拥有 'static 生命周期的引用
+static HELLO_WORLD: &str = "Hello, world!";
+static mut COUNTER: u32 = 0;
 ```
 ## 常量
 ```rust
@@ -1857,6 +1858,108 @@ match msg {
 }
 ```
 ## 不安全Rust
+```rust
+// 五类可以在不安全 Rust 中进行的操作
+// 解引用裸指针
+// 调用不安全的函数或方法
+// 访问或修改可变静态变量
+// 实现不安全 trait
+// 访问 union 的字段
+
+
+
+
+
+// 解引用裸指针
+// 创建一个不可变裸指针和一个可变裸指针
+// 可以在安全代码中创建裸指针；只是不能在不安全块之外解引用裸指针
+let mut num = 5;
+let r1 = &raw const num;
+let r2 = &raw mut num;
+// 创建指向任意内存地址的裸指针
+let address = 0x012345usize;
+let r = address as *const i32;
+// 在 unsafe 块中解引用裸指针
+unsafe {
+	println!("r1 is: {}", *r1);
+	println!("r2 is: {}", *r2);
+}
+
+
+
+
+
+
+// 调用不安全函数或方法
+// 在不安全函数的函数体内部执行不安全操作时，同样需要使用 unsafe 块
+unsafe fn dangerous() {}
+unsafe {
+	dangerous();
+}
+// 使用 extern 函数调用外部代码
+// 集成 C 标准库中的 abs 函数
+unsafe extern "C" {
+    fn abs(input: i32) -> i32;
+}
+fn main() {
+    unsafe {
+        println!("Absolute value of -3 according to C: {}", abs(-3));
+    }
+}
+// unsafe extern 中声明的任何项都隐式地是 unsafe 的
+// 我们可以使用 safe 关键字来表明这个特定的函数即便是在 unsafe extern 块中也是可以安全调用的
+// 将一个函数标记为 safe 并不会固有地使其变得安全！相反，这像是一个对 Rust 的承诺表明它是安全的
+unsafe extern "C" {
+    safe fn abs(input: i32) -> i32;
+}
+fn main() {
+    println!("Absolute value of -3 according to C: {}", abs(-3));
+}
+
+
+
+
+
+
+// 访问或修改可变静态变量
+// 读取或修改一个可变静态变量是不安全的
+// 编译器不会允许你创建一个可变静态变量的引用。你只能通过用裸指针解引用操作符创建的裸指针访问它
+static mut COUNTER: u32 = 0;
+unsafe fn add_to_count(inc: u32) {
+    unsafe {
+        COUNTER += inc;
+    }
+}
+fn main() {
+    unsafe {
+        add_to_count(3);
+        println!("COUNTER: {}", *(&raw const COUNTER));
+    }
+}
+
+
+
+
+
+
+// 实现不安全 trait
+// 定义并实现不安全 trait
+unsafe trait Foo {
+    // 方法在这里
+}
+unsafe impl Foo for i32 {
+    // 方法实现在这里
+}
+
+
+
+
+
+
+// 访问联合体中的字段
+// 联合体主要用于和 C 代码中的联合体进行交互。访问联合体的字段是不安全的，因为 Rust 无法保证当前存储在联合体实例中数据的类型
+```
+## 高级trait
 ```rust
 
 ```
