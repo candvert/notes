@@ -285,7 +285,9 @@ let first = a[0];
 ```
 ## 强制类型转换
 ```rust
-
+let decimal = 65.4321_f32;
+let integer = decimal as u8; // f32转换为u8
+let character = integer as char; // u8转换为char
 ```
 ## 条件语句
 ```rust
