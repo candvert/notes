@@ -2,9 +2,12 @@
 - [配置国内源](#配置国内源)
 - [运行单个文件](#运行单个文件)
 - [go语言特点](#go语言特点)
+- [所有关键字](#所有关键字)
 - [注释](#注释)
 - [常量和变量](#常量和变量)
 - [import](#import)
+- [导出名字](#导出名字)
+- [运算符](#运算符)
 - [if](#if)
 - [switch](#switch)
 - [for](#for)
@@ -28,6 +31,10 @@
 - [错误](#错误)
 - [Goroutines](#Goroutines)
 - [Channels](#Channels)
+
+
+- [标准库](#标准库)
+	- [strings](#strings)
 ## 程序入口
 程序入口是 main 包中的 main 函数
 ```go
@@ -65,7 +72,21 @@ import 声明必须跟在文件的 package 声明之后
 
 必须恰当导入需要的包，缺少了必要的包或者导入了不需要的包，程序都无法编译通过。这项严格要求避免了程序开发过程中引入未使用的包
 
-函数的左括号 { 必须和 func 函数声明在同一行上, 且位于末尾
+函数的左括号 { 必须和 func 函数声明在同一行上, 且位于末尾，相似的还有 for 循环
+
+变量会在声明时直接初始化。如果变量没有显式初始化，则被隐式地赋予其类型的零值，数值类型为 0，布尔类型为 false，字符串为 ""（空字符串），接口或引用类型（包括 slice、map、chan 和函数）为 nil，指针类型为 nil
+
+i++ 是语句，所以 j = i++ 非法
+
+go 中没有 ++i 的操作，只有 i++
+
+Go语言只有for循环这一种循环语句。for循环有多种形式
+
+Go语言不允许使用无用的局部变量
+
+空标识符_
+
+在包级别声明的变量会在 main 入口函数执行前完成初始化，局部变量将在声明语句被执行到的时候完成初始化
 
 1.0 版本 Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有泛型，没有异常，没有宏，没有函数修饰，更没有线程局部存储
 
@@ -77,20 +98,45 @@ go 有垃圾回收
 
 没有明确初始化的变量会被赋予对应类型的零值
 
-go 中没有 ++count 的操作，只有 count++
-
 命令行参数可从os包的Args变量获取，os.Args 是一个切片，其第一个元素，os.Args[0], 是命令本身的名字；其它的元素则是程序启动时传给它的参数
+```
+## 所有关键字
+```go
+// 关键字有25个
+break default func interface select
+case defer go map struct
+chan else goto package switch
+const fallthrough if range type
+continue for import return var
+
+
+
+
+
+// 还有大约30多个预定义的名字
+内建常量: true false iota nil
+
+内建类型: int int8 int16 int32 int64
+		 uint uint8 uint16 uint32 uint64 uintptr
+		 float32 float64 complex128 complex64
+		 bool byte rune string error
+ 
+内建函数: make len cap new append copy close delete
+		 complex real imag
+		 panic recover
 ```
 ## 注释
 ```go
 // 单行注释
+
+
 /* 多行
     注释 */
 ```
 ## 常量和变量
 ```go
 const z = 1
-const x, y = 1, 2
+const x, y = 1, "hi"
 const x, y int = 1, 2
 const (
 	x = 1
@@ -107,8 +153,12 @@ const (
 // 	数值类型为 0
 //	布尔类型为 false
 //	字符串为 ""（空字符串）
+//  接口或引用类型（包括 slice、map、chan 和函数）为 nil
+//  指针类型为 nil
+var z int
 var z = 1
-var x, y = 1, 2
+var z int = 1
+var x, y = 1, "hi"
 var x, y int = 1, 2
 var (
 	x = 1
@@ -123,6 +173,8 @@ var (
 // 短变量声明
 // := 不能在函数外使用
 z := 1
+x, y := 1, 2
+p := new(int) // p, *int 类型, 指向匿名的 int 变量
 ```
 ## import
 ```go
@@ -136,6 +188,20 @@ import (
 	"fmt"
 	"math/rand"
 )
+```
+## 导出名字
+```go
+如果一个名字是在函数内部定义，那么它的就只在函数内部有效。如
+果是在函数外部定义，那么将在当前包的所有文件中都可以访问。名
+字的开头字母的大小写决定了名字在包外的可见性。如果一个名字是
+大写字母开头的，那么它将是导出的，也就是说可以被外部
+的包访问，例如fmt包的Printf函数就是导出的，可以在fmt包外部访
+问。包本身的名字一般总是用小写字母。
+```
+## 运算符
+```go
++=
+对string类型， + 运算符连接字符串
 ```
 ## if
 ```go
@@ -207,12 +273,19 @@ for sum < 1000 {
 	sum += sum
 }
 
+
+// 初始化语句是可选的，初始化语句如果存在，必须是一条简单语句，即短变量声明、自增语句、赋值语句或函数调用
 for i := 0; i < 10; i++ {
 	sum += i
 }
 
 for ; sum < 1000; {
 	sum += sum
+}
+
+nums := []int{2, 3, 4}
+for _, num := range nums {
+	fmt.Println("num:", num)
 }
 ```
 ## defer
@@ -612,4 +685,9 @@ messages := make(chan string)
 go func() { messages <- "ping" }()
 // 接收管道中的信息
 msg := <-messages
+```
+## 标准库
+## strings
+```go
+strings.Join("hello", " world")
 ```
