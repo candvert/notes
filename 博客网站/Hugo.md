@@ -1,8 +1,10 @@
 - [下载](#下载)
 - [命令](#命令)
 - [layout文件夹示例](#layout文件夹示例)
+- [content文件夹示例](#content文件夹示例)
 - [基本使用](#基本使用)
 - [配置文件hugo.toml](#配置文件hugo.toml)
+- [Sections](#Sections)
 - [文件目录结构](#文件目录结构)
 - [front matter](#front%20matter)
 - [模板](#模板)
@@ -35,7 +37,7 @@ hugo new site <project_name>
 添加主题
 git submodule add https://github.com/alex-shpak/hugo-book.git themes/hugo-book
 
-添加 md 文件
+在 content 目录创建一个 md 文件
 hugo new content content/posts/my-first-post.md
 
 启动服务器
@@ -45,6 +47,30 @@ hugo server -D
 
 构建网站
 hugo
+```
+
+```go
+// archetypes 就是使用 hugo new content 命令创建新文件时填充文件内容的模板
+
+// 默认的 archetype：
++++
+date = '{{ .Date }}'
+draft = true
+title = '{{ replace .File.ContentBaseName `-` ` ` | title }}'
++++
+
+
+// 可以为不同的 content types 创建 archetype
+archetypes/
+├── default.md
+└── posts.md
+// 比如对于该命令 hugo new content posts/my-first-post.md，查找顺序为：
+// 1. archetypes/posts.md
+// 2. archetypes/default.md
+// 3. themes/my-theme/archetypes/posts.md
+// 4. themes/my-theme/archetypes/default.md
+
+// archetype 具有这些上下文：Date、File、Type、Site
 ```
 ## layout文件夹示例
 ```go
@@ -87,7 +113,6 @@ home.html 渲染主页面
 page.html 渲染普通页面
 
 section.html 渲染 section
-A section is a top-level content directory or any content directory containing an _index.md file.
 
 taxonomy.html 渲染
 term.html 渲染
@@ -97,7 +122,7 @@ _partials 渲染页面的一部分，比如 header、footer
 {{ partial "footer.html" . }}
 
 
-_markup 是 render hook template，其可以覆盖 Markdown 到 HTML 的转换
+_markup 是 render hook template，覆盖 Markdown 到 HTML 的转换
 例如在每个标题的右侧添加一个锚链接：
 <h{{ .Level }} id="{{ .Anchor }}" {{- with .Attributes.class }} class="{{ . }}" {{- end }}>
   {{ .Text }}
@@ -150,6 +175,20 @@ baseof.html 是基本模板
   这部分内容将会替换基本模板中的 "block"
 {{ end }}
 ```
+## content文件夹示例
+```go
+content
+    └── about
+    |   └── index.md  // <- https://example.org/about/
+    ├── posts
+    |   ├── firstpost.md   // <- https://example.org/posts/firstpost/
+    |   ├── happy
+    |   |   └── ness.md  // <- https://example.org/posts/happy/ness/
+    |   └── secondpost.md  // <- https://example.org/posts/secondpost/
+    └── quote
+        ├── first.md       // <- https://example.org/quote/first/
+        └── second.md      // <- https://example.org/quote/second/
+```
 ## 基本使用
 ```sh
 必须在 hugo.toml 中指定下面三项
@@ -160,7 +199,7 @@ title = 'My New Hugo Site'
 如果要使用主题，在 hugo.toml 中添加
 theme = 'hugo-book'
 
-在 content/posts 目录中添加博客，比如有 content/posts/go.md 文件，则访问 http://localhost:1313/posts/go 便可访问该博客
+然后运行 hugo server
 ```
 ## 配置文件hugo.toml
 ```yaml
@@ -171,6 +210,27 @@ theme = 'hugo-book'
 
 
 可配置的键有：HTTPCache, build, caches, cascade, contentTypes, deployment, frontmatter, imaging, languages, markup, mediaTypes, menus, minify, module, outputFormats, outputs, page, pagination, params, permalinks, privacy, related, security, segments, server, services, sitemap, taxonomies, uglyURLs
+```
+## Sections
+```sh
+一个 section 就是 content 目录的第一级目录或者任何包含 _index.md 文件的目录
+section 有祖先和后代，有列表页面
+_index.md 会生成显示所有文章列表的页面
+
+content/
+├── articles/             <-- section (top-level directory)
+│       └── article/
+│           ├── cover.jpg
+│           └── index.md
+└── products/             <-- section (top-level directory)
+    └── product/          <-- section (has _index.md file)
+        ├── benefits/     <-- section (has _index.md file)
+        │   ├── _index.md
+        │   └── benefit.md
+        └── _index.md
+
+
+articles/article 目录不是 section
 ```
 ## 文件目录结构
 ```sh
@@ -321,6 +381,19 @@ layouts/
 └── miscellaneous/
     └── contact.html  <-- renders contact.md
     └── single.html   <-- renders about.md
+```
+## 模板查找规则
+```go
+single page：常规内容页面，使用 single.html
+list page（section listings, home page, taxonomy lists, taxonomy terms）：使用 list.html
+
+Hugo 使用以下规则为页面选择模板：
+	页面种类（比如主页，404页面）
+	在 front matter 中设置的 layout
+	Output Format
+	Language，比如网站语言是法语，则 index.fr.amp.html 将胜过 index.amp.html
+	Type，在 front matter 中设置否则是 root section 的名字
+	Section
 ```
 ## 模块
 ```go
