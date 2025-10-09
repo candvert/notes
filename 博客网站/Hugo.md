@@ -1,3 +1,15 @@
+- [下载](#下载)
+- [命令](#命令)
+- [基本使用](#基本使用)
+- [hugo.toml](#hugo.toml)
+- [文件目录结构](#文件目录结构)
+- [front matter](#front%20matter)
+- [模板](#模板)
+- [如何给不同文件选择模板](#如何给不同文件选择模板)
+- [模块](#模块)
+- [hugo-book主题](#hugo-book主题)
+
+Hugo 是一个用 Go 编写的静态网站生成器。凭借其先进的模板系统和快速的资源管道，Hugo 可以在几秒钟甚至更短的时间内渲染出一个完整的网站
 ## 下载
 ```sh
 到 https://github.com/gohugoio/hugo/releases 下载
@@ -11,20 +23,30 @@ Windows 下载 hugo_extended_xxx_windows-amd64 的
 ```sh
 查看版本
 hugo version
+
 帮助
 hugo help
 hugo server --help
+
 新建项目，新建项目后要先进入项目目录进行 git init 后才能添加主题
 hugo new site <project_name>
+
 添加主题
 git submodule add https://github.com/alex-shpak/hugo-book.git themes/hugo-book
+
 添加文件
 hugo new content content/posts/my-first-post.md
+
 启动服务器
 hugo server
+-D 选项表示也渲染 front matter 中 draft = true 的文件
 hugo server -D
+
 构建网站
 hugo
+
+初始化 Hugo 模块
+hugo mod init
 ```
 ## 基本使用
 ```sh
@@ -49,7 +71,7 @@ theme = 'hugo-book'
 可配置的键有：HTTPCache, build, caches, cascade, contentTypes, deployment, frontmatter, imaging, languages, markup, mediaTypes, menus, minify, module, outputFormats, outputs, page, pagination, params, permalinks, privacy, related, security, segments, server, services, sitemap, taxonomies, uglyURLs
 ```
 ## 文件目录结构
-```
+```sh
 assets 目录包括图像、CSS、Sass、JavaScript 和 TypeScript 等资源
 config 目录包含您的站点配置，可能分为多个子目录和文件。对于配置最少的项目，项目根目录中名为 hugo.toml 的单个配置文件就足够了
 content 目录包含构成您网站内容的标记文件（通常为 Markdown）和页面资源
@@ -59,6 +81,160 @@ layouts 目录包含用于将内容、数据和资源转换为完整网站的模
 public 目录包含已发布的网站，该目录在您运行 hugo 或 hugo server 命令时生成
 static 目录包含您在构建网站时将被复制到公共目录的文件。例如：favicon.ico、robots.txt 以及用于验证网站所有权的文件。
 themes 目录包含一个或多个主题，每个主题都有自己的子目录
+```
+## front matter
+```go
+// 对于 md 文件和 toml 文件，front matter 使用 +++ 作为分隔符，位于文件顶部
+// 例如下面的 md 文件
++++
+title = "first learn hugo"
+date = '2025-10-04T21:10:01+08:00'
++++
+# 简介
+什么是 hugo
+```
+## 模板
+```go
+模板是一个文件，位于 layouts 文件夹中
+Hugo 使用 Go 的 text/template 和 html/template 包
+页面模板接收一个 Page 对象
+
+
+HTML 模板示例：
+{{ $v1 := 6 }}
+{{ $v2 := 7 }}
+<p>The product of {{ $v1 }} and {{ $v2 }} is {{ mul $v1 $v2 }}.</p>
+
+
+在模板中，点.代表当前上下文（下面代码位于 layouts/page.html）
+<h2>{{ .Title }}</h2>
+在该示例中，点代表 Page 对象，我们调用它的 Titile 方法返回 front matter 中的 title
+当前上下文可能会在模板内发生变化，比如将上下文重新绑定到另一个值或对象，例如下面的 range 和 with 块中
+<h2>{{ .Title }}</h2>
+{{ range slice "foo" "bar" }}
+  <p>{{ . }}</p>
+{{ end }}
+{{ with "baz" }}
+  <p>{{ . }}</p>
+{{ end }}
+上面代码渲染出的结果
+<h2>My Page Title</h2>
+<p>foo</p>
+<p>bar</p>
+<p>baz</p>
+在 range 和 with 块中可以使用 $ 来访问传入该模板的上下文
+{{ with "foo" }}
+  <p>{{ $.Title }} - {{ . }}</p>
+{{ end }}
+上面代码渲染出的结果
+<p>My Page Title - foo</p>
+
+通过连字符移除渲染出的空格，换行
+{{- $convertToLower := true -}}
+
+通过管道向函数或方法传递参数
+{{ strings.ToLower "Hugo" }}
+{{ "Hugo" | strings.ToLower }}
+将一个函数或方法的结果通过管道传输到另一个
+{{ strings.TrimSuffix "o" (strings.ToLower "Hugo") }}
+{{ "Hugo" | strings.ToLower | strings.TrimSuffix "o" }}
+下面两行效果相同
+{{ mul 6 (add 2 5) }}
+{{ 5 | add 2 | mul 6 }}
+
+将模板操作拆分为两行或多行
+{{ $v := or $arg1 $arg2 }}
+{{ $v := or 
+  $arg1
+  $arg2
+}}
+将原始字符串拆分为两行或更多行
+{{ $msg := "This is line one.\nThis is line two." }}
+{{ $msg := `This is line one.
+This is line two.`
+}}
+
+
+初始化变量
+在 if、range 或 with 块内初始化的变量的作用域为该块
+{{ $total := 3 }}
+对于表示切片或映射的变量，使用索引函数返回所需的值
+{{ $slice := slice "foo" "bar" "baz" }}
+{{ index $slice 2 }} → baz
+
+{{ $map := dict "a" "foo" "b" "bar" "c" "baz" }}
+{{ index $map "c" }} → baz
+不使用索引
+{{ $map := dict "a" "foo" "b" "bar" "c" "baz" }}
+{{ $map.c }}
+
+{{ $homePage := .Site.Home }}
+{{ $homePage.Title }}
+如上所示，对象和方法名称均大写
+
+
+注释
+{{/*
+This is a block comment.
+*/}}
+
+{{- /*
+This is a block comment with
+adjacent whitespace removed.
+*/ -}}
+
+
+通过如下方式渲染 HTML 注释
+{{ "<!-- I am an HTML comment. -->" | safeHTML }}
+{{ printf "<!-- This is the %s site. -->" .Site.Title | safeHTML }}
+
+
+
+
+可以在 layouts/_partials 目录中创建 partial templates
+```
+## 如何给不同文件选择模板
+```go
+// 有该目录
+content/
+├── about.md
+└── contact.md
+// about.md 文件
++++
+title = 'About'
+type = 'miscellaneous'
++++
+// contact.md 文件
++++
+layout = 'contact'
+title = 'Contact'
+type = 'miscellaneous'
++++
+// 则下面 page 文件夹下的 contact.html 会渲染 contact.md，sigle.html 会渲染 about.md
+// miscellaneous 文件夹下的文件为布局
+layouts/
+└── page/
+    └── contact.html  <-- renders contact.md
+    └── single.html   <-- renders about.md
+└── miscellaneous/
+    └── contact.html  <-- renders contact.md
+    └── single.html   <-- renders about.md
+```
+## 模块
+```go
+Hugo 模块允许你将网站功能拆分为独立、可复用的单元
+一个 Hugo 模块本质上是一个独立的单元，能够提供 Hugo 所支持的七种组件类型中的一种或多种：​​静态文件​​（static）、​​内容​​（content）、​​布局模板​​（layouts）、​​数据文件​​（data）、​​资源文件​​（assets）、​​国际化文件​​（i18n）和​​内容原型​​（archetypes）。
+你的Hugo项目本身也是一个模块。通过灵活的挂载配置，你可以将这些来自不同模块的组件组合起来，形成一个大型的虚拟联合文件系统，而无需改变原有仓库的目录结构
+
+也就是说如果我的 Hugo 项目我不想编写 i18n 或其他文件夹中的内容，我可以直接使用 github 上的
+
+
+比如使用主题模块：
+先输入该命令：hugo mod init github.com/<your_user>/<your_project>
+再在 hugo.toml 文件中添加：
+[module]
+  [[module.imports]]
+    path = 'github.com/<your_user>/<your_project>'
 ```
 ## hugo-book主题
 ```sh

@@ -33,6 +33,7 @@
 - [Channels](#Channels)
 
 
+
 - [标准库](#标准库)
 	- [strings](#strings)
 ## 程序入口
@@ -444,17 +445,21 @@ dog := struct {
 ```
 ## 方法
 ```go
+// 方法可以被声明到任意类型
+
 type rect struct {
     width, height int
 }
+// 定义 rect 类型上的方法
 func (r *rect) area() int {
     return r.width * r.height
 }
+// 定义 rect 类型上的方法
 func (r rect) perim() int {
     return 2*r.width + 2*r.height
 }
 r := rect{width: 10, height: 5}
-fmt.Println("area: ", r.area())
+fmt.Println("area: ", r.area()) // 编译器隐式地取地址调用，同 (&r).area()
 fmt.Println("perim:", r.perim())
 rp := &r
 fmt.Println("area: ", rp.area())
