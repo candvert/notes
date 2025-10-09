@@ -1,7 +1,8 @@
 - [下载](#下载)
 - [命令](#命令)
+- [layout文件夹示例](#layout文件夹示例)
 - [基本使用](#基本使用)
-- [hugo.toml](#hugo.toml)
+- [配置文件hugo.toml](#配置文件hugo.toml)
 - [文件目录结构](#文件目录结构)
 - [front matter](#front%20matter)
 - [模板](#模板)
@@ -9,7 +10,7 @@
 - [模块](#模块)
 - [hugo-book主题](#hugo-book主题)
 
-Hugo 是一个用 Go 编写的静态网站生成器。凭借其先进的模板系统和快速的资源管道，Hugo 可以在几秒钟甚至更短的时间内渲染出一个完整的网站
+Hugo 是一个用 Go 编写的静态网站生成器
 ## 下载
 ```sh
 到 https://github.com/gohugoio/hugo/releases 下载
@@ -17,7 +18,7 @@ Windows 下载 hugo_extended_xxx_windows-amd64 的
 
 解压后只需要 hugo.exe 文件
 可以将 hugo.exe 添加到 path
-也可以不添加到 path 在命令行直接用.\hugo xxx
+也可以不添加到 path 直接在命令行用.\hugo xxx
 ```
 ## 命令
 ```sh
@@ -34,7 +35,7 @@ hugo new site <project_name>
 添加主题
 git submodule add https://github.com/alex-shpak/hugo-book.git themes/hugo-book
 
-添加文件
+添加 md 文件
 hugo new content content/posts/my-first-post.md
 
 启动服务器
@@ -44,9 +45,110 @@ hugo server -D
 
 构建网站
 hugo
+```
+## layout文件夹示例
+```go
+// layouts 文件夹的功能类似于 Nextjs 的 app 文件夹，即网页的布局和内容
+// layouts 文件夹下的 html 文件和 React 的 tsx 文件相似
+// 不同之处是 hugo 使用的是 Go 模板语法，而 React 使用的是 JSX 语法
+// layouts 文件夹下的 html 文件就是 hugo 中所谓的模板
 
-初始化 Hugo 模块
-hugo mod init
+
+layouts/
+├── _markup/
+│   ├── render-image.html   <-- render hook
+│   └── render-link.html    <-- render hook
+├── _partials/
+│   ├── footer.html
+│   └── header.html
+├── _shortcodes/
+│   ├── audio.html
+│   └── video.html
+├── books/
+│   ├── page.html
+│   └── section.html
+├── films/
+│   ├── view_card.html      <-- content view
+│   ├── view_li.html        <-- content view
+│   ├── page.html
+│   └── section.html
+├── baseof.html
+├── home.html
+├── page.html
+├── section.html
+├── taxonomy.html
+└── term.html
+
+
+
+
+baseof.html 是基本模板
+home.html 渲染主页面
+page.html 渲染普通页面
+
+section.html 渲染 section
+A section is a top-level content directory or any content directory containing an _index.md file.
+
+taxonomy.html 渲染
+term.html 渲染
+
+_partials 渲染页面的一部分，比如 header、footer
+使用如下代码
+{{ partial "footer.html" . }}
+
+
+_markup 是 render hook template，其可以覆盖 Markdown 到 HTML 的转换
+例如在每个标题的右侧添加一个锚链接：
+<h{{ .Level }} id="{{ .Anchor }}" {{- with .Attributes.class }} class="{{ . }}" {{- end }}>
+  {{ .Text }}
+  <a href="#{{ .Anchor }}">#</a>
+</h{{ .Level }}>
+
+
+_shortcodes 是 shortcode template，其在 md 文件中调用而不是在其他模板文件中调用
+例如 _shortcodes/audio.html：
+{{ with resources.Get (.Get "src") }}
+  <audio controls preload="auto" src="{{ .RelPermalink }}"></audio>
+{{ end }}
+在 md 文件中调用：
+{{< audio src=/audio/test.mp3 >}}
+```
+baseof.html 是基本模板
+```go
+基本模板是可以应用于所有页面的布局
+要应用基本模板定义的布局，则必须满足：
+	必须包含至少一个 define action
+	只能包含 define action、空格和注释
+如果模板不满足所有这些条件，Hugo 将严格按照提供的内容执行，而不应用基本模板
+
+
+// baseof.html 示例文件
+// {{ block "main" . }} {{ end }} 充当占位符，其内容将会被相应的 {{ define "main" }} {{ end }} 替换
+<!DOCTYPE html>
+<html lang="{{ site.Language.LanguageCode }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  <header>
+    {{ partial "header.html" . }}
+  </header>
+  <main>
+    {{ block "main" . }}
+      会被相应的 "define" 替换
+    {{ end }}
+  </main>
+  <footer>
+    {{ partial "footer.html" . }}
+  </footer>
+</body>
+</html>
+
+
+// home.html 文件
+{{ define "main" }}
+  这部分内容将会替换基本模板中的 "block"
+{{ end }}
 ```
 ## 基本使用
 ```sh
@@ -60,7 +162,7 @@ theme = 'hugo-book'
 
 在 content/posts 目录中添加博客，比如有 content/posts/go.md 文件，则访问 http://localhost:1313/posts/go 便可访问该博客
 ```
-## hugo.toml
+## 配置文件hugo.toml
 ```yaml
 baseURL = 'https://example.org/'
 languageCode = 'en-us'
@@ -95,7 +197,7 @@ date = '2025-10-04T21:10:01+08:00'
 ```
 ## 模板
 ```go
-模板是一个文件，位于 layouts 文件夹中
+模板就是一个文件，位于 layouts 文件夹中
 Hugo 使用 Go 的 text/template 和 html/template 包
 页面模板接收一个 Page 对象
 
@@ -195,7 +297,7 @@ adjacent whitespace removed.
 ```
 ## 如何给不同文件选择模板
 ```go
-// 有该目录
+// 假如有该目录
 content/
 ├── about.md
 └── contact.md
