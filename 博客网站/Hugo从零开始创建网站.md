@@ -12,7 +12,11 @@
 - [内容视图模板](#内容视图模板)
 - [给md文件指定模板](#给md文件指定模板)
 
+- [网站标签的小图标](#网站标签的小图标)
+- [使用主题](#使用主题)
+
 大部分编写的内容不生效的情况，需要重新 ./hugo server 命令
+使用 hugo 创建网站一般使用其他人编写的主题；因为 hugo 原生支持的是 sass，不原生支持 Tailwind css
 ## 基本步骤
 在命令行输入 `./hugo new site my_project`
 创建 layouts/home.html 文件
@@ -268,3 +272,33 @@ layout = 'ok'
 learning
 // 则该 md 文件会使用 layouts/posts/ok.html 进行渲染
 ```
+## 网站标签的小图标
+```
+将 favicon.ico 放入 static 文件中便自动生效
+```
+## 使用主题
+```go
+// 使用该命令添加主题
+git submodule add https://github.com/alex-shpak/hugo-book.git themes/hugo-book
+
+
+
+// 在 hugo.toml 中添加
+theme = 'hugo-book'
+
+
+
+// 因为 hugo 的字体配置需要使用 sass，也不原生支持 Tailwind css
+// 所以使用 hugo 创建网站一般使用其他人编写的主题
+// 模板应用顺序是 layouts 目录，其次才是主题的 layouts 目录，所以可以在 layouts 目录下编写模板覆盖主题的模板
+
+
+
+
+// 好用的主题
+https://github.com/adityatelange/hugo-PaperMod
+https://github.com/alex-shpak/hugo-book
+https://github.com/CaiJimmy/hugo-theme-stack
+https://github.com/imfing/hextra
+```
+[[使用hugo-PaperMod主题]]

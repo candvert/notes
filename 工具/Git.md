@@ -37,6 +37,7 @@ ssh-keygen -t rsa -b 4096 -C "leiyue159@gmail.com"
 设置全局代理
 ```sh
 需要注意该设置默认你开启了Clash，若没有开启Clash会出错
+使用Clash Verge则端口为7897
 git config --global http.proxy http://127.0.0.1:7890
 git config --global https.proxy http://127.0.0.1:7890
 ```

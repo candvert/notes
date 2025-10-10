@@ -167,6 +167,13 @@ adjacent whitespace removed.
 ## hugo-book主题
 ```sh
 md 文件放置于 content/docs 目录下
+
+
+
+
+
+
+# hugo.toml 文件设置
 # (可选) 如果您使用Google Analytics来跟踪网站数据，请设置此项
 # 请始终将此配置项置于配置文件顶部，否则将无法正常工作
 googleAnalytics = "UA-XXXXXXXXX-X"
@@ -243,7 +250,7 @@ disableKinds = ['taxonomy', 'taxonomyTerm']
 
 
 
-
+# 可以设置的 front matter
 # Set type to 'docs' if you want to render page outside of configured section or if you render section other than 'docs'
 type = 'docs'
 
