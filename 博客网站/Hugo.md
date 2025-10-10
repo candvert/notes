@@ -1,12 +1,6 @@
 - [下载](#下载)
 - [命令](#命令)
-- [layout文件夹示例](#layout文件夹示例)
-- [content文件夹示例](#content文件夹示例)
-- [基本使用](#基本使用)
-- [配置文件hugo.toml](#配置文件hugo.toml)
-- [Sections](#Sections)
-- [文件目录结构](#文件目录结构)
-- [front matter](#front%20matter)
+- [archetypes](#archetypes)
 - [模板](#模板)
 - [如何给不同文件选择模板](#如何给不同文件选择模板)
 - [模块](#模块)
@@ -48,7 +42,7 @@ hugo server -D
 构建网站
 hugo
 ```
-
+## archetypes
 ```go
 // archetypes 就是使用 hugo new content 命令创建新文件时填充文件内容的模板
 
@@ -71,189 +65,6 @@ archetypes/
 // 4. themes/my-theme/archetypes/default.md
 
 // archetype 具有这些上下文：Date、File、Type、Site
-```
-## layout文件夹示例
-```go
-// layouts 文件夹的功能类似于 Nextjs 的 app 文件夹，即网页的布局和内容
-// layouts 文件夹下的 html 文件和 React 的 tsx 文件相似
-// 不同之处是 hugo 使用的是 Go 模板语法，而 React 使用的是 JSX 语法
-// layouts 文件夹下的 html 文件就是 hugo 中所谓的模板
-
-
-layouts/
-├── _markup/
-│   ├── render-image.html   <-- render hook
-│   └── render-link.html    <-- render hook
-├── _partials/
-│   ├── footer.html
-│   └── header.html
-├── _shortcodes/
-│   ├── audio.html
-│   └── video.html
-├── books/
-│   ├── page.html
-│   └── section.html
-├── films/
-│   ├── view_card.html      <-- content view
-│   ├── view_li.html        <-- content view
-│   ├── page.html
-│   └── section.html
-├── baseof.html
-├── home.html
-├── page.html
-├── section.html
-├── taxonomy.html
-└── term.html
-
-
-
-
-baseof.html 是基本模板
-home.html 渲染主页面
-page.html 渲染普通页面
-
-section.html 渲染 section
-
-taxonomy.html 渲染
-term.html 渲染
-
-_partials 渲染页面的一部分，比如 header、footer
-使用如下代码
-{{ partial "footer.html" . }}
-
-
-_markup 是 render hook template，覆盖 Markdown 到 HTML 的转换
-例如在每个标题的右侧添加一个锚链接：
-<h{{ .Level }} id="{{ .Anchor }}" {{- with .Attributes.class }} class="{{ . }}" {{- end }}>
-  {{ .Text }}
-  <a href="#{{ .Anchor }}">#</a>
-</h{{ .Level }}>
-
-
-_shortcodes 是 shortcode template，其在 md 文件中调用而不是在其他模板文件中调用
-例如 _shortcodes/audio.html：
-{{ with resources.Get (.Get "src") }}
-  <audio controls preload="auto" src="{{ .RelPermalink }}"></audio>
-{{ end }}
-在 md 文件中调用：
-{{< audio src=/audio/test.mp3 >}}
-```
-baseof.html 是基本模板
-```go
-基本模板是可以应用于所有页面的布局
-要应用基本模板定义的布局，则必须满足：
-	必须包含至少一个 define action
-	只能包含 define action、空格和注释
-如果模板不满足所有这些条件，Hugo 将严格按照提供的内容执行，而不应用基本模板
-
-
-// baseof.html 示例文件
-// {{ block "main" . }} {{ end }} 充当占位符，其内容将会被相应的 {{ define "main" }} {{ end }} 替换
-<!DOCTYPE html>
-<html lang="{{ site.Language.LanguageCode }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
-<head>
-  {{ partial "head.html" . }}
-</head>
-<body>
-  <header>
-    {{ partial "header.html" . }}
-  </header>
-  <main>
-    {{ block "main" . }}
-      会被相应的 "define" 替换
-    {{ end }}
-  </main>
-  <footer>
-    {{ partial "footer.html" . }}
-  </footer>
-</body>
-</html>
-
-
-// home.html 文件
-{{ define "main" }}
-  这部分内容将会替换基本模板中的 "block"
-{{ end }}
-```
-## content文件夹示例
-```go
-content
-    └── about
-    |   └── index.md  // <- https://example.org/about/
-    ├── posts
-    |   ├── firstpost.md   // <- https://example.org/posts/firstpost/
-    |   ├── happy
-    |   |   └── ness.md  // <- https://example.org/posts/happy/ness/
-    |   └── secondpost.md  // <- https://example.org/posts/secondpost/
-    └── quote
-        ├── first.md       // <- https://example.org/quote/first/
-        └── second.md      // <- https://example.org/quote/second/
-```
-## 基本使用
-```sh
-必须在 hugo.toml 中指定下面三项
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-
-如果要使用主题，在 hugo.toml 中添加
-theme = 'hugo-book'
-
-然后运行 hugo server
-```
-## 配置文件hugo.toml
-```yaml
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme = 'hugo-book'
-
-
-可配置的键有：HTTPCache, build, caches, cascade, contentTypes, deployment, frontmatter, imaging, languages, markup, mediaTypes, menus, minify, module, outputFormats, outputs, page, pagination, params, permalinks, privacy, related, security, segments, server, services, sitemap, taxonomies, uglyURLs
-```
-## Sections
-```sh
-一个 section 就是 content 目录的第一级目录或者任何包含 _index.md 文件的目录
-section 有祖先和后代，有列表页面
-_index.md 会生成显示所有文章列表的页面
-
-content/
-├── articles/             <-- section (top-level directory)
-│       └── article/
-│           ├── cover.jpg
-│           └── index.md
-└── products/             <-- section (top-level directory)
-    └── product/          <-- section (has _index.md file)
-        ├── benefits/     <-- section (has _index.md file)
-        │   ├── _index.md
-        │   └── benefit.md
-        └── _index.md
-
-
-articles/article 目录不是 section
-```
-## 文件目录结构
-```sh
-assets 目录包括图像、CSS、Sass、JavaScript 和 TypeScript 等资源
-config 目录包含您的站点配置，可能分为多个子目录和文件。对于配置最少的项目，项目根目录中名为 hugo.toml 的单个配置文件就足够了
-content 目录包含构成您网站内容的标记文件（通常为 Markdown）和页面资源
-data 目录包含用于扩充内容、配置、本地化和导航的数据文件（JSON、TOML、YAML 或 XML）
-i18n 目录包含多语言网站的翻译表
-layouts 目录包含用于将内容、数据和资源转换为完整网站的模板
-public 目录包含已发布的网站，该目录在您运行 hugo 或 hugo server 命令时生成
-static 目录包含您在构建网站时将被复制到公共目录的文件。例如：favicon.ico、robots.txt 以及用于验证网站所有权的文件。
-themes 目录包含一个或多个主题，每个主题都有自己的子目录
-```
-## front matter
-```go
-// 对于 md 文件和 toml 文件，front matter 使用 +++ 作为分隔符，位于文件顶部
-// 例如下面的 md 文件
-+++
-title = "first learn hugo"
-date = '2025-10-04T21:10:01+08:00'
-+++
-# 简介
-什么是 hugo
 ```
 ## 模板
 ```go
@@ -381,19 +192,6 @@ layouts/
 └── miscellaneous/
     └── contact.html  <-- renders contact.md
     └── single.html   <-- renders about.md
-```
-## 模板查找规则
-```go
-single page：常规内容页面，使用 single.html
-list page（section listings, home page, taxonomy lists, taxonomy terms）：使用 list.html
-
-Hugo 使用以下规则为页面选择模板：
-	页面种类（比如主页，404页面）
-	在 front matter 中设置的 layout
-	Output Format
-	Language，比如网站语言是法语，则 index.fr.amp.html 将胜过 index.amp.html
-	Type，在 front matter 中设置否则是 root section 的名字
-	Section
 ```
 ## 模块
 ```go
