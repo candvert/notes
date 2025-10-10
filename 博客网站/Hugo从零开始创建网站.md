@@ -9,6 +9,10 @@
 - [`_partials`](#`_partials`)
 - [`_markup`](#`_markup`)
 - [`_shortcodes`](#`_shortcodes`)
+- [内容视图模板](#内容视图模板)
+- [给md文件指定模板](#给md文件指定模板)
+
+大部分编写的内容不生效的情况，需要重新 ./hugo server 命令
 ## 基本步骤
 在命令行输入 `./hugo new site my_project`
 创建 layouts/home.html 文件
@@ -235,4 +239,32 @@ layouts/
 
 // 则可以在 md 文件中调用：
 {{< audio src=/audio/test.mp3 >}}
+```
+## 内容视图模板
+```go
+// 内容视图模板（content view template）和 partial 模板相似，不过其可以继承上下文
+
+// 假设 layouts/page.html
+{{ define "main" }}
+  {{ .Render "view_card" }}
+{{ end }}
+
+// 创建 layouts/view_card.html
+<div>
+  {{ .Content }}
+  <p>view_cadsadfrd</p>
+</div>
+
+// 也就是说内容视图模板可以使用点.访问上下文，而 partial 模板不行
+```
+## 给md文件指定模板
+```go
+// 使用 front matter 中的 layout 指定模板
+// 假设有 content/posts/learn.md 文件
++++
+layout = 'ok'
++++
+# learn
+learning
+// 则该 md 文件会使用 layouts/posts/ok.html 进行渲染
 ```

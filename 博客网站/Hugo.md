@@ -1,9 +1,7 @@
 - [下载](#下载)
 - [命令](#命令)
 - [archetypes](#archetypes)
-- [模板](#模板)
-- [如何给不同文件选择模板](#如何给不同文件选择模板)
-- [模块](#模块)
+- [模板语法](#模板语法)
 - [hugo-book主题](#hugo-book主题)
 
 Hugo 是一个用 Go 编写的静态网站生成器
@@ -66,7 +64,7 @@ archetypes/
 
 // archetype 具有这些上下文：Date、File、Type、Site
 ```
-## 模板
+## 模板语法
 ```go
 模板就是一个文件，位于 layouts 文件夹中
 Hugo 使用 Go 的 text/template 和 html/template 包
@@ -165,49 +163,6 @@ adjacent whitespace removed.
 
 
 可以在 layouts/_partials 目录中创建 partial templates
-```
-## 如何给不同文件选择模板
-```go
-// 假如有该目录
-content/
-├── about.md
-└── contact.md
-// about.md 文件
-+++
-title = 'About'
-type = 'miscellaneous'
-+++
-// contact.md 文件
-+++
-layout = 'contact'
-title = 'Contact'
-type = 'miscellaneous'
-+++
-// 则下面 page 文件夹下的 contact.html 会渲染 contact.md，sigle.html 会渲染 about.md
-// miscellaneous 文件夹下的文件为布局
-layouts/
-└── page/
-    └── contact.html  <-- renders contact.md
-    └── single.html   <-- renders about.md
-└── miscellaneous/
-    └── contact.html  <-- renders contact.md
-    └── single.html   <-- renders about.md
-```
-## 模块
-```go
-Hugo 模块允许你将网站功能拆分为独立、可复用的单元
-一个 Hugo 模块本质上是一个独立的单元，能够提供 Hugo 所支持的七种组件类型中的一种或多种：​​静态文件​​（static）、​​内容​​（content）、​​布局模板​​（layouts）、​​数据文件​​（data）、​​资源文件​​（assets）、​​国际化文件​​（i18n）和​​内容原型​​（archetypes）。
-你的Hugo项目本身也是一个模块。通过灵活的挂载配置，你可以将这些来自不同模块的组件组合起来，形成一个大型的虚拟联合文件系统，而无需改变原有仓库的目录结构
-
-也就是说如果我的 Hugo 项目我不想编写 i18n 或其他文件夹中的内容，我可以直接使用 github 上的
-
-
-比如使用主题模块：
-先输入该命令：hugo mod init github.com/<your_user>/<your_project>
-再在 hugo.toml 文件中添加：
-[module]
-  [[module.imports]]
-    path = 'github.com/<your_user>/<your_project>'
 ```
 ## hugo-book主题
 ```sh
