@@ -14,6 +14,7 @@
 
 - [网站标签的小图标](#网站标签的小图标)
 - [使用主题](#使用主题)
+- [设置网站为中文网站](#设置网站为中文网站)
 
 大部分编写的内容不生效的情况，需要重新 ./hugo server 命令
 使用 hugo 创建网站一般使用其他人编写的主题；因为 hugo 原生支持的是 sass，不原生支持 Tailwind css
@@ -279,7 +280,7 @@ learning
 ## 使用主题
 ```go
 // 使用该命令添加主题
-git submodule add https://github.com/alex-shpak/hugo-book.git themes/hugo-book
+git submodule add https://github.com/adityatelange/hugo-PaperMod themes/hugo-PaperMod
 
 
 
@@ -302,3 +303,8 @@ https://github.com/CaiJimmy/hugo-theme-stack
 https://github.com/imfing/hextra
 ```
 [[使用hugo-PaperMod主题]]
+## 设置网站为中文网站
+```toml
+defaultContentLanguage = 'zh'
+languageCode = 'zh-cn'
+```

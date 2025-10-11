@@ -25,6 +25,8 @@ hugo server --help
 
 新建项目，新建项目后要先进入项目目录进行 git init 后才能添加主题
 hugo new site <project_name>
+配置文件使用 yaml 格式
+hugo new site hug --format yaml
 
 添加主题
 git submodule add https://github.com/alex-shpak/hugo-book.git themes/hugo-book
