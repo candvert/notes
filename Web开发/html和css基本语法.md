@@ -16,6 +16,7 @@
 	- [选择器](#选择器)
 	- [css3新增选择器](#css3新增选择器)
 	- [属性](#属性)
+	- [最高优先级](#最高优先级)
 	- [flex布局](#flex布局)
 	- [媒体查询](#媒体查询)
 	- [实现弹跳动画效果](#实现弹跳动画效果)
@@ -723,6 +724,13 @@ position: fixed;
 transition: width 0.2s ease 0.1s;
 transition: all 0.2s linear 0.1s;
 transition: width 0.2s, height 0.1s;	/* 过渡width和height两个属性 */
+```
+## 最高优先级
+```css
+/* 用 !important 表示最高优先级 */
+html {
+    font-size: 10px !important;
+}
 ```
 ## flex布局
 ```css

@@ -1,5 +1,7 @@
 
 - [md文件的front matter](#md文件的front%20matter)
+- [配置文件config.yml中的一些选项](#配置文件config.yml中的一些选项)
+- [添加自定义css](#添加自定义css)
 - [posts目录下要有`_index.md`文件](#posts目录下要有`_index.md`文件)
 - [切换主题](#切换主题)
 - [删除切换主题按钮](#删除切换主题按钮)
@@ -150,6 +152,8 @@ params:
   ShowCodeCopyButtons: false
   disableSpecial1stPost: false
   disableScrollToTop: false
+  ShowPageNums: true
+  ShowAllPagesInArchive: true
 
 
 
@@ -174,6 +178,26 @@ params:
     text: "Home"
     icon: /a.png
     iconHeight: 35
+
+
+# 代码高亮
+# 使用 Hugo 的代码高亮器 chroma
+params:
+  assets:
+    disableHLJS: true # 禁用 PaperMod 主题的 Highlight.js
+markup:
+  highlight:
+    noClasses: false
+    lineNos: true # 显示行号
+	lineNoStart: 1 # 起始行号
+    style: monokai
+```
+## 添加自定义css
+```go
+// 创建 assets/css/extended/custom.css
+code {
+	font-size: 1em !important;
+}
 ```
 ## posts目录下要有`_index.md`文件
 ```go
@@ -296,6 +320,9 @@ params:
 pagination:
   disableAliases: false
   pagerSize: 5
+
+params:
+  ShowPageNums: true # 显示一共有多少页
 ```
 ## 网站底部的版权声明
 ```yaml

@@ -22,6 +22,7 @@
 - [match语句](#match语句)
 - [所有权ownership](#所有权ownership)
 - [String和&str](#String和&str)
+- [原始字符串](#原始字符串)
 - [枚举](#枚举)
 - [Option枚举](#Option枚举)
 - [函数](#函数)
@@ -559,6 +560,13 @@ let s = String::from("hello world");
 let world = &s[6..];
 ```
 ![[rust_2.svg]]
+## 原始字符串
+```rust
+// 原始字符串以 r#" 开头，以 "# 结尾
+let a = r#"hi
+hello
+good"#;
+```
 ## 枚举
 ```rust
 // 定义
