@@ -1,5 +1,6 @@
-- [md文件的front matter示例](#md文件的front%20matter示例)
-- [md文件的front matter示例](#md文件的front%20matter示例)
+
+- [md文件的front matter](#md文件的front%20matter)
+- [posts目录下要有`_index.md`文件](#posts目录下要有`_index.md`文件)
 - [切换主题](#切换主题)
 - [删除切换主题按钮](#删除切换主题按钮)
 - [设置网站为中文网站](#设置网站为中文网站)
@@ -10,50 +11,18 @@
 - [网站底部的版权声明](#网站底部的版权声明)
 - [归档页面](#归档页面)
 - [搜索页面](#搜索页面)
+- [在每篇文章底部显示分享按钮](#在每篇文章底部显示分享按钮)
+- [显示阅读时间](#显示阅读时间)
+- [每篇文章显示目录](#每篇文章显示目录)
+- [每篇文章显示BreadCrumb](#每篇文章显示BreadCrumb)
+- [每篇文章的编辑链接](#每篇文章的编辑链接)
+- [每篇文章底部添加上一个/下一个按钮](#每篇文章底部添加上一个/下一个按钮)
+- [可以复制代码](#可以复制代码)
+- [添加评论功能](#添加评论功能)
 - [主页设置为Profile模式](#主页设置为Profile模式)
 
 官方示例网站：[https://adityatelange.github.io/hugo-PaperMod/](https://adityatelange.github.io/hugo-PaperMod/)
-## md文件的front matter示例
-```go
----
-title: "My 1st post"
-date: 2024-09-15T11:30:03+00:00
-# weight: 1
-# aliases: ["/first"]
-tags: ["first"]
-author: "Me"
-# author: ["Me", "You"] # multiple authors
-showToc: true
-TocOpen: false
-draft: false
-hidemeta: false
-comments: false
-description: "Desc Text."
-canonicalURL: "https://canonical.url/to/page"
-disableHLJS: true # to disable highlightjs
-disableShare: false
-disableHLJS: false
-hideSummary: false
-searchHidden: true
-ShowReadingTime: true
-ShowBreadCrumbs: true
-ShowPostNavLinks: true
-ShowWordCount: true
-ShowRssButtonInSectionTermList: true
-UseHugoToc: true
-cover:
-    image: "<image path/url>" # image path/url
-    alt: "<alt text>" # alt text
-    caption: "<text>" # display caption under cover
-    relative: false # when using page bundles set this to true
-    hidden: true # only hide on current single page
-editPost:
-    URL: "https://github.com/<path_to_repo>/content"
-    Text: "Suggest Changes" # edit text
-    appendFilePath: true # to append file path to Edit link
----
-```
-
+## md文件的front matter
 ```go
 // 标题
 title: "My 1st post"
@@ -86,25 +55,160 @@ ShowReadingTime: true
 hidemeta: true
 
 
+// 摘要
+description: "Desc Text."
+
 // 隐藏摘要
 hideSummary: true
 
-
+// 显示 BreadCrumbs
 ShowBreadCrumbs: true
 
 
 // 显示单词数
 ShowWordCount: true
 
+
+// 永久的重定向链接，当访问 yoursite.com/first 时会重定向到该博客的当前 URL
+aliases: ["/first"]
+
 // 文档封面
 cover:
     image: "/images/a.png"
-    alt: "md file"
+    alt: "md file" # alt text
     caption: "<text>" # display caption under cover
     relative: false # when using page bundles set this to true
     hidden: true # only hide on current single page
 	responsiveImages: false # optional
 	linkFullImages: true # optional
+
+
+// 显示编辑链接
+editPost:
+    URL: "https://github.com/<path_to_repo>/content"
+    Text: "Suggest Changes" # edit text
+    appendFilePath: true # to append file path to Edit link
+
+
+// 将帖子固定/显示在列表顶部
+weight: 1
+
+// 显示目录
+showToc: true
+// 目录默认关闭
+TocOpen: false
+
+// 显示如 Disqus 等的评论区，需要额外设置，详见“添加评论功能”部分
+comments: true
+
+// 禁用 highlight.js 代码高亮
+disableHLJS: true
+
+// 禁止分享
+disableShare: false
+
+// 当前文章的内容不参与搜索
+searchHidden: true
+
+
+// 添加上一篇/下一篇帖子建议
+ShowPostNavLinks: true
+
+// 当前文章是否为草稿
+draft: false
+
+// 显示 RSS 按钮
+ShowRssButtonInSectionTermList: true
+
+// 使用 Hugo 目录，一般不使用该选项
+UseHugoToc: true
+
+// 搜索引擎 SEO 优化
+canonicalURL: "https://canonical.url/to/page"
+```
+## 配置文件config.yml中的一些选项
+```yaml
+# 这些选项也可以在front matter中设置，front matter设置的优先级更高
+params:
+  ShowReadingTime: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowWordCount: true
+  ShowRssButtonInSectionTermList: true
+  UseHugoToc: true
+  comments: true
+  hidemeta: false
+  hideSummary: false
+  showtoc: false
+  tocopen: false
+
+
+
+# 配置文件中独有的
+params:
+  ShowShareButtons: true
+  ShowCodeCopyButtons: false
+  disableSpecial1stPost: false
+  disableScrollToTop: false
+
+
+
+# 搜索页面的相关设置
+params:
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
+    keys: ["title", "permalink", "summary", "content"]
+
+
+
+
+# 顶部导航栏左侧的图标
+params:
+  label:
+    text: "Home"
+    icon: /a.png
+    iconHeight: 35
+```
+## posts目录下要有`_index.md`文件
+```go
+content/
+├── posts/
+│       ├── _index.md
+│       ├── rust/
+│       │   └── learnRust.md
+│   	└── lua/
+│           └── learnLua.md
+├── archives.md     // 实现归档页面
+└── search.md       // 实现搜索页面
+
+
+
+// _index.md 文件内容
+---
+title: "index"
+---
+
+// archives.md 文件内容
+---
+title: "Archive"
+layout: "archives"
+url: "/archives/"
+summary: archives
+---
+
+// search.md 文件内容
+---
+title: "Search"
+layout: "search"
+summary: "search"
+placeholder: "placeholder text in search input box"
+---
 ```
 ## 切换主题
 ```yml
@@ -130,9 +234,9 @@ params:
     Title: "Welcome"
     Content: "Welcome to demo page of Hugo's theme PaperMod!"
 ```
-## posts目录下要有`_index.md`文件
 ## 顶部导航栏右侧
 ```yaml
+# weight 的作用是控制条目的位置
 languages:
   zh:
     languageName: ":zh:"
@@ -144,7 +248,7 @@ languages:
     menu:
       main:
         - name: 归档
-          url: archives
+          url: archives/
           weight: 5
         - name: 搜索
           url: search/
@@ -154,6 +258,21 @@ languages:
           weight: 10
         - name: Github
           url: https://github.com/adityatelange/hugo-PaperMod/wiki/
+
+
+
+# 不设置多语言的话可以直接这样设置
+menu:
+  main:
+    - name: 归档
+      url: archives/
+      weight: 5
+    - name: 搜索
+      url: search/
+      weight: 10
+    - name: 标签
+      url: tags/
+      weight: 10
 ```
 ## 主页欢迎内容下面的图标
 ```yaml
@@ -238,7 +357,7 @@ params:
   ShowBreadCrumbs: true
 
 
-# 在front matter中禁止
+# 对于每个 md 文档可在front matter中禁止
 # ShowBreadCrumbs: false
 ```
 ## 每篇文章的编辑链接
@@ -258,12 +377,12 @@ editPost:
   appendFilePath: true # to append file path to Edit link
 ---
 ```
-## 每篇文章添加上一个/下一个按钮
+## 每篇文章底部添加上一个/下一个按钮
 ```yaml
 params:
   ShowPostNavLinks: true
 ```
-## 复制代码按钮
+## 可以复制代码
 ```yaml
 params:
   ShowCodeCopyButtons: true
@@ -302,6 +421,12 @@ services:
   disqus:
     shortname: <your_shortname>
 ```
+对于每个 md 文档可以在 front matter 中设置是否开启评论
+```go
+---
+comments: false
+---
+```
 ## 主页设置为Profile模式
 ```yaml
 params:
@@ -324,28 +449,4 @@ params:
       url: "<link>"
     - name: "<platform 2>"
       url: "<link2>"
-```
-## 配置文件和front matter都可以设置的
-```yaml
-# front matter设置的优先级更高
-# 如果front matter没有设置，则使用配置文件的设置
-params:
-  ShowReadingTime: true
-  ShowPostNavLinks: true
-  ShowBreadCrumbs: true
-  ShowWordCount: true
-  ShowRssButtonInSectionTermList: true
-  UseHugoToc: true
-  comments: false
-  hidemeta: false
-  hideSummary: false
-  showtoc: false
-  tocopen: false
-
-
-
-disableScrollToTop: false
-disableSpecial1stPost: false
-ShowCodeCopyButtons: false
-ShowShareButtons: true
 ```
