@@ -308,3 +308,5 @@ https://github.com/imfing/hextra
 defaultContentLanguage = 'zh'
 languageCode = 'zh-cn'
 ```
+## 部署到github上
+步骤：[https://gohugo.io/host-and-deploy/host-on-github-pages/#procedure](https://gohugo.io/host-and-deploy/host-on-github-pages/#procedure)
