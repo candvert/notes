@@ -24,6 +24,7 @@
 - [主页设置为Profile模式](#主页设置为Profile模式)
 
 官方示例网站：[https://adityatelange.github.io/hugo-PaperMod/](https://adityatelange.github.io/hugo-PaperMod/)
+Hugo 的 css 是使用管道函数处理的，或者直接在模板中使用 <link></link> 引入 css 文件
 ## md文件的front matter
 ```go
 // 标题

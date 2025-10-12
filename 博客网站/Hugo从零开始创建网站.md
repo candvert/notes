@@ -18,6 +18,7 @@
 
 大部分编写的内容不生效的情况，需要重新 ./hugo server 命令
 使用 hugo 创建网站一般使用其他人编写的主题；因为 hugo 原生支持的是 sass，不原生支持 Tailwind css
+Hugo 的 css 是使用管道函数处理的，或者直接在模板中使用 <link></link> 引入 css 文件
 ## 基本步骤
 在命令行输入 `./hugo new site my_project`
 创建 layouts/home.html 文件
@@ -303,6 +304,7 @@ https://github.com/CaiJimmy/hugo-theme-stack
 https://github.com/imfing/hextra
 ```
 [[使用hugo-PaperMod主题]]
+[[使用hugo-book主题]]
 ## 设置网站为中文网站
 ```toml
 defaultContentLanguage = 'zh'
