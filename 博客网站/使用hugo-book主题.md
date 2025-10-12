@@ -15,7 +15,7 @@ content/docs 目录下的文件夹中要有 `_index.md` 文件才能将该文件
 
 可以在 front matter 中设置 title 和 weight 来调整其在树状菜单中显示的标题和顺序
 
-评价：该主题可设置内容极少，懒得折腾的话可用，使用推荐配置即可
+评价：该主题可设置内容极少，美观性一般，懒得折腾的话可以使用，使用推荐配置即可
 ## hugo.toml推荐配置
 ```toml
 baseURL = 'https://example.org/'

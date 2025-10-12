@@ -1,3 +1,4 @@
+- [推荐配置](#推荐配置)
 
 - [md文件的front matter](#md文件的front%20matter)
 - [配置文件config.yml中的一些选项](#配置文件config.yml中的一些选项)
@@ -24,7 +25,127 @@
 - [主页设置为Profile模式](#主页设置为Profile模式)
 
 官方示例网站：[https://adityatelange.github.io/hugo-PaperMod/](https://adityatelange.github.io/hugo-PaperMod/)
-Hugo 的 css 是使用管道函数处理的，或者直接在模板中使用 <link></link> 引入 css 文件
+使用该主题记得用 `hugo new site <project_name> --format yaml` 命令来生成项目
+评价：该主题是 Star 数最多的，自定义选项较多，使用推荐配置即可
+## 推荐配置
+```go
+// config.yml 文件配置
+baseURL: https://candvert.github.io/
+title: Candvert博客
+theme: ["hugo-PaperMod"]
+
+defaultContentLanguage: "zh"
+languageCode: "zh-cn"
+
+copyright: "© [Candvert](https://github.com/candvert)"
+
+pagination:
+  disableAliases: false
+  pagerSize: 5
+
+params:
+  defaultTheme: auto
+
+  ShowReadingTime: true
+  ShowBreadCrumbs: true
+  ShowWordCount: true
+  ShowPostNavLinks: true
+  ShowCodeCopyButtons: true
+  ShowPageNums: true
+  showtoc: true
+
+  comments: true
+
+  homeInfoParams:
+    Title: "欢迎"
+    Content: "开始阅读文章吧！"
+
+  socialIcons:
+    - name: bilibili
+      title: View bilibili
+      url: "https://bilibili.com/"
+    - name: github
+      title: View Source on Github
+      url: "https://github.com/candvert"
+
+  label:
+    icon: /a.jpg
+    iconHeight: 35
+
+  assets:
+    disableHLJS: true
+
+markup:
+  highlight:
+    noClasses: false
+    lineNos: true
+    style: monokai
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+services:
+  disqus:
+    shortname: candvert
+
+menu:
+  main:
+    - name: 归档
+      url: archives
+      weight: 5
+    - name: 搜索
+      url: search/
+      weight: 10
+    - name: 标签
+      url: tags/
+      weight: 10
+    - name: Github
+      url: https://github.com/adityatelange/hugo-PaperMod/wiki/
+
+caches:
+  images:
+    dir: :cacheDir/images
+
+
+
+
+// 普通 md 文件配置
+---
+title: "Bun"
+date: 2024-09-15
+tags: ["Web"]
+description: "bun简介"
+---
+
+// content/posts/_index.md
+---
+title: "index"
+---
+
+// content/archives.md
+---
+title: "Archive"
+layout: "archives"
+url: "/archives/"
+summary: archives
+---
+
+// content/search.md
+---
+title: "Search"
+layout: "search"
+summary: "search"
+placeholder: "placeholder text in search input box"
+---
+
+// assets/css/extended/custom.css
+code {
+	font-size: 1em !important;
+}
+```
 ## md文件的front matter
 ```go
 // 标题
@@ -38,25 +159,22 @@ date: 2024-09-15T11:30:03-02:00
 // 11:30:03​​ 是时间部分
 // -02:00 是时区偏移量，表示比协调世界时（UTC）晚2小时
 
-
+// 将帖子固定/显示在列表顶部
+weight: 1
 
 // 作者
 author: "Me"
 // 多作者
 author: ["Me", "You"]
 
-
 // 标签
 tags: ["first"]
-
 
 // 显示阅读时间
 ShowReadingTime: true
 
-
 // 隐藏 2024年9月26日·1 分钟·2 字·Me 部分
 hidemeta: true
-
 
 // 摘要
 description: "Desc Text."
@@ -67,10 +185,8 @@ hideSummary: true
 // 显示 BreadCrumbs
 ShowBreadCrumbs: true
 
-
 // 显示单词数
 ShowWordCount: true
-
 
 // 永久的重定向链接，当访问 yoursite.com/first 时会重定向到该博客的当前 URL
 aliases: ["/first"]
@@ -85,16 +201,11 @@ cover:
 	responsiveImages: false # optional
 	linkFullImages: true # optional
 
-
 // 显示编辑链接
 editPost:
     URL: "https://github.com/<path_to_repo>/content"
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
-
-
-// 将帖子固定/显示在列表顶部
-weight: 1
 
 // 显示目录
 showToc: true
@@ -113,7 +224,6 @@ disableShare: false
 // 当前文章的内容不参与搜索
 searchHidden: true
 
-
 // 添加上一篇/下一篇帖子建议
 ShowPostNavLinks: true
 
@@ -123,7 +233,7 @@ draft: false
 // 显示 RSS 按钮
 ShowRssButtonInSectionTermList: true
 
-// 使用 Hugo 目录，一般不使用该选项
+// 使用 Hugo 目录
 UseHugoToc: true
 
 // 搜索引擎 SEO 优化
@@ -145,18 +255,31 @@ params:
   showtoc: false
   tocopen: false
 
-
-
 # 配置文件中独有的
 params:
   ShowShareButtons: true
-  ShowCodeCopyButtons: false
+  ShowCodeCopyButtons: true
   disableSpecial1stPost: false
-  disableScrollToTop: false
+  disableScrollToTop: true
   ShowPageNums: true
   ShowAllPagesInArchive: true
 
+# 顶部导航栏左侧的图标
+params:
+  label:
+    icon: /a.png
+    iconHeight: 35
 
+# 使用 Hugo 的代码高亮器 chroma
+params:
+  assets:
+    disableHLJS: true # 禁用 PaperMod 主题的 Highlight.js
+markup:
+  highlight:
+    noClasses: false
+    lineNos: true # 显示行号
+	lineNoStart: 1 # 起始行号
+    style: monokai
 
 # 搜索页面的相关设置
 params:
@@ -169,29 +292,6 @@ params:
     minMatchCharLength: 0
     limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
     keys: ["title", "permalink", "summary", "content"]
-
-
-
-
-# 顶部导航栏左侧的图标
-params:
-  label:
-    text: "Home"
-    icon: /a.png
-    iconHeight: 35
-
-
-# 代码高亮
-# 使用 Hugo 的代码高亮器 chroma
-params:
-  assets:
-    disableHLJS: true # 禁用 PaperMod 主题的 Highlight.js
-markup:
-  highlight:
-    noClasses: false
-    lineNos: true # 显示行号
-	lineNoStart: 1 # 起始行号
-    style: monokai
 ```
 ## 添加自定义css
 ```go

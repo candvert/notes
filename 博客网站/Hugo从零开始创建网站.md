@@ -15,10 +15,13 @@
 - [网站标签的小图标](#网站标签的小图标)
 - [使用主题](#使用主题)
 - [设置网站为中文网站](#设置网站为中文网站)
+- [部署到github上](#部署到github上)
 
-大部分编写的内容不生效的情况，需要重新 ./hugo server 命令
+大部分编写的内容不生效的情况，需要重新运行 ./hugo server 命令
+静态文件放在 static 目录下
 使用 hugo 创建网站一般使用其他人编写的主题；因为 hugo 原生支持的是 sass，不原生支持 Tailwind css
-Hugo 的 css 是使用管道函数处理的，或者直接在模板中使用 <link></link> 引入 css 文件
+Hugo 中并一个没有像 Nextjs 的 global.css 的文件（global.css 用于定义应用于整个应用程序的全局 CSS 样式规则）
+Hugo 的 css 是使用管道函数处理的，或者直接在模板中使用 `<link></link>` 引入 css 文件
 ## 基本步骤
 在命令行输入 `./hugo new site my_project`
 创建 layouts/home.html 文件
@@ -275,7 +278,7 @@ learning
 // 则该 md 文件会使用 layouts/posts/ok.html 进行渲染
 ```
 ## 网站标签的小图标
-```
+```go
 将 favicon.ico 放入 static 文件中便自动生效
 ```
 ## 使用主题
@@ -305,6 +308,7 @@ https://github.com/imfing/hextra
 ```
 [[使用hugo-PaperMod主题]]
 [[使用hugo-book主题]]
+[[使用hugo-theme-stack主题]]
 ## 设置网站为中文网站
 ```toml
 defaultContentLanguage = 'zh'
