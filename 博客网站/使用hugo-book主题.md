@@ -31,6 +31,7 @@ disableKinds = ['taxonomy']
   BookTheme = 'auto'
   BookLogo = '/a.jpg'
   BookFavicon = '/a.jpg'
+  # BookSearch = false
 ```
 ## `_index.md`文件推荐配置
 ```go

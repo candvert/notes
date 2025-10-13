@@ -1,9 +1,9 @@
 - [推荐配置](#推荐配置)
+- [目录结构](#目录结构)
 
 - [md文件的front matter](#md文件的front%20matter)
-- [配置文件config.yml中的一些选项](#配置文件config.yml中的一些选项)
+- [配置文件hugo.yaml中的一些选项](#配置文件hugo.yaml中的一些选项)
 - [添加自定义css](#添加自定义css)
-- [posts目录下要有`_index.md`文件](#posts目录下要有`_index.md`文件)
 - [切换主题](#切换主题)
 - [删除切换主题按钮](#删除切换主题按钮)
 - [设置网站为中文网站](#设置网站为中文网站)
@@ -29,7 +29,7 @@
 评价：该主题是 Star 数最多的，自定义选项较多，使用推荐配置即可
 ## 推荐配置
 ```go
-// config.yml 文件配置
+// hugo.yaml 文件配置
 baseURL: https://candvert.github.io/
 title: Candvert博客
 theme: ["hugo-PaperMod"]
@@ -52,6 +52,7 @@ params:
   ShowPostNavLinks: true
   ShowCodeCopyButtons: true
   ShowPageNums: true
+  ShowRssButtonInSectionTermList: true
   showtoc: true
 
   comments: true
@@ -146,6 +147,43 @@ code {
 	font-size: 1em !important;
 }
 ```
+## 目录结构
+```go
+// md 文件都放在 posts 目录下
+// posts 目录下要有 _index.md 文件
+content/
+├── posts/
+│       ├── _index.md
+│       ├── rust/
+│       │   └── learnRust.md
+│   	└── lua/
+│           └── learnLua.md
+├── archives.md     // 实现归档页面
+└── search.md       // 实现搜索页面
+
+
+
+// _index.md 文件内容
+---
+title: "index"
+---
+
+// archives.md 文件内容
+---
+title: "Archive"
+layout: "archives"
+url: "/archives/"
+summary: archives
+---
+
+// search.md 文件内容
+---
+title: "Search"
+layout: "search"
+summary: "search"
+placeholder: "placeholder text in search input box"
+---
+```
 ## md文件的front matter
 ```go
 // 标题
@@ -230,7 +268,7 @@ ShowPostNavLinks: true
 // 当前文章是否为草稿
 draft: false
 
-// 显示 RSS 按钮
+// 归档页面显示 RSS 按钮
 ShowRssButtonInSectionTermList: true
 
 // 使用 Hugo 目录
@@ -239,7 +277,7 @@ UseHugoToc: true
 // 搜索引擎 SEO 优化
 canonicalURL: "https://canonical.url/to/page"
 ```
-## 配置文件config.yml中的一些选项
+## 配置文件hugo.yaml中的一些选项
 ```yaml
 # 这些选项也可以在front matter中设置，front matter设置的优先级更高
 params:
@@ -299,41 +337,6 @@ params:
 code {
 	font-size: 1em !important;
 }
-```
-## posts目录下要有`_index.md`文件
-```go
-content/
-├── posts/
-│       ├── _index.md
-│       ├── rust/
-│       │   └── learnRust.md
-│   	└── lua/
-│           └── learnLua.md
-├── archives.md     // 实现归档页面
-└── search.md       // 实现搜索页面
-
-
-
-// _index.md 文件内容
----
-title: "index"
----
-
-// archives.md 文件内容
----
-title: "Archive"
-layout: "archives"
-url: "/archives/"
-summary: archives
----
-
-// search.md 文件内容
----
-title: "Search"
-layout: "search"
-summary: "search"
-placeholder: "placeholder text in search input box"
----
 ```
 ## 切换主题
 ```yml
@@ -469,7 +472,7 @@ params:
   ShowShareButtons: true
 ```
 ## 显示阅读时间
-```
+```yaml
 params:
   ShowReadingTime: true
 ```
