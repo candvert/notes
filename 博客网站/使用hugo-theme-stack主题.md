@@ -1,37 +1,116 @@
+- [推荐配置](#推荐配置)
+- [目录结构](#目录结构)
+
+- [front matter](#front%20matter)
 - [hugo.yaml](#hugo.yaml)
+- [网页左侧上半部分的内容](#网页左侧上半部分的内容)
+- [网页右侧的内容](#网页右侧的内容)
+- [设置主题](#设置主题)
 - [设置网站为中文网站](#设置网站为中文网站)
 - [分页功能](#分页功能)
 - [网站底部的版权声明](#网站底部的版权声明)
+- [日期格式](#日期格式)
+- [评论功能](#评论功能)
+- [多语言](#多语言)
+- [自定义模板](#自定义模板)
 
 官网示例网站：[https://dev.stack.jimmycai.com/](https://dev.stack.jimmycai.com/)
-md 文件都放在 post 目录下
-## 目录结构
+md 文件都放在 content/post 目录下
+`content/_index.md` 和 content/page 目录下的 `index.md` 会显示为网页左侧的菜单
+## 推荐配置
 ```go
-content/
-├── post/
-│       ├── Javascript.md
-│       ├── Typescript.md
-│       ├── rust/
-│       │   └── learnRust.md
-│   	└── lua/
-│           └── learnLua.md
-├── page/
-│       ├── about
-│       │   └── index.md
-│       ├── archives/
-│       │   └── index.md
-│       ├── search/
-│       │   └── index.md
-│       └── links/
-│           └── index.md
-└── _index.md
+// hugo.yaml
+baseURL: https://example.org/
+title: Candvert
+theme: 'hugo-theme-stack'
+copyright: All rights reserved
+
+defaultContentLanguage: 'zh-cn'
+languageCode: 'zh-cn'
+
+hasCJKLanguage: true
+
+pagination:
+  pagerSize: 5
+
+params:
+  mainSections: ["post"]
+  favicon: '/a.jpg'
+  rssFullContent: true
+
+  dateFormat:
+    published: 2006-01-02
+    lastUpdated: 2006-01-02 15:04
+
+  sidebar:
+    emoji: h g
+    subtitle: one two
+    avatar:
+      enabled: true
+      local: true
+	  # 该图片一定要放在 assets 目录下，而不是 static 目录下
+      src: b.png
+
+  widgets:
+    homepage:
+      - type: search
+      - type: archives
+        params:
+          limit: 5
+      - type: categories
+        params:
+          limit: 10
+      - type: tag-cloud
+        params:
+          limit: 10
+    page:
+      - type: toc
+
+  colorScheme:
+    toggle: true
+    default: auto
+
+  footer:
+    since: 2019
+    customText: ''
+
+menu:
+  social:
+  - identifier: github
+    name: GitHub
+    url: https://github.com/CaiJimmy/hugo-theme-stack
+    params:
+      icon: brand-github
+
+  - identifier: twitter
+    name: Twitter
+    url: https://twitter.com
+    params:
+      icon: brand-twitter
 
 
-// content/_index.md 和 page 目录下的 index.md 会显示为网页左侧的菜单
 
 
-// content/_index.md 内容
-// icon 是主题的 assets/icons 目录下的文件名
+
+// 普通 md 文件
+---
+title: "docker"
+description: 'just a brief'
+
+date: "2024-01-22"
+lastmod: '2024-09-15T11:30:03'
+
+categories: ["web", "rust"]
+tags: ["css", "html", "js"]
+
+image: '/a.png'
+---
+
+
+
+
+// content/_index.md
+// icon 的值是主题的 assets/icons 目录下的文件名
 ---
 menu:
     main:
@@ -41,7 +120,8 @@ menu:
             icon: home
 ---
 
-// page/about/index.md 内容
+
+// page/about/index.md
 // title 会和 menu: main: name 冲突，只能设置一个
 ---
 title: 关于
@@ -54,7 +134,8 @@ menu:
 ---
 Written in Go
 
-// page/archives/index.md 内容
+
+// page/archives/index.md
 ---
 title: 归档
 date: 2019-05-28
@@ -67,7 +148,8 @@ menu:
             icon: archives
 ---
 
-// page/search/index.md 内容
+
+// page/search/index.md
 ---
 title: 搜索
 slug: "search"
@@ -82,7 +164,8 @@ menu:
             icon: search
 ---
 
-// page/links/index.md 内容
+
+// page/links/index.md
 ---
 title: 其他链接
 menu:
@@ -103,96 +186,115 @@ links:
     image: /a.jpg
 ---
 ```
+## 目录结构
+```go
+// content/_index.md 和 content/page 目录下的 index.md 会显示为网页左侧的菜单
+content/
+├── post/
+│       ├── Javascript.md
+│       ├── Typescript.md
+│       ├── rust/
+│       │   └── learnRust.md
+│   	└── lua/
+│           └── learnLua.md
+├── page/
+│       ├── about
+│       │   └── index.md
+│       ├── archives/
+│       │   └── index.md
+│       ├── search/
+│       │   └── index.md
+│       └── links/
+│           └── index.md
+└── _index.md
+```
 ## front matter
 ```go
----
-title: About
-description: 'ok'
-date: '2019-02-28'
-aliases:
-  - about-us
-  - about-hugo
-  - contact
-license: CC BY-NC-ND
-lastmod: '2020-10-09'
+title: about
+description = 'just a brief'
+
+date = "2024-01-22"
+lastmod = '2024-09-15T11:30:03'
+
+categories: ["web", "rust"]
+tags: ["css", "html", "js"]
+
 image: '/a.png'
+
 toc: true
 readingTime: true
 comments: true
-keywords: ['web', 'backend']
-style: 
 
 
+
+// 网页左侧的菜单，只在 _index.md 和 index.md 文件中设置
 menu: 
     main:
-        name: title (optional)
+        name: title
         weight: -90
         params:
             icon: icon-name
----
 ```
 ## hugo.yaml
 ```yaml
-# 如果 DefaultContentLanguage 是 zh、ja、ko，则设置为 true
+# 如果 defaultContentLanguage 是 zh、ja、ko，则设置为 true
 # 以使 .WordCount 和 .Summary 正确工作
 hasCJKLanguage: true
 
+
+# 设置 post 和 page 页面的链接，:slug 为文件名
+permalinks:
+  post: /p/:slug/
+  page: /:slug/
+
+
 params:
-  description: 'ok'
-  # 值默认为 ["post"]
+  # 设置 content 目录下那些文件夹中的文档可以显示，值默认为 ["post"]
   mainSections: ["post"]
-  featuredImageField: '/a.png'
+  favicon: '/a.jpg'
   rssFullContent: true
-  favicon: '/a.png'
-	
+
   article:
-    toc: true
-	readingTime: true
-	license:
+    # 是否显示阅读时间
+    readingTime: false
+	# 每篇文章下方的许可证
+    license:
       enabled: true
       default: Licensed under CC BY-NC-SA 4.0
-	enabled: true
-
-related:
-    includeNewer: true
-    threshold: 60
-    toLower: false
-    indices:
-        - name: tags
-          weight: 100
-
-        - name: categories
-          weight: 200
 ```
 ## 网页左侧上半部分的内容
 ```yaml
 title: Candvert
 
+
 params:
   sidebar:
-    emoji: 'e'
-    subtitle: 'hi'
+    emoji: h g
+    subtitle: one two
     avatar:
       enabled: true
       local: true
+	  # 该图片一定要放在 assets 目录下，而不是 static 目录下
       src: b.png
 
+
 menu:
-  main: []
   social:
-    - identifier: github
-      name: GitHub
-      url: https://github.com/CaiJimmy/hugo-theme-stack
-      params:
-        icon: brand-github
-    - identifier: twitter
-      name: Twitter
-      url: https://twitter.com
-      params:
-        icon: brand-twitter
+  - identifier: github
+    name: GitHub
+    url: https://github.com/CaiJimmy/hugo-theme-stack
+    params:
+      icon: brand-github
+
+  - identifier: twitter
+    name: Twitter
+    url: https://twitter.com
+    params:
+      icon: brand-twitter
 ```
 ## 网页右侧的内容
 ```yaml
+# limit 限制显示多少项，archives 的 limit 是限制显示多少年的内容
 params:
   widgets:
     homepage:
@@ -216,7 +318,7 @@ params:
     # 切换模式按钮
     toggle: true
 	# light|dark|auto
-	default: 'light'
+    default: auto
 ```
 ## 设置网站为中文网站
 ```yaml
@@ -226,7 +328,7 @@ languageCode: 'zh-cn'
 ## 分页功能
 ```yaml
 pagination:
-  pagerSize: 3
+  pagerSize: 5
 ```
 ## 网站底部的版权声明
 ```yaml
@@ -236,6 +338,13 @@ params:
   footer:
     since: 2019
     customText: ''
+```
+## 日期格式
+```yaml
+params:
+  dateFormat:
+    published: 2006-01-02
+    lastUpdated: 2006-01-02 15:04
 ```
 ## 评论功能
 ```yaml
@@ -261,8 +370,33 @@ languages:
       sidebar:
       subtitle: 演示说明
 ```
-
+## 自定义模板
 ```go
+// 主题中有两个为自定义 HTML 保留的空文件：
 layouts/partials/head/custom.html
 layouts/partials/footer/custom.html
+
+
+
+
+
+// 比如更换网站使用的字体
+// 创建 layouts/partials/head/custom.html
+<style>
+    /* Overwrite CSS variable */
+    :root {
+        --article-font-family: "Merriweather", var(--base-font-family);
+    }
+</style>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap";
+    
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+    
+        document.head.appendChild(customFont);
+    }());
+</script>
 ```

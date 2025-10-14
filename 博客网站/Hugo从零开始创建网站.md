@@ -293,7 +293,7 @@ theme = 'hugo-book'
 
 
 
-// 因为 hugo 的字体配置需要使用 sass，也不原生支持 Tailwind css
+// 因为 hugo 不原生支持 Tailwind css，css 的设置较为麻烦
 // 所以使用 hugo 创建网站一般使用其他人编写的主题
 // 模板应用顺序是 layouts 目录，其次才是主题的 layouts 目录，所以可以在 layouts 目录下编写模板覆盖主题的模板
 
@@ -301,6 +301,9 @@ theme = 'hugo-book'
 
 
 // 好用的主题
+// hextra 是现代化的网页主题，包含博客和文档以及其他页面，推荐使用
+// hugo-PaperMod， hugo-theme-stack 是博客网站，专门用于博客
+// hugo-book 是文档网站，专门用于文档
 https://github.com/adityatelange/hugo-PaperMod
 https://github.com/alex-shpak/hugo-book
 https://github.com/CaiJimmy/hugo-theme-stack
@@ -309,6 +312,7 @@ https://github.com/imfing/hextra
 [[使用hugo-PaperMod主题]]
 [[使用hugo-book主题]]
 [[使用hugo-theme-stack主题]]
+[[使用hextra主题]]
 ## 设置网站为中文网站
 ```toml
 defaultContentLanguage = 'zh'
