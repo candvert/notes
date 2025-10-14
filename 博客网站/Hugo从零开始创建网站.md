@@ -284,7 +284,7 @@ learning
 ## 使用主题
 ```go
 // 使用该命令添加主题
-git submodule add https://github.com/adityatelange/hugo-PaperMod themes/hugo-PaperMod
+git submodule add https://github.com/imfing/hextra themes/hextra
 
 
 

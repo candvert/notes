@@ -237,7 +237,7 @@ menu:
 ```
 ## hugo.yaml
 ```yaml
-# 如果 defaultContentLanguage 是 zh、ja、ko，则设置为 true
+# 如果 defaultContentLanguage 是 zh-cn、ja、ko，则设置为 true
 # 以使 .WordCount 和 .Summary 正确工作
 hasCJKLanguage: true
 

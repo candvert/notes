@@ -1,5 +1,6 @@
 - [目录结构](#目录结构)
 - [front matter](#front%20matter)
+- [hugo.yaml](#hugo.yaml)
 - [设置网站为中文网站](#设置网站为中文网站)
 - [右上角菜单](#右上角菜单)
 - [嵌套菜单](#嵌套菜单)
@@ -54,6 +55,12 @@ params:
   toc:
     displayTags: true
 
+  footer:
+    enable: true
+    displayCopyright: true
+    displayPoweredBy: true
+    width: normal
+
 menu:
   main:
     - name: 文档
@@ -91,6 +98,19 @@ menu:
     - name: "Hugo 文档 ↗"
       url: "https://gohugo.io/documentation/"
       weight: 3
+
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        delimiters:
+          block: [['\[', '\]'], ['$$', '$$']]
+          inline: [['\(', '\)']]
+        enable: true
 
 
 // content/_index.md
@@ -193,6 +213,74 @@ excludeSearch: true
 
 // 页面编辑链接
 editURL: "https://example.com/edit/this/page"
+```
+## hugo.yaml
+```yaml
+# 如果 defaultContentLanguage 是 zh-ch、ja、ko，则设置为 true
+hasCJKLanguage: true
+
+enableInlineShortcodes: true
+
+params:
+  description: Modern, responsive Hugo theme.
+  
+  banner:
+    key: 'announcement-v0.11'
+    message: New version Released!
+
+  footer:
+    enable: true
+    displayCopyright: true
+    displayPoweredBy: true
+    width: normal
+
+  blog:
+    list:
+      displayTags: true
+      # date | lastmod | publishDate | title | weight
+      sortBy: date
+      sortOrder: desc # or "asc"
+      # Pagination
+      pagerSize: 20
+    article:
+      displayPagination: true
+
+  highlight:
+    copy:
+      enable: true
+      # hover | always
+      display: hover
+
+  comments:
+    enable: false
+    type: giscus
+    # https://giscus.app/
+    giscus:
+      repo: imfing/hextra
+      repoId: R_kgDOJ9fJag
+      category: General
+      categoryId: DIC_kwDOJ9fJas4CY7gW
+      # mapping: pathname
+      # strict: 0
+      # reactionsEnabled: 1
+      # emitMetadata: 0
+      # inputPosition: top
+      # lang: en
+      # theme: noborder_dark
+
+
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        delimiters:
+          block: [['\[', '\]'], ['$$', '$$']]
+          inline: [['\(', '\)']]
+        enable: true
 ```
 ## 设置网站为中文网站
 ```yaml
@@ -370,6 +458,7 @@ params:
     flexsearch:
       # 索引页面方式: content | summary | heading | title
       index: content
+	  tokenize: forward
 ```
 ## 多语言
 ```yaml
