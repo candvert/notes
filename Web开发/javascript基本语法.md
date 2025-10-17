@@ -25,6 +25,7 @@
 	- [异步](#异步)
 - [dom相关](#dom相关)
 	- [操控video](#操控video)
+	- [DOMContentLoaded事件](#DOMContentLoaded事件)
 
 - [api和框架](#api和框架)
 	- [内置api](#内置api)
@@ -616,6 +617,12 @@ const handleMouseMove = (e: MouseEvent) => {
 	const y = e.clientY;
 	const y2 = e.screenY;
 }
+```
+## DOMContentLoaded事件
+```js
+// DOMContentLoaded事件在HTML文档解析完成，DOM树构建完毕时触发
+// 无需等待样式表，图片等外部资源加载完成
+document.addEventListener('DOMContentLoaded', function() {})
 ```
 # api和框架
 ## 内置api

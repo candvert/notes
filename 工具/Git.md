@@ -7,6 +7,7 @@
 - [git branch](#git%20branch)
 - [git push](#git%20push)
 - [git commit](#git%20commit)
+- [git pull](#git%20pull)
 - [git status](#git%20status)
 - [git diff](#git%20diff)
 - [git tag](#git%20tag)
@@ -127,6 +128,14 @@ git push -u origin main
 ```sh
 
 ```
+## git pull
+```sh
+# git pull 实际上是 ​​git fetch 和 git merge 的组合
+```
+## git status
+```shell
+
+```
 ## git fetch
 ```sh
 git fetch 可获取远程所有最新更新，但不会自动合并到本地
@@ -171,5 +180,5 @@ git clean --fd
 ```
 ## .gitignore
 ```sh
-/build/ 忽略当前目录下的文件夹
+/build/ 忽略 build 文件夹及其子文件夹
 ```
