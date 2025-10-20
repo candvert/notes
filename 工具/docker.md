@@ -220,15 +220,70 @@ docker build -t YOUR_DOCKER_USERNAME/docker-quickstart .
 
 使用 Docker Compose，您可以在一个 YAML 文件中定义所有容器及其配置
 
-启动应用程序：
+一个 compose.yaml 文件示例：
+```yaml
+# ​​version​​：指定所使用的 Compose 版本
+# ​​services​​：用于定义应用中的各个容器服务。每个服务都有一个自定义的名称（如 web, db）
+# ​​networks & volumes​​：定义服务之间通信所需的网络和用于数据持久化的数据卷
+# ​​image​​：指定服务使用的镜像。如果本地不存在，Compose 会尝试拉取它
+# ​​build​​：如果服务需要从 Dockerfile 构建镜像，则使用此选项指定构建上下文路径
+# container_name​​：为容器指定一个自定义名称，而非自动生成
+# depends_on​​：明确指定服务之间的依赖关系，确保所依赖的服务先启动
+# ports​​：将容器端口映射到宿主机端口，格式为 "宿主机端口:容器端口"
+# networks​​：指定服务要加入的网络
+# volumes​​：用于挂载数据卷，实现数据持久化或宿主机与容器之间的数据共享
+# driver: bridge，指定了该网络使用的驱动程序为bridge（桥接模式）。这是Docker中最常见的网络驱动
+
+
+
+
+# version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+	# container_name: nginx_host1
+	ports:
+	  - 8081:80
+	volumes:
+	  - /opt/nginx:/opt/nginx/html
+    # networks:
+    #   - mynetwork
+
+  webapp:
+    build: .
+    ports:
+      - 8000:5000
+    volumes:
+      - .:/code
+    depends_on:
+      - nginx
+    # networks:
+    #   - mynetwork
+
+# networks:
+#   mynetwork:
+#     driver: bridge
+```
+同一个 compose.yaml 文件中定义的容器都会自动加入同一个子网
+启动容器：
 ```sh
+docker compose up -d
 docker compose up -d --build
 ```
-终止应用程序：
+停止并删除容器：
 ```sh
 docker compose down
 # 并删除卷
 docker compose down --volumes
+```
+停止容器：
+```sh
+docker compose stop
+```
+让停止的容器继续运行：
+```sh
+docker compose start
 ```
 ## 数据卷
 ```sh
@@ -252,4 +307,73 @@ docker volume inspect
 # 清除数据卷
 docker volume prune
 ```
+## compose示例程序
+[带有 Rust 后端和 Postgres 数据库的示例 React 应用程序](https://github.com/docker/awesome-compose/tree/master/react-rust-postgres)
 
+项目结构：
+```go
+.
+├── backend
+│   ├── Dockerfile
+│   ...
+├── compose.yaml
+├── frontend
+│   ├── ...
+│   └── Dockerfile
+└── README.md
+```
+compose.yaml
+```yaml
+name: react-rust-postgres
+services:
+  frontend:
+    build:
+      context: frontend
+      target: development
+    networks:
+      - client-side
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/code/src:ro
+
+  backend:
+    build:
+      context: backend
+      target: development
+    environment:
+      - ADDRESS=0.0.0.0:8000
+      - RUST_LOG=debug
+      - PG_DBNAME=postgres
+      - PG_HOST=db
+      - PG_USER=postgres
+      - PG_PASSWORD=mysecretpassword
+    networks:
+      - client-side
+      - server-side
+    volumes:
+      - ./backend/src:/code/src
+      - backend-cache:/code/target
+    depends_on:
+      - db
+
+  db:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    networks:
+      - server-side
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+networks:
+  client-side: {}
+  server-side: {}
+
+volumes:
+  backend-cache: {}
+  db-data: {}
+```
