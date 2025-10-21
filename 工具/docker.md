@@ -9,6 +9,9 @@
 - [构建镜像](#构建镜像)
 - [Docker Compose](#Docker%20Compose)
 - [数据卷](#数据卷)
+- [compose示例程序](#compose示例程序)
+- [linux基础镜像](#linux基础镜像)
+- [将镜像推送到DockerHub](#将镜像推送到DockerHub)
 
 ## 安装
 ### Windows安装
@@ -42,12 +45,16 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 sudo systemctl start docker
 sudo systemctl status docker
-sudo docker run hello-world
+
+sudo usermod -aG docker $USER
+newgrp docker
+
+
+
 
 完整步骤
 按照官网的步骤进行安装（有的步骤会出现问题，需要多试几次）：
 https://docs.docker.com/engine/install/ubuntu/
-
 安装完后创建/etc/docker/daemon.json文件，写入下面内容配置镜像源，安装便完成了
 {
     "registry-mirrors": [
@@ -96,8 +103,12 @@ docker run -d mysql
 # -p设置端口映射，宿主端口:容器端口
 # -e设置环境变量
 docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123 mysql:5.7
-# 简写
+# 后台运行镜像
 docker run -d mysql
+# 启动一个 Ubuntu 镜像并打开 shell
+docker run -it ubuntu /bin/bash
+# 进入一个已经处于运行状态的容器
+docker exec -it ubuntu /bin/bash
 
 
 # 查看运行中的容器
@@ -376,4 +387,25 @@ networks:
 volumes:
   backend-cache: {}
   db-data: {}
+```
+## linux基础镜像
+Docker 提供了多种 Linux 基础镜像，主要可分为​​精简型镜像​​（如 Alpine）、​​标准发行版镜像​​（如 Ubuntu、Debian）、​​语言运行时镜像​​（如 Python、Node.js、OpenJDK）
+
+精简型镜像​：
+- Alpine Linux​​：一个面向安全的轻型 Linux 发行版，基于 musl libc和 BusyBox，体积极小（约 5MB），内置包管理器 apk。适合生产环境、微服务或对镜像体积敏感的场景。但其 musl libc可能与某些依赖 glibc的软件存在兼容性问题
+
+标准发行版镜像​：
+- Ubuntu/Debian​​：提供完整的操作系统环境，软件包丰富（通过 apt管理），兼容性强。Ubuntu 镜像较大（通常超过 100MB），适合需要完整工具链的复杂应用或开发调试环境。Debian 提供了如 -slim的变体，在保留包管理器的同时体积更小，是平衡体积与功能的常见选择
+
+语言运行时镜像：
+- 这类镜像（如 python:3.9, node:18, openjdk:11）预装了特定的语言运行环境和核心库，方便部署对应应用
+## 将镜像推送到DockerHub
+```sh
+docker login
+
+# docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+# TARGET_IMAGE[:TAG]​​：目标镜像名称和标签，其格式必须为 您的DockerHub用户名/仓库名:标签
+docker tag myapp:latest alice/myapp:latest
+
+docker push alice/myapp:latest
 ```

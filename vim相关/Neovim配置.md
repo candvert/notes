@@ -10,21 +10,13 @@
 - [语法高亮](#语法高亮)
 - [查找文件](#查找文件)
 - [文件explorer](#文件explorer)
-- [按键映射函数](#按键映射函数)
-- [Leader键](#Leader键)
-- [使用vimscript](#使用vimscript)
 
-- [nvim-lspconfig配置](#nvim-lspconfig配置)
-- [Linter](#Linter)
-- [Dap](#Dap)
 - [插件](#插件)
-	- [lazy.nvim](#lazy.nvim)
 	- [lualine.nvim](#lualine.nvim)
 	- [bufferline.nvim](#bufferline.nvim)
 	- [nvim-surround](#nvim-surround)
 	- [mini.pairs](#mini.pairs)
 	- [indent-blankline](#indent-blankline)
-	- [vim-airline](vim-airline.md)
 	- [leap.nvim](#leap.nvim)
 	- [rainbow-delimiters.nvim](#rainbow-delimiters.nvim)
 	- [none-ls](#none-ls)
@@ -39,7 +31,7 @@
 Linux上Neovim会默认读取~/.config/nvim/init.lua文件
 Windows上会默认读取C:\Users\leiyu\AppData\Local\nvim\init.lua
 
-理论上所有配置都可以放在 init.lua 中，但这样不是一个好的做法，因此划分不同的文件和目录来放不同的配置
+可以将所有配置放在 init.lua 中，但这样不是一个好的做法，因此划分不同的文件和目录来放不同的配置
 我的目录结构：
 ```sh
 nvim
@@ -114,19 +106,20 @@ require("lazy").setup({
 新增plugins/blink.lua文件
 ```lua
 return {
-	'saghen/blink.cmp',
-	dependencies = { 'rafamadriz/friendly-snippets' },
-	version = '1.*',
-	opts = {
-		-- 设置 tab 键确认补全
-		keymap = { preset = 'super-tab' },
-		-- 总是显示文档
-		completion = { documentation = { auto_show = true } },
-		sources = {
-		  -- 补全信息来源
-		  default = { 'lsp', 'path', 'snippets', 'buffer' },
-		},
-	},
+  'saghen/blink.cmp',
+  dependencies = { 'rafamadriz/friendly-snippets' },
+  version = '1.*',
+  opts = {
+    keymap = {
+        preset = 'super-tab',
+        ['<Up>'] = false,
+        ['<Down>'] = false,
+    },
+    completion = { documentation = { auto_show = true } },
+    sources = {
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
+    },
+  },
 }
 ```
 ## LSP服务器端配置
@@ -135,7 +128,7 @@ return {
 - mason-lspconfig.nvim: 主要功能是处理 mason.nvim 和 nvim-lspconfig 之间名字不一致的问题。比如，mason.nvim 里面管 Lua 语言的 LSP 叫做 lua-language-server，但是 nvim-lspconfig 叫做 lua_ls。另外，mason-lspconfig.nvim 还会自动调用 vim.lsp.enable 启动安装好的 LSP服务器
 新增plugins/mason.lua文件
 ```lua
-return { "mason-org/mason.nvim", opts = {} }
+return { "mason-org/mason.nvim", opts = {}, }
 ```
 新增plugins/mason_lspconfig.lua文件
 ```lua
@@ -149,6 +142,7 @@ return {
 }
 ```
 对于 Windows 系统，使用 mason.nvim 则必须要已安装 powershell、git、GNU tar、[7zip](https://www.7-zip.org/)
+对于 Unix 系统，使用 mason.nvim 则必须要已安装 git、curl 或 GNU wget、unzip、GNU tar（tar 或 gtar）、gzip
 现在打开 nvim 后就可以通过 :Mason 命令进行 LSP 服务器的安装了
 ![](/images/neovim_01.png)
 在光标所在行按 i 进行 LSP 服务器的安装
@@ -249,6 +243,7 @@ JetBrainsMonoNerdFontMono-BoldItalic.ttf
 ![](/images/neovim_02.png)
 ## 语法高亮
 首先需要安装 [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)，主要功能是进行语法分析，生成语法树。之后便可以通过其他插件进行语法高亮。
+使用 nvim-treesitter 需要有 gcc 编译器
 新增 plugins/treesitter.lua 文件
 ```lua
 return {
@@ -262,7 +257,7 @@ return {
 
 	  configs.setup({
 		  -- 在这里添加要语法高亮的编程语言
-		  ensure_installed = { "python", "lua", "typescript", "css", "html" },
+		  ensure_installed = { "python", "lua", "typescript", "css", "html", "javascript", "rust", "tsx" },
 		  sync_install = false,
 		  highlight = { enable = true },
 		  indent = { enable = true },  
@@ -278,13 +273,13 @@ return {
 	lazy = false,
 	priority = 1000,
 	-- 将背景设置为透明
-	--opts = {
-	--	transparent = true,
-	--	styles = {
-	--		sidebars = "transparent",
-	--		floats = "transparent",
-	--	},
-	--},
+	opts = {
+		transparent = true,
+		styles = {
+			sidebars = "transparent",
+			floats = "transparent",
+		},
+	},
 }
 ```
 在 init.lua 文件里面设置主题
@@ -298,7 +293,53 @@ vim.cmd[[colorscheme tokyonight]]
 --vim.cmd[[colorscheme tokyonight-day]]
 --vim.cmd[[colorscheme tokyonight-moon]]
 ```
-## [[查找文件]]
+## 查找文件
+使用的是[telescope](https://github.com/nvim-telescope/telescope.nvim)
+新增 plugins/telescope.lua 文件
+```lua
+return {
+	'nvim-telescope/telescope.nvim', tag = '0.1.8',
+	dependencies = { 
+		'nvim-lua/plenary.nvim',
+	},
+	config = function()
+		local builtin = require('telescope.builtin')
+		require('telescope').setup{
+			defaults = {
+				borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+				results_title = false,
+				dynamic_preview_title = true,
+				mappings = {
+					i = {
+					
+					}
+				},
+				
+				layout_strategy = "vertical",
+				layout_config = {
+					vertical = {
+						preview_height = 0.5,
+						preview_cutoff = 20,
+						prompt_position = "top",
+					},
+					-- 将屏幕撑满
+					width = { padding = 0 },
+					height = { padding = 0 },
+				},
+			},
+		}
+		vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+		vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+		vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+		vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+		vim.keymap.set('n', '<space>en', function()
+			require('telescope.builtin').find_files {
+				cwd = vim.fn.stdpath('config')
+			}
+		end)
+	end,
+}
+```
 ## 文件explorer
 使用的是 [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)
 新增plugins/nvim_tree.lua文件
@@ -389,140 +430,9 @@ q                                    关闭文件树窗口
 s                                    运行脚本文件，或用外部编辑器打开文件
 .                                    运行命令
 ```
-## 按键映射函数
-```lua
--- mode参数表示哪种模式，n为普通模式，i为插入模式，v为视图模式，c为命令行模式
--- lhs为要更改的按键
--- rhs为更改后的按键或一个lua函数或自定义命令
--- opts为一些选项
-vim.keymap.set({mode}, {lhs}, {rhs}, {opts})
-
--- 普通模式和编辑模式下按Ctrl + a再b就运行:lua print('hello world')
--- <Cmd>表示进入命令模式，<CR>表示命令输入完之后的回车键
-vim.keymap.set({ "n", "i" }, "<C-a>b", "<Cmd>lua print('hello world')<CR>", { silent = true })
-
--- 将:help命令设置为快捷键good
-vim.keymap.set('n', 'good', ':help<CR>')
-```
-## Leader键
-```sh
-Leader 键是一个自定义快捷键前缀
-Leader 键本身不执行操作，而是作为后续按键组合的前缀（例如 <leader>ff）。它允许用户创建大量不与默认快捷键冲突的自定义快捷键
-
-设置 Leader 键的代码，一般设置为空格
-vim.g.mapleader = " "
-```
-## 使用vimscript
-```lua
--- vim.cmd可以执行任何vim命令
-vim.cmd('set number')
-
--- 通过 vim.fn 可以调用 Vim 函数，返回值会自动转换为 Lua 的数据类型。
-local current_line = vim.fn.getline('.')
-
--- vim.call，这与 vim.fn 类似，是调用函数的另一种方式
-local result = vim.call('my#vimscript#function')
-```
-## nvim-lspconfig配置
-```lua
--- Neovim 包含一个 lua 模块去操作 LSP 客户端，即 vim.lsp
-
--- 使用vim.lsp.config()为 LSP 客户端设置配置
--- 示例：
-vim.lsp.config['luals'] = {
-	-- Command and arguments to start the server.
-	cmd = { 'lua-language-server' },
-	
-	-- 应用的文件类型
-	filetypes = { 'lua' },
-	
-	-- 设置根目录，同一根目录下的文件连接同一个 LSP 服务器。
-	-- root_markers 是否需要取决于不同的 LSP 服务器
-	-- 该句代码意思是不断寻找当前文件的父级目录，直到找到.luarc.json、.luarc.jsonc或.git，将其作为根目录，即root_markers。
-	root_markers = { { '.luarc.json', '.luarc.jsonc' }, '.git' },
-	
-	-- 发送给 LSP 服务器的设置，格式由 LSP 服务器定义，例如 lua-language-server 的可以在 https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json 找到
-	settings = {
-	 Lua = {
-	   runtime = {
-		 version = 'LuaJIT',
-	   }
-	 }
-	}
-}
-
-
--- nvim-0.11.3 版本的 typescript 的 LSP 客户端配置
-vim.lsp.config['ts_ls'] = {
-	cmd = { 'typescript-language-server', '--stdio' },
-	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-	root_dir = function(bufnr, on_dir)
-		local root_markers = { 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'bun.lockb', 'bun.lock' }
-		root_markers = vim.fn.has('nvim-0.11.3') == 1 and { root_markers, { '.git' } }
-		or vim.list_extend(root_markers, { '.git' })
-		local project_root = vim.fs.root(bufnr, root_markers) or vim.fn.getcwd()
-		on_dir(project_root)
-	end,
-}
-
-
--- 使用vim.lsp.enable()函数启用配置
-vim.lsp.enable('luals')
-
--- 查看 LSP 服务器是否启动
-:checkhealth vim.lsp
-```
-## Linter
-```lua
--- Linter 是一款​​静态代码分析工具​​。它会在代码执行前对其进行分析，能帮你找出语法错误、风格不一致、潜在的逻辑问题以及不符合最佳实践的代码
-```
-## Dap
-```lua
--- 通过 Mason 安装的 DAP 调试适配器，使得你能够直接在 Neovim 中​​设置断点、单步调试、查看变量调用栈​​等，为多种编程语言提供统一的调试界面。
-```
 ## 插件
-## lazy.nvim
-```lua
--- 添加插件时其他插件配置文件的形式
-return { 
-	"xxx/xxx",
-	opts = {}
-}
--- opts其实就相当于lazy.nvim自动为我们调用了该函数：
--- require("xxx").setup(opts)
--- 当然我们也可以手动调用该函数：
--- config = function(_, opts)
---     require("xxx").setup(opts)
--- end
-
-
--- 像主题类的插件一般只需要加载，不需要setup
--- 有opts选项的插件lazy.nvim会自动setup，或者没有opts选项自己在config中调用setup
--- 也就是说主题类可以直接return { "xxx/xxx" }就可以生效
--- 而必须要setup才能能生效的插件要return { "xxx/xxx", opts = {} }或者
--- return { "xxx/xxx",
--- config = function(_, opts)
---     require("xxx").setup(opts)
--- end }
-
-
-
--- 插件懒加载，插件的配置文件设置了events, commands, ft, keys中之一后则会懒加载
--- event：在某个事件触发的时候加载插件
--- cmd：在某个命令被执行的时候加载插件
--- ft：当前 buffer 为特定文件类型的时候加载插件
--- keys：当触发快捷键时加载插件，如果快捷键不存在则创建快捷键
--- 可以使用 lazy = false 强制不进行懒加载
-return {
-	"xxx/xxx",
-	opts = {},
-	event = "InsertEnter",
-	keys = {
-		{ "<leader>bh", ":BufferLineCyclePrev<CR>", silent = true },
-	},
-}
-```
 ## lualine.nvim
+新增 plugins/lualine.lua 文件
 ```lua
 return {
     'nvim-lualine/lualine.nvim',
@@ -534,6 +444,7 @@ return {
 }
 ```
 ## bufferline.nvim
+新增 plugins/bufferline.lua 文件
 ```lua
 return {
 	"akinsho/bufferline.nvim",
@@ -559,6 +470,7 @@ return {
 :h bufferline-configuration
 ```
 ## nvim-surround
+新增 plugins/nvim_surround.lua 文件
 ```lua
 return {
     "kylechui/nvim-surround",
@@ -577,6 +489,7 @@ return {
 -- 比如cs'"
 ```
 ## mini.pairs
+新增 plugins/mini_pairs.lua 文件
 ```lua
 return {
 	'nvim-mini/mini.pairs',
@@ -586,6 +499,7 @@ return {
 }
 ```
 ## indent-blankline
+新增 plugins/indent_blankline.lua 文件
 ```lua
 return {
     "lukas-reineke/indent-blankline.nvim",
@@ -594,6 +508,7 @@ return {
 }
 ```
 ## leap.nvim
+新增 plugins/leap.lua 文件
 ```lua
 return {
 	'ggandor/leap.nvim',
@@ -607,6 +522,7 @@ return {
 }
 ```
 ## rainbow-delimiters.nvim
+新增 plugins/rainbow.lua 文件
 ```lua
 return {
 	"HiPhish/rainbow-delimiters.nvim",
@@ -619,6 +535,7 @@ return {
 }
 ```
 ## none-ls
+新增 plugins/none_ls.lua 文件
 ```lua
 return {
 	"nvimtools/none-ls.nvim",
@@ -639,6 +556,7 @@ return {
 }
 ```
 ## lspsaga.nvim
+新增 plugins/lspsaga.lua 文件
 ```lua
 return {
     'nvimdev/lspsaga.nvim',
@@ -662,6 +580,7 @@ return {
 }
 ```
 ## toggleterm.nvim
+新增 plugins/toggleterm.lua 文件
 ```lua
 return {
 	'akinsho/toggleterm.nvim',
@@ -692,6 +611,7 @@ return {
 }
 ```
 ## auto-save.nvim
+新增 plugins/auto_save.lua 文件
 ```lua
 return {
   "okuuva/auto-save.nvim",

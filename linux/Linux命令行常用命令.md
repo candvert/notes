@@ -1,3 +1,67 @@
+- [查看系统架构](#查看系统架构)
+- [解压tar.gz](#解压tar.gz)
+- [解压tar.xz](#解压tar.xz)
+- [打包tar.gz](#打包tar.gz)
+- [路径添加到path](#路径添加到path)
+- [删除包](#删除包)
+- [查看文件大小](#查看文件大小)
+- [find命令](#find命令)
+## 查看系统架构
+```sh
+uname -m
+```
+## 解压tar.gz
+```sh
+# -z：指定使用 gzip 来解压缩文件
+# -x：表示执行提取（解压）操作
+# -v：在解压过程中显示详细信息，列出正在解压的文件（可选）
+# -f：指定后面紧跟的要处理的文件名
+tar -zxvf example.tar.gz
+
+
+# 使用 -C 参数，将文件解压到指定文件夹
+tar -zxvf example.tar.gz -C /home/user/documents
+
+
+# 使用 -t 参数查看 .tar.gz 文件中包含哪些内容，而不进行实际解压
+tar -ztvf example.tar.gz
+```
+## 解压tar.xz
+```sh
+tar -xvf example.tar.xz
+```
+## 打包tar.gz
+```sh
+# -c：创建新的归档文件
+# -z：使用 gzip 进行压缩
+# -v：显示压缩或解压的详细过程
+# -f：指定归档文件的名称
+tar -czvf example.tar.gz dir/
+```
+## 路径添加到path
+```sh
+# 在 ~/.bashrc 文件中添加：
+export PATH="$PATH:/path/to/your/directory"
+```
+## 删除包
+```sh
+sudo apt purge <包名>
+sudo apt autoremove
+```
+## 查看文件大小
+```sh
+ls -lh
+
+
+# 查看某个目录大小
+# -s(或 --summarize)：表示仅显示汇总的总大小，不列出目录下的每个项目
+du -sh /path/to/directory
+```
+## find命令
+```sh
+find . -name "*.txt"
+```
+## 命令
 ```sh
 date (print or set the system date and time)
 cal, ncal (displays a calendar)
