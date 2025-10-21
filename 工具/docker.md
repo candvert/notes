@@ -12,6 +12,7 @@
 - [compose示例程序](#compose示例程序)
 - [linux基础镜像](#linux基础镜像)
 - [将镜像推送到DockerHub](#将镜像推送到DockerHub)
+- [将镜像保存为tar](#将镜像保存为tar)
 
 ## 安装
 ### Windows安装
@@ -408,4 +409,15 @@ docker login
 docker tag myapp:latest alice/myapp:latest
 
 docker push alice/myapp:latest
+```
+## 将镜像保存为tar
+```sh
+docker save -o nginx.tar nginx:latest
+
+docker save nginx:latest | gzip > nginx.tar.gz
+
+ls -lh nginx.tar
+
+docker load -i nginx.tar
+docker load -i nginx.tar.gz
 ```
