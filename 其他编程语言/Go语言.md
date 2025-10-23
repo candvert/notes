@@ -36,6 +36,8 @@
 
 - [标准库](#标准库)
 	- [strings](#strings)
+
+go 有垃圾回收
 ## 程序入口
 程序入口是 main 包中的 main 函数
 ```go

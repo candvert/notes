@@ -125,10 +125,11 @@ panic = 'abort'
 ## 示例
 ```rust
 // 文件名若包含多个单词，应当使用下划线来分隔单词。例如命名为 hello_world.rs
-$ cargo new hello_cargo
-$ cd hello_cargo
-$ cd src
-$ nvim main.rs
+
+// $ cargo new hello_cargo
+// $ cd hello_cargo
+// $ cd src
+// $ nvim main.rs
 use std::io;
 
 fn main() {
@@ -139,7 +140,7 @@ fn main() {
         .expect("Failed");
     println!("{x}");
 }
-$ cargo run
+// $ cargo run
 ```
 ## 单二进制文件输出
 ```sh
