@@ -1,36 +1,46 @@
 - [程序入口](#程序入口)
 - [配置国内源](#配置国内源)
 - [运行单个文件](#运行单个文件)
-- [go语言特点](#go语言特点)
+- [创建模块](#创建模块)
+- [每个源文件的结构](#每个源文件的结构)
+- [包](#包)
+- [名字的可见性](#名字的可见性)
+- [零值](#零值)
 - [所有关键字](#所有关键字)
 - [注释](#注释)
 - [常量和变量](#常量和变量)
+- [变量的生命周期](#变量的生命周期)
 - [import](#import)
-- [导出名字](#导出名字)
+- [声明语句](#声明语句)
+- [init初始化函数](#init初始化函数)
 - [运算符](#运算符)
 - [if](#if)
 - [switch](#switch)
-- [for](#for)
+- [循环](#循环)
 - [defer](#defer)
 - [数组](#数组)
 - [切片](#切片)
 - [Map](#Map)
 - [指针](#指针)
+- [new](#new)
+- [函数](#函数)
 - [结构体](#结构体)
 - [方法](#方法)
 - [接口](#接口)
 - [嵌套结构体](#嵌套结构体)
-- [数据类型](#数据类型)
 - [类型别名](#类型别名)
 - [类型转换](#类型转换)
-- [包和模块](#包和模块)
-- [函数](#函数)
 - [闭包](#闭包)
 - [Range](#Range)
 - [字符串](#字符串)
 - [错误](#错误)
 - [Goroutines](#Goroutines)
 - [Channels](#Channels)
+
+
+- [反射](#反射)
+- [unsafe](#unsafe)
+- [泛型](#泛型)
 
 
 
@@ -63,46 +73,56 @@ go run a.go
 go build a.go
 ./a
 ```
-## go语言特点
-```go
-Go语言原生支持 Unicode
-
-Go语言的代码通过包组织，一个包由位于单个目录下的一个或多个.go源代码文件组成
-
-每个源文件都以一条 package 声明语句开始，表示该文件属于哪个包
-
-import 声明必须跟在文件的 package 声明之后
-
+## 创建模块
+使用 go mod init 命令来初始化一个新的Go模块。这会生成一个 go.mod文件
+## 每个源文件的结构
+每个源文件都以一条 package 声明语句开始，说明该源文件是属于哪个包
+package 声明语句之后是 import 语句
 必须恰当导入需要的包，缺少了必要的包或者导入了不需要的包，程序都无法编译通过。这项严格要求避免了程序开发过程中引入未使用的包
+## 包
+一个包由单个目录下的一个或多个 .go 源代码文件组成
+一个目录下所有的 .go 源文件必须归属于同一个包
+## 名字的可见性
+如果一个名字是在函数外部定义，那么将在当前包的所有文件中都可以访问。
+名字的开头字母的大小写决定了名字在包外的可见性。如果一个名字是大写字母开头的，那么它将是导出的，也就是说可以被外部的包访问，例如 fmt 包的 Printf 函数就是导出的，可以在 fmt 包外部访问。包本身的名字一般总是用小写字母。
+
+```go
+Go 语言原生支持 Unicode
+
 
 函数的左括号 { 必须和 func 函数声明在同一行上, 且位于末尾，相似的还有 for 循环
 
-变量会在声明时直接初始化。如果变量没有显式初始化，则被隐式地赋予其类型的零值，数值类型为 0，布尔类型为 false，字符串为 ""（空字符串），接口或引用类型（包括 slice、map、chan 和函数）为 nil，指针类型为 nil
 
-i++ 是语句，所以 j = i++ 非法
+Go 语言不允许导入未使用的包
 
-go 中没有 ++i 的操作，只有 i++
 
-Go语言只有for循环这一种循环语句。for循环有多种形式
+Go 语言中 i++ 是语句，而不是表达式，因此 j = i++ 是非法的
 
-Go语言不允许使用无用的局部变量
+Go 中没有 ++i 的操作，只有 i++
+
+Go 语言只有 for 循环这一种循环语句。for 循环有多种形式
+
+Go 语言不允许使用无用的局部变量
 
 空标识符_
 
 在包级别声明的变量会在 main 入口函数执行前完成初始化，局部变量将在声明语句被执行到的时候完成初始化
 
-1.0 版本 Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有泛型，没有异常，没有宏，没有函数修饰，更没有线程局部存储
+Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有异常，没有宏，没有函数修饰，更没有线程局部存储
 
-创建百万级的goroutine完全是可行的
+Go 没有三元运算符
 
-go 中没有三元运算符
+创建百万级的 goroutine 完全是可行的
 
-go 有垃圾回收
+Go 有垃圾回收
 
-没有明确初始化的变量会被赋予对应类型的零值
-
-命令行参数可从os包的Args变量获取，os.Args 是一个切片，其第一个元素，os.Args[0], 是命令本身的名字；其它的元素则是程序启动时传给它的参数
+命令行参数可从 os 包的 Args 变量获取，os.Args 是一个切片，其第一个元素，os.Args[0], 是命令本身的名字；其它的元素则是程序启动时传给它的参数
 ```
+## 零值
+如果变量没有显式初始化，则被隐式地赋予其类型的零值
+数值类型为 0，布尔类型为 false，字符串为 ""（空字符串）
+接口或引用类型（包括 slice、map、chan 和函数）为 nil，指针类型为 nil
+数组或结构体等聚合类型对应的零值是每个元素或字段都是对应该类型的零值
 ## 所有关键字
 ```go
 // 关键字有25个
@@ -116,7 +136,7 @@ continue for import return var
 
 
 
-// 还有大约30多个预定义的名字
+// 还有大约 30 多个预定义的名字
 内建常量: true false iota nil
 
 内建类型: int int8 int16 int32 int64
@@ -127,6 +147,21 @@ continue for import return var
 内建函数: make len cap new append copy close delete
 		 complex real imag
 		 panic recover
+
+
+
+// Unicode 字符 rune 类型是和 int32 等价的类型，通常用于表示一个 Unicode 码点。这两个名称可以互换使用。同样 byte 也是 uint8 类型的等价类型
+
+
+
+// 按照优先级递减的顺序排列的二元运算符，同一行为同一优先级
+// 取模运算符 % 仅用于整数间的运算
+// 5/4 的结果是 1
+* / % << >> & &^
++ - | ^
+== != < <= > >=
+&&
+||
 ```
 ## 注释
 ```go
@@ -135,6 +170,9 @@ continue for import return var
 
 /* 多行
     注释 */
+
+
+// 在每个源文件的包声明前仅跟着的注释是包注释。通常，包注释的第一句应该先是包的功能概要说明。一个包通常只有一个源文件有包注释。如果包注释很大，通常会放到一个独立的 doc.go文件中
 ```
 ## 常量和变量
 ```go
@@ -151,6 +189,7 @@ const (
 )
 
 
+
 // 没有明确初始化的变量会被赋予对应类型的零值
 // 零值是：
 // 	数值类型为 0
@@ -161,8 +200,11 @@ const (
 var z int
 var z = 1
 var z int = 1
+
+var x, y int
 var x, y = 1, "hi"
 var x, y int = 1, 2
+
 var (
 	x = 1
 	y = 2
@@ -173,14 +215,22 @@ var (
 )
 
 
+
 // 短变量声明
-// := 不能在函数外使用
+// := 只能在函数内部使用
 z := 1
-x, y := 1, 2
+x, y := 1, "hi"
 p := new(int) // p, *int 类型, 指向匿名的 int 变量
+```
+## 变量的生命周期
+```go
+对于在包一级声明的变量来说，它们的生命周期和整个程序的运行周期是一致的
 ```
 ## import
 ```go
+// Go 语言不允许导入未使用的包
+
+
 // 第一种写法
 import "fmt"
 import "math/rand"
@@ -191,10 +241,18 @@ import (
 	"fmt"
 	"math/rand"
 )
+
+
+// 在 Go 语言中，每个包都有一个全局唯一的导入路径
 ```
-## 导出名字
+## 声明语句
 ```go
-如果一个是在函数外部定义，那么将在当前包的所有文件中都可以访问。名字的开头字母的大小写决定了名字在包外的可见性。如果一个名字是大写字母开头的，那么它将是导出的，也就是说可以被外部的包访问，例如 fmt 包的 Printf 函数就是导出的，可以在 fmt 包外部访问。包本身的名字一般总是用小写字母。
+// Go语言主要有四种类型的声明语句：var、const、type 和 func
+```
+## init初始化函数
+```go
+// 每个文件都可以包含多个 init 初始化函数，这些 init 初始化函数不能被调用或引用
+func init() { /* ... */ }
 ```
 ## 运算符
 ```go
@@ -258,7 +316,7 @@ default:
 	fmt.Printf("Don't know type %T\n", t)
 }
 ```
-## for
+## 循环
 ```go
 // Go 只有一种循环结构：for 循环
 for {
@@ -306,49 +364,98 @@ func main() {
 ## 数组
 ```go
 // 在 Go 代码中，切片更为常见
-// Go 的数组是值。数组变量表示整个数组；它不是指向第一个数组元素的指针。这意味着，当你赋值或传递一个数组值时，你将复制其内容。
+// 因为数组大小也是类型的一部分，所以 [3]int 和 [4]int 是不同类型
+// 数组的大小必须是一个常量表达式
+
+
+// 数组变量表示整个数组；它不是指向第一个数组元素的指针。这意味着，当你赋值或传递一个数组时，你将复制其内容
 var a [5]int
 a[4] = 100
+// 内置 len 函数返回数组的长度
 len(a)
+// 传入指向数组的指针
+zero(&a)
 // 在一行中声明并初始化一个数组
 b := [5]int{1, 2, 3, 4, 5}
 // 让编译器计算元素的数量
 b = [...]int{1, 2, 3, 4, 5}
-// 如果使用：指定索引，则其间的元素将被清零
-b = [...]int{100, 3: 400, 500}
+// 包含 10 个元素的数组，下标为 9 的元素的值为 -2，下标为 6 的元素的值为 -5
+r := [...]int{9: -2, 6: -5}
 // 二维数组
 twoD := [2][3]int{
 	{1, 2, 3},
 	{1, 2, 3},
 }
+
+
+
+// 如果数组的元素类型是可比较的，那么该数组类型也是可比较的
+a := [2]int{1, 2}
+b := [...]int{1, 2}
+c := [2]int{1, 3}
+fmt.Println(a == b, a == c, b == c) // "true false false"
+d := [3]int{1, 2}
+fmt.Println(a == d) // compile error: cannot compare [2]int == [3]int
 ```
 ## 切片
 ```go
+// 切片的底层是数组
+// 切片的元素具有相同的类型
+// 一个切片由三个部分构成：指针、长度和容量，容量一般是从切片的第一个元素开始到底层数组的结尾的元素数量
+// 切片不可比较，唯一合法的切片比较是和 nil 相比，即 s == nil
+
+
+// 声明一个切片，切片的零值为 nil
 var s []string
-// 未初始化的切片等于 nil ，对于 nil 切片，len 和 cap 函数都会返回 0
+// 对于 nil 切片，len 和 cap 函数都会返回 0
 fmt.Println("uninit:", s, s == nil, len(s) == 0)
+
+// 声明并初始化切片
+s := []int{0, 1, 2, 3}
+s2 := []int{9: -2, 6: -5}
+
+// 创建数组的切片
+arr := [...]int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+l := arr[2:5]
+// 创建指针的切片
+ptr := &arr
+l = ptr[2:5]
+
 // 使用内置 make 创建非零长度的切片
-// 调用 make 时，它​​会分配一个数组并返回一个引用该数组的切片
-s = make([]string, 3)
+// 调用 make 时，它​​会分配一个数组并返回一个该数组的切片
+s := make([]string, 3)
 // 使用内置的 len 和 cap 函数检查切片的长度和容量
 fmt.Println("emp:", s, "len:", len(s), "cap:", cap(s))
 s[0] = "a"
-// 内置的 append 操作，返回切片
+// 创建切片 s 的切片，范围[)
+l := s[2:5]
+l = s[:5]
+l = s[2:]
+l = s[:]
+// 内置的 append 函数，返回切片
 s = append(s, "d")
 s = append(s, "e", "f")
 a := []string{"John", "Paul"}
 b := []string{"George", "Ringo", "Pete"}
 a = append(a, b...)
-// copy
+// copy 函数
 c := make([]string, len(s))
 copy(c, s)
-// 范围[)
-l := s[2:5]
-l = s[:5]
-l = s[2:]
-l = s[:]
-// 在一行中声明并初始化切片
-t := []string{"g", "h", "i"}
+
+
+// 超过容量导致 panic，但超过长度可以扩展切片（在容量内）
+arr := [...]int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+l := arr[2:4]
+ll := l[:20] // 会导致 panic
+ll := l[:5] // ll 的长度超过原本切片 l 的长度
+
+
+// 存在切片不为 nil，但长度和容量为 0
+// go 函数应该相同对待长度为 0 的切片，不管是不是 nil
+s := []int{}
+s2 := make([]int, 3)[3:]
+
+
 // 二维切片
 // 与二维数组不同，内部切片的长度可以变化
 twoD := make([][]int, 3)
@@ -363,6 +470,9 @@ for i := range 3 {
 ## Map
 ```go
 // Map 是 Go 内置的类型
+// 在Go语言中，一个map就是一个哈希表的引用
+
+
 // 使用内置的 make 命令创建一个空的 Map
 m := make(map[string]int)
 m["k1"] = 7
@@ -380,21 +490,73 @@ n := map[string]int{"foo": 1, "bar": 2}
 ```
 ## 指针
 ```go
-// Go 拥有指针
-// 类型 *T 是指向 T 类型值的指针，其零值为 nil
 // 与 C 不同，Go 没有指针运算
-func main() {
-	i, j := 42, 2701
+x := 1
 
-	p := &i         // 指向 i
-	fmt.Println(*p) // 通过指针读取 i 的值
-	*p = 21         // 通过指针设置 i 的值
-	fmt.Println(i)  // 查看 i 的值
+p := &i
+*p = 21
+fmt.Println(*p)
+fmt.Println("pointer:", p) // 指针也可以被打印
+```
+## new
+```go
+p := new(int) // p, *int 类型, 指向匿名的 int 变量
+fmt.Println(*p) // "0"
 
-	p = &j         // 指向 j
-	*p = *p / 37   // 通过指针对 j 进行除法运算
-	fmt.Println(j) // 查看 j 的值
-	fmt.Println("pointer:", p) // 指针也可以被打印
+
+func newInt() *int {
+	return new(int)
+}
+```
+## 函数
+```go
+func add(x int, y int) int {
+	return x + y
+}
+// 当连续两个或多个函数的已命名形参类型相同时，除最后一个类型以外，其它都可以省略
+func add(x, y int) int {
+	return x + y
+}
+// 多个返回值
+func vals() (int, int) {
+    return 3, 7
+}
+a, b := vals()
+_, c := vals()
+// Go 的返回值可被命名
+func split(sum int) (x, y int) {
+	x = sum * 4 / 9
+	y = sum - x
+	return
+}
+// 将任意数量的整数作为参数，nums 的类型等同于 []int
+func sum(nums ...int) {
+    fmt.Print(nums, " ")
+    total := 0
+	
+    for _, num := range nums {
+        total += num
+    }
+    fmt.Println(total)
+}
+sum(1, 2)
+sum(1, 2, 3)
+nums := []int{1, 2, 3, 4}
+sum(nums...)
+// 递归
+func fact(n int) int {
+    if n == 0 {
+        return 1
+    }
+    return n * fact(n-1)
+}
+// 递归
+var fib func(n int) int
+fib = func(n int) int {
+	if n < 2 {
+		return n
+	}
+	return fib(n-1) + fib(n-2)
 }
 ```
 ## 结构体
@@ -506,105 +668,22 @@ func (b base) describe() string {
 }
 fmt.Println("describe:", co.describe())
 ```
-##  数据类型
-```go
-bool
-
-string
-
-int  int8  int16  int32  int64
-uint uint8 uint16 uint32 uint64 uintptr
-
-byte // uint8 的别名
-
-rune // int32 的别名
-     // 表示一个 Unicode 码位
-
-float32 float64
-
-complex64 complex128
-
-
-
-
-// 浮点数默认 float64
-
-// 比较浮点数
-math.Abs(answer - 42) < 0.0001
-// fmt.Println 中使用 %T 打印数据类型
-// 0x8d
-// 整数超出范围，发生“环绕”
-var peace string = "peace"
-var peace string = `peace` // 原始字符串字面值
-```
 ## 类型别名
 ```go
+type Celsius float64
 type byte = uint8
 ```
 ## 类型转换
 ```go
 // go 没有隐式类型转换
+
+
 var i int = 42
 var f float64 = float64(i)
 var u uint = uint(f)
-```
-## 包和模块
-```go
-包就是文件夹，模块就是 .go 文件
-在 Go 中，如果一个名字以大写字母开头，那么它就是已导出的。例如，Pizza 就是个已导出名，Pi 也同样，它导出自 math 包。
-pizza 和 pi 并未以大写字母开头，所以它们是未导出的。
-在导入一个包时，你只能引用其中已导出的名字。 任何「未导出」的名字在该包外均无法访问。
-```
-## 函数
-```go
-func add(x int, y int) int {
-	return x + y
-}
-// 当连续两个或多个函数的已命名形参类型相同时，除最后一个类型以外，其它都可以省略
-func add(x, y int) int {
-	return x + y
-}
-// 多个返回值
-func vals() (int, int) {
-    return 3, 7
-}
-a, b := vals()
-_, c := vals()
-// Go 的返回值可被命名
-func split(sum int) (x, y int) {
-	x = sum * 4 / 9
-	y = sum - x
-	return
-}
-// 将任意数量的整数作为参数，nums 的类型等同于 []int
-func sum(nums ...int) {
-    fmt.Print(nums, " ")
-    total := 0
-	
-    for _, num := range nums {
-        total += num
-    }
-    fmt.Println(total)
-}
-sum(1, 2)
-sum(1, 2, 3)
-nums := []int{1, 2, 3, 4}
-sum(nums...)
-// 递归
-func fact(n int) int {
-    if n == 0 {
-        return 1
-    }
-    return n * fact(n-1)
-}
-// 递归
-var fib func(n int) int
-fib = func(n int) int {
-	if n < 2 {
-		return n
-	}
-	return fib(n-1) + fib(n-2)
-}
+
+// 将字符串 "x"转换为字节切片（[]byte）
+var r = []byte("x")
 ```
 ## 闭包
 ```go
@@ -688,6 +767,9 @@ go func() { messages <- "ping" }()
 // 接收管道中的信息
 msg := <-messages
 ```
+## 反射
+## unsafe
+## 泛型
 ## 标准库
 ## strings
 ```go

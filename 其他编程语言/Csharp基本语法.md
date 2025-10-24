@@ -8,6 +8,7 @@
 - [数据类型](#数据类型)
 - [注释](#注释)
 - [常量和变量](#常量和变量)
+- [类型默认值](#类型默认值)
 - [using指令](#using指令)
 - [类型转换](#类型转换)
 - [格式化输出](#格式化输出)
@@ -191,13 +192,35 @@ int i = 10;
 // 类型自动推断
 var i = 10;
 ```
-## 数组
+## 类型默认值
 ```c#
-int[] source = [0, 1, 2, 3, 4, 5];
+// 所有引用类型的默认值为 null
+// 数值类型默认值为 0
+// 布尔类型默认值为 false
+// 字符串默认值为 ""（空字符串）
+
+
+// 局部变量必须显式初始化
 ```
 ## using指令
 ```c#
+using System;
 
+
+// 别名
+using MyAlias = Some.Very.Long.Namespace.MyClass;
+using IO = System.IO;
+
+
+// 使用using static可以引入一个类的静态成员，从而直接使用静态方法或属性，无需类名限定
+using static System.Math; // 引入Math类的静态成员
+using static System.Console; // 引入Console类的静态成员
+PI * Pow(radius, 2);
+
+
+// 从 C# 10.0 开始，使用global using指令可以在一个项目中全局引入命名空间或静态成员，这样项目中的所有文件都不需要再单独引入
+global using System;
+global using static System.Math;
 ```
 ## if
 ```c#
@@ -241,16 +264,155 @@ switch (day)
 ```c#
 bool result = (20 > 10) ? true : false;
 ```
+## for
+```c#
+int sum = 0;
+for (int i = 1; i <= 100; i++)
+{
+    sum += i;
+	continue;
+	break;
+}
+```
+## while
+```c#
+int count = 5;
+while (count > 0)
+{
+    Console.WriteLine($"倒计时: {count}");
+    count--;
+}
+
+
+
+
+int count = 5;
+do
+{
+    count--;
+} while (count > 0);
+```
+## foreach
+```c#
+// 遍历数组
+int[] numbers = { 1, 2, 3, 4, 5 };
+foreach (int num in numbers)
+{
+    Console.WriteLine(num);
+}
+
+
+
+Dictionary<int, string> students = new Dictionary<int, string> { { 1, "Alice" }, { 2, "Bob" } };
+foreach (var (id, name) in students)
+{
+    Console.WriteLine($"学号: {id}, 姓名: {name}");
+}
+```
+## 数组
+```c#
+int[] numbers = new int[5];
+int[] numbers = {1, 2, 3, 4, 5};
+
+int[] numbers = new int[] {1, 2, 3, 4, 5}; // 编译器推断大小为5
+int[] numbers = new int[5] {1, 2, 3, 4, 5}; // 显式指定大小为5，元素个数必须匹配
+
+int firstNumber = numbers[0]; // 读取第一个元素，值为10
+numbers[1] = 25; // 修改第二个元素的值为25
+
+foreach (int number in numbers)
+{
+    Console.WriteLine(number);
+}
+
+
+
+
+// 声明并初始化一个2行3列的二维数组
+int[,] matrix = new int[2, 3] { {1, 2, 3}, {4, 5, 6} };
+// 访问第二行第三列的元素
+int element = matrix[1, 2]; // 值为6
+
+
+
+// 声明并初始化一个交错数组
+int[][] jaggedArray = new int[3][];
+jaggedArray[0] = new int[] {1, 2, 3};
+jaggedArray[1] = new int[] {4, 5};
+jaggedArray[2] = new int[] {6, 7, 8, 9};
+// 访问第一个子数组的第二个元素
+int element = jaggedArray[0][1]; // 值为2
+```
+## 枚举
+```c#
+public enum Weekday
+{
+    Monday,    // 0
+    Tuesday,   // 1
+    Wednesday // 2
+}
+
+
+// 可以显式指定值或基础类型（如 byte、long）
+public enum ErrorCode : ushort
+{
+    Success = 200,
+    NotFound = 404,
+    ServerError = 500
+}
+
+
+public enum LoopType
+{
+    None,   // 0
+    Daily,  // 1
+    Weekly = 7,
+    Monthly // 8
+}
+```
 ## 类型转换
 ```c#
-// c# 有隐式类型转换
+// 隐式转换由编译器自动完成，它发生在转换安全、不会导致数据丢失的情况下
+int numberInt = 100;
+long numberLong = numberInt; // 编译器自动完成隐式转换
 
+
+// 显式类型转换
 int i = 10;
 byte b = (byte)i;
 
-string s = "1";
-int i = Convert.ToInt32(s);
-int j = int.Parse(s);
+
+// 基类引用转换为派生类引用（向下转型）
+Animal someAnimal = new Dog();
+Dog myDogAgain = (Dog)someAnimal; // 向下转型，需要显式转换
+
+
+// 引用类型转换：as 和 is 运算符
+// ​​as 运算符​​：它尝试将对象转换为指定类型，如果转换失败（类型不兼容或对象为 null），则返回 null，而不会抛出异常
+// as运算符只能用于引用类型或可空值类型
+object obj = "这是一个字符串";
+string str = obj as string; // 转换成功，str 不为 null
+object notAString = 123;
+string failedConversion = notAString as string; // 转换失败，failedConversion 为 null
+
+
+// ​​is 运算符
+if (someObject is string specificString)
+{
+    // 检查通过后，可以直接使用 specificString
+    Console.WriteLine(specificString.Length);
+}
+
+
+
+// System.Convert类提供了一系列静态方法（如 ToInt32, ToString）
+string numberString = "123";
+int convertedNumber = Convert.ToInt32(numberString); // 字符串转整数
+
+
+// Parse 与 TryParse 方法​​：专门用于将字符串转换为特定的值类型（如整数、浮点数、日期等）
+string input = "true";
+bool result = bool.Parse(input); // 使用 Parse 转换
 ```
 ## 自定义类型
 ```c#
