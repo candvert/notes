@@ -21,6 +21,7 @@
 - [数组](#数组)
 - [切片](#切片)
 - [Map](#Map)
+- [make函数](#make函数)
 - [指针](#指针)
 - [new](#new)
 - [函数](#函数)
@@ -74,7 +75,7 @@ go build a.go
 ./a
 ```
 ## 创建模块
-使用 go mod init 命令来初始化一个新的Go模块。这会生成一个 go.mod文件
+使用 go mod init 命令来初始化一个新的 Go 模块。这会生成一个 go.mod 文件
 ## 每个源文件的结构
 每个源文件都以一条 package 声明语句开始，说明该源文件是属于哪个包
 package 声明语句之后是 import 语句
@@ -95,6 +96,8 @@ Go 语言原生支持 Unicode
 
 Go 语言不允许导入未使用的包
 
+Go 语言不允许使用无用的局部变量
+
 
 Go 语言中 i++ 是语句，而不是表达式，因此 j = i++ 是非法的
 
@@ -102,13 +105,11 @@ Go 中没有 ++i 的操作，只有 i++
 
 Go 语言只有 for 循环这一种循环语句。for 循环有多种形式
 
-Go 语言不允许使用无用的局部变量
-
 空标识符_
 
 在包级别声明的变量会在 main 入口函数执行前完成初始化，局部变量将在声明语句被执行到的时候完成初始化
 
-Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有异常，没有宏，没有函数修饰，更没有线程局部存储
+Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有异常，没有宏，没有函数修饰，没有线程局部存储
 
 Go 没有三元运算符
 
@@ -432,13 +433,13 @@ l := s[2:5]
 l = s[:5]
 l = s[2:]
 l = s[:]
-// 内置的 append 函数，返回切片
+// 内置的 append 函数，当超过容量时，便会分配一个新数组，大小为原来底层数组的两倍，并将原数组的数据复制到新数组（和 C++ vector 的动态增长相同）。返回切片
 s = append(s, "d")
 s = append(s, "e", "f")
 a := []string{"John", "Paul"}
 b := []string{"George", "Ringo", "Pete"}
 a = append(a, b...)
-// copy 函数
+// 内置的 copy 函数，将切片 s 的内容复制到切片 c 中，返回被复制的元素数量
 c := make([]string, len(s))
 copy(c, s)
 
@@ -452,8 +453,10 @@ ll := l[:5] // ll 的长度超过原本切片 l 的长度
 
 // 存在切片不为 nil，但长度和容量为 0
 // go 函数应该相同对待长度为 0 的切片，不管是不是 nil
-s := []int{}
-s2 := make([]int, 3)[3:]
+s := []int{} // 长度为 0
+s2 := make([]int, 3)[3:] // 长度为 0
+s = []int{0, 1, 2, 3}
+s3 := s[:0] // 长度为 0
 
 
 // 二维切片
@@ -469,24 +472,42 @@ for i := range 3 {
 ```
 ## Map
 ```go
-// Map 是 Go 内置的类型
-// 在Go语言中，一个map就是一个哈希表的引用
+// Map 是 Go 的内置类型
+// Map 是哈希表的引用，键必须是唯一的，键值对是无序的
+// 键必须可以使用 == 进行比较，以确认该键是否存在
+// Map 的零值是 nil
+// Map 不可比较，唯一合法的 Map 比较是和 nil 相比，即 m == nil
 
 
-// 使用内置的 make 命令创建一个空的 Map
+// 创建 Map
+ages := map[string]int{
+	"alice": 31,
+	"charlie": 34,
+}
+// 遍历
+for name, age := range ages {
+	fmt.Printf("%s\t%d\n", name, age)
+}
+
+// 使用内置的 make 函数创建一个空的 Map
 m := make(map[string]int)
-m["k1"] = 7
-// 如果键不存在，则返回the zero value of the value type
-v3 := m["k3"]
+m["alice"] = 31
+// 如果键不存在，则返回值类型对应的零值
+m["bob"] = m["bob"] + 1
+// 使用内置 len 函数返回 Map 的元素数量
 fmt.Println("len:", len(m))
-// 内置 delete 从 Map 中删除键/值对
-delete(m, "k2")
-// 使用内置的 clear 函数删除所有键/值对
+// 内置 delete 函数从 Map 中删除键值对
+delete(m, "charlie")
+// 使用内置的 clear 函数删除所有键值对
 clear(m)
-// 获取值时可选的第二个返回值指示键是否存在于 Map 中
-_, prs := m["k2"]
-// 在同一行中声明和初始化新 Map
-n := map[string]int{"foo": 1, "bar": 2}
+// 可选的第二个返回值是布尔类型，true 表示键存在
+age, ok := m["charlie"]
+```
+## make函数
+```go
+s := make([]string)
+s = make([]string, 3)
+s = make([]string, 3, 10)
 ```
 ## 指针
 ```go
@@ -561,35 +582,52 @@ fib = func(n int) int {
 ```
 ## 结构体
 ```go
-type Vertex struct {
-	X int
-	Y int
-}
-
-func main() {
-	v := Vertex{1, 2}
-	v.X = 4
-	fmt.Println(v.X)
-	// 结构体指针
-	p := &v
-	// 隐式解引用
-	p.X = 1e9
-}
+// 结构体字段的首字母如果是大写的，那么它就是导出的
+// 如果结构体的所有字段都是可比较的，那么该结构体就是可比较的，可以使用 == 或 != 进行比较
+// 空结构体 struct{}，大小为 0
 
 
+type Point struct{ X, Y int }
+// 下面两种形式的初始化不能混用
+// 第一种形式
+p := Point{1, 2}
+// 第二种形式
+p2 := Point{Y: 2}
+p3 := Point{}
+// 一个语法糖，初始化一个结构体并取得它的地址
+ptr := &Point{1, 2}
 
 
 
-type Vertex struct {
+// struct Embedding
+type Point struct {
 	X, Y int
 }
-
-var (
-	v1 = Vertex{1, 2}  // 创建一个 Vertex 类型的结构体
-	v2 = Vertex{X: 1}  // Y:0 被隐式地赋予零值
-	v3 = Vertex{}      // X:0 Y:0
-	p  = &Vertex{1, 2} // 创建一个 *Vertex 类型的结构体（指针）
-)
+// 匿名字段，即允许字段只有类型而没有名字
+// 其实匿名字段是有名字的，名字和类型名相同，但是这些名字是可选的当使用点表达式时，可以省略任意多个
+// 因为匿名字段实际有隐式的名字，所以不能有两个相同类型的字段，因为会导致名称冲突
+type Circle struct {
+	Point
+	Radius int
+}
+type Wheel struct {
+	Circle
+	Spokes int
+}
+var w Wheel
+w.X = 8 // equivalent to w.Circle.Point.X = 8
+w.Y = 8 // equivalent to w.Circle.Point.Y = 8
+w.Radius = 5 // equivalent to w.Circle.Radius = 5
+w.Spokes = 20
+// 初始化方式
+w = Wheel{Circle{Point{8, 8}, 5}, 20}
+w = Wheel{
+	Circle: Circle{
+		Point: Point{X: 8, Y: 8},
+		Radius: 5,
+	},
+	Spokes: 20, // NOTE: trailing comma necessary here (and at Radius)
+}
 
 
 
@@ -601,6 +639,34 @@ dog := struct {
 	"Rex",
 	true,
 }
+```
+## Json支持
+```go
+// `json:"released"` 称为字段标签，默认会使用字段名作用 json 的键名，字段标签
+type Movie struct {
+	Title string
+	Year int `json:"released"`
+	Color bool `json:"color,omitempty"`
+	Actors []string
+}
+var movies = []Movie{
+	{Title: "Casablanca", Year: 1942, Color: false,
+		Actors: []string{"Humphrey Bogart", "Ingrid Bergman"}},
+	{Title: "Cool Hand Luke", Year: 1967, Color: true,
+		Actors: []string{"Paul Newman"}},
+	{Title: "Bullitt", Year: 1968, Color: true,
+		Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
+	// ...
+}
+// 只有导出的字段会转换为 json
+// Marshal 函数返回一个字节切片，该切片为一个长字符串，不包含空格和换行符
+data, err := json.Marshal(movies)
+// MarshalIndent 函数返回的是缩进良好的结果，后两个参数是可选的
+data, err := json.MarshalIndent(movies, "", " ")
+if err != nil {
+	log.Fatalf("JSON marshaling failed: %s", err)
+}
+fmt.Printf("%s\n", data)
 ```
 ## 方法
 ```go
