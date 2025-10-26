@@ -26,7 +26,10 @@
 - [new](#new)
 - [函数](#函数)
 - [结构体](#结构体)
+- [Json支持](#Json支持)
+- [模板语法](#模板语法)
 - [方法](#方法)
+- [String方法](#String方法)
 - [接口](#接口)
 - [嵌套结构体](#嵌套结构体)
 - [类型别名](#类型别名)
@@ -116,6 +119,8 @@ Go 没有三元运算符
 创建百万级的 goroutine 完全是可行的
 
 Go 有垃圾回收
+
+io包保证任何由文件结束引起的读取失败都返回同一个错误——io.EOF，该错误在io包中定义
 
 命令行参数可从 os 包的 Args 变量获取，os.Args 是一个切片，其第一个元素，os.Args[0], 是命令本身的名字；其它的元素则是程序启动时传给它的参数
 ```
@@ -347,8 +352,11 @@ for _, num := range nums {
 ```
 ## defer
 ```go
-// defer 语句会将函数推迟到外层函数返回之后执行。
+// 只需要在调用普通函数或方法前加上关键字defer，就完成了defer所需要的语法
+// 当defer语句被执行时，跟在defer后面的函数会被延迟执行。直到包含该defer语句的函数执行完毕时，defer后的函数才会被执行，不论包含defer语句的函数是通过return正常结束，还是由于panic导致的异常结束
+// 你可以在一个函数中执行多条defer语句，它们的执行顺序与声明顺序相反
 // 推迟调用的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用
+// defer语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接
 func main() {
 	defer fmt.Println("world")
 	fmt.Println("hello")
@@ -531,53 +539,87 @@ func newInt() *int {
 ```
 ## 函数
 ```go
-func add(x int, y int) int {
-	return x + y
+// 如果两个函数参数列表和返回值列表中的变量类型一一对应，就被视为同一函数类型
+// 函数调用必须按照声明顺序为所有参数提供实参
+// Go语言没有默认参数，也没有任何方法可以通过参数名指定形参，因此形参和返回值的变量名对于函数调用者而言没有意义
+// Go语言使用可变栈，栈的大小按需增加（初始时很小）。这使得我们使用递归时不必考虑溢出和安全问题
+// 在Go中，函数被看作第一类值（first-class values）：函数像其他值一样，拥有类型，可以被赋值给其他变量，传递给函数，从函数返回。对函数值（function value）的调用类似函数调用
+
+
+func say() {
+	fmt.Println("hi")
 }
-// 当连续两个或多个函数的已命名形参类型相同时，除最后一个类型以外，其它都可以省略
+
+// 没有函数体的函数，表示不是由 Go 实现的
+func Sin(x float64) float //implemented in assembly language
+
+// 一组形参有相同的类型，我们不必为每个形参都写出参数类型
 func add(x, y int) int {
 	return x + y
 }
+// 返回值也可以命名，值为对应类型的零值
+func sub(x, y int) (z int) { z = x - y; return}
+// _ 表示不使用该参数
+func first(x int, _ int) int { return x }
+// 不提供参数名称
+func zero(int, int) int { return 0 }
+
+
 // 多个返回值
-func vals() (int, int) {
+func val() (int, int) {
     return 3, 7
 }
-a, b := vals()
-_, c := vals()
-// Go 的返回值可被命名
-func split(sum int) (x, y int) {
-	x = sum * 4 / 9
-	y = sum - x
+_, b := val()
+// 一个函数内部可以将另一个有多返回值的函数作为返回值
+func val2(x, y int) (int, int) {
+    return vals()
+}
+// 当你调用接受多参数的函数时，可以将一个返回多参数的函数作为该函数的参数
+val2(val())
+
+
+// bare return
+func val3() (x, y int) {
+	x = 3
 	return
 }
-// 将任意数量的整数作为参数，nums 的类型等同于 []int
-func sum(nums ...int) {
-    fmt.Print(nums, " ")
-    total := 0
-	
-    for _, num := range nums {
-        total += num
-    }
-    fmt.Println(total)
+
+
+
+
+// 可变参数，需要在参数列表的最后一个参数类型之前加上省略符号 “...”
+// nums 被看作是 []int
+func sum(nums...int) {
+    fmt.Println("hi")
 }
 sum(1, 2)
 sum(1, 2, 3)
+// 如果参数是切片，可以使用 nums...
 nums := []int{1, 2, 3, 4}
 sum(nums...)
-// 递归
-func fact(n int) int {
-    if n == 0 {
-        return 1
-    }
-    return n * fact(n-1)
-}
-// 递归
-var fib func(n int) int
-fib = func(n int) int {
-	if n < 2 {
-		return n
+
+
+// 函数变量，函数类型的零值是nil。调用值为nil的函数值会引起panic错误
+func square(n int) int { return n * n }
+f := square
+fmt.Println(f(3))
+```
+## 匿名函数
+```go
+// 匿名函数可以访问其定义时环境中的变量
+func squares() func() int {
+	var x int
+	return func() int {
+		x++
+		return x * x
 	}
-	return fib(n-1) + fib(n-2)
+}
+func main() {
+	f := squares()
+	fmt.Println(f()) // "1"
+	fmt.Println(f()) // "4"
+	fmt.Println(f()) // "9"
+	fmt.Println(f()) // "16"
 }
 ```
 ## 结构体
@@ -599,13 +641,12 @@ ptr := &Point{1, 2}
 
 
 
-// struct Embedding
-type Point struct {
-	X, Y int
-}
 // 匿名字段，即允许字段只有类型而没有名字
 // 其实匿名字段是有名字的，名字和类型名相同，但是这些名字是可选的当使用点表达式时，可以省略任意多个
 // 因为匿名字段实际有隐式的名字，所以不能有两个相同类型的字段，因为会导致名称冲突
+type Point struct {
+	X, Y int
+}
 type Circle struct {
 	Point
 	Radius int
@@ -628,6 +669,16 @@ w = Wheel{
 	},
 	Spokes: 20, // NOTE: trailing comma necessary here (and at Radius)
 }
+// 假设 Point 上有方法 Draw，那么可以和字段一样直接调用：
+w.Draw()
+// 或者可以这样：
+toDraw := w.Draw
+toDraw()
+// 还可以这样
+toDraw2 := Point.Draw
+toDraw2(p)
+
+
 
 
 
@@ -642,7 +693,9 @@ dog := struct {
 ```
 ## Json支持
 ```go
-// `json:"released"` 称为字段标签，默认会使用字段名作用 json 的键名，字段标签
+// `json:"released"` 称为字段标签，转换为 json 时默认会使用字段名作为 json 的键名，字段标签
+// `json:"released"` 中的键 json 控制 encoding/json 包的行为，其他的键控制相应的 encoding/... 包的行为
+// `json:"color,omitempty"` 中的 omitempty 意味着如果 Color 字段的值为零值，则该字段不会转换为 json
 type Movie struct {
 	Title string
 	Year int `json:"released"`
@@ -667,6 +720,64 @@ if err != nil {
 	log.Fatalf("JSON marshaling failed: %s", err)
 }
 fmt.Printf("%s\n", data)
+
+
+// Unmarshal 函数
+// 从 json 转换为 go 结构体的过程是大小写不敏感的，也就是说不用担心首字母大小写问题
+var titles []struct{ Title string }
+if err := json.Unmarshal(data, &titles); err != nil {
+log.Fatalf("JSON unmarshaling failed: %s", err)
+}
+fmt.Println(titles) // "[{Casablanca} {Cool Hand Luke} {Bullitt}]"
+```
+## 模板语法
+```go
+// {{...}} 叫做 actions
+// {{.Title | printf "%.64s"}} 中的 | 类似 Linux 命令行的管道符，printf 为模板语法内置的 fmt.Sprintf 功能
+const templ = `{{.TotalCount}} issues:
+{{range .Items}}----------------------------------------
+Number: {{.Number}}
+User: {{.User.Login}}
+Title: {{.Title | printf "%.64s"}}
+Age: {{.CreatedAt | daysAgo}} days
+{{end}}`
+
+
+// template.Must 接受一个模板和 err，如果 err 是 nil 则返回模板，否则 panic
+// template.New 创建并返回一个模板
+// Funcs 添加在模板中可以访问的函数，返回这个模板
+var report = template.Must(template.New("issuelist").
+	Funcs(template.FuncMap{"daysAgo": daysAgo}).
+	Parse(templ))
+
+result, err := github.SearchIssues(os.Args[1:])
+if err := report.Execute(os.Stdout, result); err != nil {
+	log.Fatal(err)
+}
+
+
+
+// html/template 包
+import "html/template"
+var issueList = template.Must(template.New("issuelist").Parse(`
+<h1>{{.TotalCount}} issues</h1>
+<table>
+<tr style='text-align: left'>
+	<th>#</th>
+	<th>State</th>
+	<th>User</th>
+	<th>Title</th>
+</tr>
+{{range .Items}}
+<tr>
+	<td><a href='{{.HTMLURL}}'>{{.Number}}</a></td>
+	<td>{{.State}}</td>
+	<td><a href='{{.User.HTMLURL}}'>{{.User.Login}}</a></td>
+	<td><a href='{{.HTMLURL}}'>{{.Title}}</a></td>
+</tr>
+{{end}}
+</table>
+`))
 ```
 ## 方法
 ```go
@@ -684,11 +795,28 @@ func (r rect) perim() int {
     return 2*r.width + 2*r.height
 }
 r := rect{width: 10, height: 5}
-fmt.Println("area: ", r.area()) // 编译器隐式地取地址调用，同 (&r).area()
-fmt.Println("perim:", r.perim())
+r.area() // 编译器隐式地取地址调用，同 (&r).area()
+r.perim()
 rp := &r
-fmt.Println("area: ", rp.area())
-fmt.Println("perim:", rp.perim())
+rp.area()
+rp.perim() // 编译器解引用，同 (*r).area()
+
+
+// 当对象是 nil 时也可以调用
+func (r *rect) area() int {
+    return r.width * r.height
+}
+r := nil
+r.area
+
+
+// 如果一个类型名本身是一个指针的话，是不允许其出现在接收器中的
+type P *int
+func (P) f() { /* ... */ } // compile error: invalid receiver type
+```
+## String方法
+```go
+// 当为结构体定义 String 方法后，fmt 会直接调用用户定义的 String 方法
 ```
 ## 接口
 ```go
@@ -728,7 +856,7 @@ co := container{
 }
 fmt.Println("num:", co.num)
 fmt.Println("also num:", co.base.num)
-	
+
 func (b base) describe() string {
     return fmt.Sprintf("base with num=%v", b.num)
 }
