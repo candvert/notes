@@ -3,92 +3,85 @@
 	- [程序入口](#程序入口)
 	- [配置国内源](#配置国内源)
 	- [运行单个文件](#运行单个文件)
+- [基础内容](#基础内容)
 	- [创建模块](#创建模块)
-- [基础](#基础)
 	- [每个源文件的结构](#每个源文件的结构)
 	- [包](#包)
 	- [名字的可见性](#名字的可见性)
+	- [示例程序结构](#示例程序结构)
 	- [零值](#零值)
+	- [所有关键字](#所有关键字)
+	- [命令行参数](#命令行参数)
 	- [注释](#注释)
 	- [常量和变量](#常量和变量)
 	- [变量的生命周期](#变量的生命周期)
+	- [import](#import)
+	- [声明语句](#声明语句)
+	- [init初始化函数](#init初始化函数)
 	- [if](#if)
 	- [switch](#switch)
 	- [循环](#循环)
-	- [所有关键字](#所有关键字)
-- [import](#import)
-- [声明语句](#声明语句)
-- [init初始化函数](#init初始化函数)
-- [运算符](#运算符)
-- [defer](#defer)
+	- [类型别名](#类型别名)
+	- [类型转换](#类型转换)
+- [基本数据类型](#基本数据类型)
+	- [复数](#复数)
+	- [字符串](#字符串)
 - [复合类型](#复合类型)
 	- [数组](#数组)
 	- [切片](#切片)
 	- [Map](#Map)
 	- [结构体](#结构体)
-		- [嵌套结构体](#嵌套结构体)
 	- [Json支持](#Json支持)
 	- [模板语法](#模板语法)
-	- [make函数](#make函数)
-- [指针](#指针)
-- [new](#new)
 - [函数](#函数)
+	- [错误](#错误)
+	- [defer](#defer)
 - [方法](#方法)
 	- [String方法](#String方法)
 - [接口](#接口)
 	- [类型断言](#类型断言)
-- [类型别名](#类型别名)
-- [类型转换](#类型转换)
-- [闭包](#闭包)
-- [Range](#Range)
-- [字符串](#字符串)
-- [错误](#错误)
 - [Goroutines和Channels](#Goroutines和Channels)
 	- [Goroutines](#Goroutines)
 	- [Channels](#Channels)
-
-
+- [基于共享变量的并发](#基于共享变量的并发)
+- [包和工具](#包和工具)
+- [泛型](#泛型)
+- [测试](#测试)
 - [反射](#反射)
 - [unsafe](#unsafe)
-- [泛型](#泛型)
-
 
 
 - [标准库](#标准库)
 	- [strings](#strings)
+	- [io](#io)
 
 ## Go语言的特点
 ```go
-Go 语言原生支持 Unicode
-
-函数的左括号 { 必须和 func 函数声明在同一行上, 且位于末尾，相似的还有 for 循环
+Go 有垃圾回收
 
 Go 语言不允许导入未使用的包
 
 Go 语言不允许使用无用的局部变量
 
+Go 语言原生支持 Unicode
+
+Go 中没有 ++i，只有 i++
+
 Go 语言中 i++ 是语句，而不是表达式，因此 j = i++ 是非法的
 
-Go 中没有 ++i 的操作，只有 i++
-
-Go 语言只有 for 循环这一种循环语句。for 循环有多种形式
-
-空标识符_
-
-在包级别声明的变量会在 main 入口函数执行前完成初始化，局部变量将在声明语句被执行到的时候完成初始化
-
-Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有异常，没有宏，没有函数修饰，没有线程局部存储
+Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有异常，没有宏
 
 Go 没有三元运算符
 
+Go 语言只有 for 循环这一种循环语句，for 循环有多种形式
+
 创建百万级的 goroutine 完全是可行的
 
-Go 有垃圾回收
+函数的左括号 { 必须和 func 函数声明在同一行上, 且位于行尾，相似的还有 for 循环
 
-io包保证任何由文件结束引起的读取失败都返回同一个错误——io.EOF，该错误在io包中定义
-
-命令行参数可从 os 包的 Args 变量获取，os.Args 是一个切片，其第一个元素，os.Args[0], 是命令本身的名字；其它的元素则是程序启动时传给它的参数
+在包级别声明的变量会在 main 入口函数执行前完成初始化，局部变量将在声明语句被执行到的时候完成初始化
 ```
+## 快速开始
 ## 程序入口
 程序入口是 main 包中的 main 函数
 ```go
@@ -114,10 +107,21 @@ go run a.go
 go build a.go
 ./a
 ```
+## 基础内容
 ## 创建模块
-使用 go mod init 命令来初始化一个新的 Go 模块。这会生成一个 go.mod 文件
+go mod init 命令在当前目录下生成一个 go.mod 文件
+```sh
+go mod init web
+```
+生成的 go.mod 文件
+```sh
+module web
+
+go 1.25.1
+```
+一个项目只能有一个根目录的 go.mod 文件，不能有其他 go.mod 文件
 ## 每个源文件的结构
-每个源文件都以一条 package 声明语句开始，说明该源文件是属于哪个包
+每个源文件都以一条 package 声明语句开始，说明该源文件属于哪个包
 package 声明语句之后是 import 语句
 必须恰当导入需要的包，缺少了必要的包或者导入了不需要的包，程序都无法编译通过。这项严格要求避免了程序开发过程中引入未使用的包
 ## 包
@@ -126,6 +130,50 @@ package 声明语句之后是 import 语句
 ## 名字的可见性
 如果一个名字是在函数外部定义，那么将在当前包的所有文件中都可以访问。
 名字的开头字母的大小写决定了名字在包外的可见性。如果一个名字是大写字母开头的，那么它将是导出的，也就是说可以被外部的包访问，例如 fmt 包的 Printf 函数就是导出的，可以在 fmt 包外部访问。包本身的名字一般总是用小写字母。
+结构体的字段也遵循相同规则。
+## 示例程序结构
+目录结构：
+```go
+- go.mod
+- main.go
+- web
+	- connect.go
+	- disConnect.go
+	- http
+		- http.go
+```
+connect.go 文件：
+```go
+package web
+
+import "fmt"
+
+func Connect() {
+	fmt.Println("connectted")
+}
+```
+http.go 文件
+```go
+package http
+
+import "fmt"
+
+func Http() {
+	fmt.Println("send http")
+}
+```
+在 main.go 中使用 main/web 包和 main/web/http 包
+```go
+package main
+
+import "main/web"
+import "main/web/http"
+
+func main() {
+	web.Connect()
+	http.Http()
+}
+```
 ## 零值
 如果变量没有显式初始化，则被隐式地赋予其类型的零值
 数值类型为 0，布尔类型为 false，字符串为 ""（空字符串）
@@ -170,6 +218,10 @@ continue for import return var
 == != < <= > >=
 &&
 ||
+```
+## 命令行参数
+```go
+命令行参数可从 os 包的 Args 变量获取，os.Args 是一个切片，其第一个元素，os.Args[0], 是命令本身的名字；其它的元素则是程序启动时传给它的参数
 ```
 ## 注释
 ```go
@@ -262,11 +314,6 @@ import (
 // 每个文件都可以包含多个 init 初始化函数，这些 init 初始化函数不能被调用或引用
 func init() { /* ... */ }
 ```
-## 运算符
-```go
-+=
-对string类型， + 运算符连接字符串
-```
 ## if
 ```go
 if command == "go" {
@@ -354,16 +401,16 @@ for _, num := range nums {
 ```
 ## defer
 ```go
-// 只需要在调用普通函数或方法前加上关键字defer，就完成了defer所需要的语法
-// 当defer语句被执行时，跟在defer后面的函数会被延迟执行。直到包含该defer语句的函数执行完毕时，defer后的函数才会被执行，不论包含defer语句的函数是通过return正常结束，还是由于panic导致的异常结束
-// 你可以在一个函数中执行多条defer语句，它们的执行顺序与声明顺序相反
+// 只需要在调用普通函数或方法前加上关键字 defer，就完成了 defer 所需要的语法
+// 当 defer 语句被执行时，跟在 defer 后面的函数会被延迟执行。直到包含该 defer 语句的函数执行完毕时，defer 后的函数才会被执行，不论包含 defer 语句的函数是通过 return 正常结束，还是由于 panic 导致的异常结束
+// 你可以在一个函数中执行多条 defer 语句，它们的执行顺序与声明顺序相反
 // 推迟调用的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用
-// defer语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接
+// defer 语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接
 func main() {
 	defer fmt.Println("world")
 	fmt.Println("hello")
 }
-// 推迟调用的函数调用会被压入一个栈中。 当外层函数返回时，被推迟的调用会按照后进先出的顺序调用
+// 推迟调用的函数调用会被压入一个栈中。当外层函数返回时，被推迟的调用会按照后进先出的顺序调用
 func main() {
 	fmt.Println("counting")
 	for i := 0; i < 10; i++ {
@@ -372,6 +419,10 @@ func main() {
 	fmt.Println("done")
 }
 ```
+## 基本数据类型
+## 复数
+## 字符串
+## 复合类型
 ## 数组
 ```go
 // 在 Go 代码中，切片更为常见
@@ -512,32 +563,6 @@ delete(m, "charlie")
 clear(m)
 // 可选的第二个返回值是布尔类型，true 表示键存在
 age, ok := m["charlie"]
-```
-## make函数
-```go
-s := make([]string)
-s = make([]string, 3)
-s = make([]string, 3, 10)
-```
-## 指针
-```go
-// 与 C 不同，Go 没有指针运算
-x := 1
-
-p := &i
-*p = 21
-fmt.Println(*p)
-fmt.Println("pointer:", p) // 指针也可以被打印
-```
-## new
-```go
-p := new(int) // p, *int 类型, 指向匿名的 int 变量
-fmt.Println(*p) // "0"
-
-
-func newInt() *int {
-	return new(int)
-}
 ```
 ## 函数
 ```go
@@ -902,29 +927,6 @@ if s, ok := i.(string); ok {
     fmt.Println("不是字符串类型")
 }
 ```
-## 嵌套结构体
-```go
-type base struct {
-    num int
-}
-type container struct {
-    base
-    str string
-}
-co := container{
-	base: base{
-		num: 1,
-	},
-	str: "some name",
-}
-fmt.Println("num:", co.num)
-fmt.Println("also num:", co.base.num)
-
-func (b base) describe() string {
-    return fmt.Sprintf("base with num=%v", b.num)
-}
-fmt.Println("describe:", co.describe())
-```
 ## 类型别名
 ```go
 type Celsius float64
@@ -942,52 +944,6 @@ var u uint = uint(f)
 // 将字符串 "x"转换为字节切片（[]byte）
 var r = []byte("x")
 ```
-## 闭包
-```go
-func intSeq() func() int {
-    i := 0
-    return func() int {
-        i++
-        return i
-    }
-}
-nextInt := intSeq()
-fmt.Println(nextInt())
-fmt.Println(nextInt())
-fmt.Println(nextInt())
-```
-## Range
-```go
-nums := []int{2, 3, 4}
-for index, num := range nums {
-	if num == 3 {
-		fmt.Println("index:", index)
-	}
-}
-
-
-	
-kvs := map[string]string{"a": "apple", "b": "banana"}
-for k, v := range kvs {
-	fmt.Printf("%s -> %s\n", k, v)
-}
-for k := range kvs {
-	fmt.Println("key:", k)
-}
-
-
-
-
-for index, char := range "go" {
-	fmt.Println(index, char)
-}
-```
-## 字符串
-```go
-// Go 语言和标准库将字符串视为 UTF-8 编码文本的容器
-// 在 Go 中, 字符被叫做 rune，它是一个表示 Unicode code point 的整数
-var a = "go" + "lang"
-```
 ## 错误
 ```go
 // 按照惯例，错误是最后一个返回值
@@ -998,6 +954,7 @@ func f(arg int) (int, error) {
     return arg + 3, nil
 }
 ```
+## Goroutines和Channels
 ## Goroutines
 ```go
 func f(from string) {
@@ -1024,11 +981,18 @@ go func() { messages <- "ping" }()
 // 接收管道中的信息
 msg := <-messages
 ```
+## 基于共享变量的并发
+## 包和工具
+## 泛型
+## 测试
 ## 反射
 ## unsafe
-## 泛型
 ## 标准库
 ## strings
 ```go
 strings.Join("hello", " world")
+```
+## io
+```go
+io 包保证任何由文件结束引起的读取失败都返回同一个错误 io.EOF，该错误在 io 包中定义
 ```
