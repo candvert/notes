@@ -332,7 +332,7 @@ if v := math.Pow(x, n); v < lim {
 ```
 ## switch
 ```go
-// Go 只会运行匹配的 case，而非之后所有的 case
+// Go 只会运行匹配的 case 下的代码，而非之后所有的 case
 // switch 的 case 无需为常量，且取值不限于整数
 switch command {
 	case "go":
@@ -968,12 +968,12 @@ go f() // create a new goroutine that calls f(); don't wait
 ```
 ## Channels
 ```go
-// channel 的零值是 nil
+// channel 的零值是 nil，在 nil channel 上的发送和接收操作会永远阻塞
 // 两个 channel 可以使用 == 进行比较
-// 一个可以发送 int 类型数据的 channel 一般写为 chan int
+// 一个可以发送 int 类型数据的 channel 的类型为 chan int
 // channel 有两个主要操作，send 和 receive，都使用 <- 运算符
-// channel 支持第三种操作，即 close，它设置一个标志，表示该 Channel 上不会再发送任何值，后续的发送尝试将导致 panic
-// 对一个已经被 close 的 channel 进行接收操作依然可以接收到之前已经成功发送的数据，如果 channel 中已经没有数据则接收操作立刻完成，并返回发送类型的零值
+// channel 支持第三种操作，即 close，它表示该 channel 上不会再发送任何值，后续的发送尝试将导致 panic
+// 对一个已经被 close 的 channel 进行接收操作依然可以接收到之前已经成功发送的数据，如果该 channel 中已经没有数据则接收操作立刻完成，并返回类型的零值
 // 一般来说没必要主动关闭 channel，垃圾回收器会决定何时回收不管 channel 有没有关闭
 // 尝试关闭一个已经关闭的 channel 会导致 panic，关闭 nil channel 也一样
 
@@ -983,7 +983,7 @@ ch := make(chan int) // ch has type 'chan int'
 ch <- x // a send statement
 x = <-ch // a receive expression in an assignment statement
 <-ch // a receive statement; result is discarded
-// ok 为 true 时表示接收成功，为 false 时表示 channel 已关闭并没有未取得的值
+// ok 为 true 时表示接收成功，为 false 时表示 channel 已关闭并且 channel 中没有多余数据
 x, ok = <-ch
 
 // for 循环
@@ -998,11 +998,68 @@ close(ch)
 // 以最简单方式调用 make 函数创建的是 unbuffered channel
 // make 接受第二个可选参数，即一个整数，表示通道的容量。如果容量非零，make 会创建一个 buffered channel
 // 在 unbuffered channel 上执行发送操作会阻塞发送 goroutine，直到另一个 goroutine 在同一 channel 上执行相应的接收操作。相反，如果首先尝试接收操作，则接收 goroutine 将被阻塞，直到另一个 goroutine 在同一 channel 上执行发送操作
+// buffered channel 有一个元素队列，队列的大小为使用 make 函数创建时指定的容量大小。在 buffered channel 上进行的发送操作会在队尾插入一个元素，接收操作会移除队首的一个元素。如果通道已满，则发送操作将阻塞其 goroutine，直到另一个 goroutine 的接收操作提供空间。相反，如果通道为空，则接收操作将阻塞，直到另一个 goroutine 发送值
 ch = make(chan int) // unbuffered channel
 ch = make(chan int, 0) // unbuffered channel
 ch = make(chan int, 3) // buffered channel with capacity 3
+// 使用内置 cap 函数可以获取 channel 的容量
+fmt.Println(cap(ch))
+// 内置的 len 函数返回正在 channel 的队列中的元素数量
+fmt.Println(len(ch))
+
+
+// 类型 chan<- int 是一个 int 类型的只发送通道，允许发送但不允许接收
+// 类型 <-chan int 是一个 int 类型的只接收通道，允许接收但不允许发送
+// 在任何赋值操作中都允许从双向到单向通道类型的转换，但是无法再变回双向通道类型
+func sender(out chan<- int) { }
+func receiver(in <-chan int) { }
+ch := make(chan int)
+go sender(ch) // 隐式转换为 chan<- int 类型
+go receiver(ch) // 隐式转换为 <-chan int 类型
+
+var out chan<- int
+var in <-chan int
+```
+## select
+```go
+// 不包含任何 case 的 select。即 select{}，会永远等待
+// 如果多个 case 同时 ready，那么 select 会随机选一个
+// 如果 case 的 channel 是 nil，那么该 case 永远不会被选择
+
+select {
+case <-ch1:
+// ...
+case x := <-ch2:
+// ...use x...
+case ch3 <- y:
+// ...
+default:
+// ...
+}
 ```
 ## 基于共享变量的并发
+互斥锁：
+```go
+import "sync"
+
+var mu sync.Mutex
+var	balance int
+
+mu.Lock()
+balance += 1
+mu.Unlock()
+```
+多个读取器，单个写入器锁：
+```go
+import "sync"
+
+var mu sync.RWMutex
+var balance int
+
+mu.RLock()
+result := balance
+mu.RUnlock()
+```
 ## 包和工具
 ## 泛型
 ## 测试
