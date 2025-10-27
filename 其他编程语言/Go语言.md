@@ -54,6 +54,7 @@
 - [标准库](#标准库)
 	- [strings](#strings)
 	- [io](#io)
+	- [net](#net)
 
 ## Go语言的特点
 ```go
@@ -957,29 +958,49 @@ func f(arg int) (int, error) {
 ## Goroutines和Channels
 ## Goroutines
 ```go
-func f(from string) {
-    for i := range 3 {
-        fmt.Println(from, ":", i)
-    }
-}
-go f("goroutine")
-// 匿名函数
-go func(msg string) {
-	fmt.Println(msg)
-}("going")
+// goroutine 由 go 语句创建
+// go 语句就是普通的函数或方法调用，以 go 关键字为前缀
+// go 语句本身立即完成
+// 除了从主程序返回或退出程序之外，没有其他编程方式可以让一个 goroutine 停止另一个
+
+f() // call f(); wait for it to return
+go f() // create a new goroutine that calls f(); don't wait
 ```
 ## Channels
 ```go
-// Channels 是连接 Goroutines 的管道
-// 从一个 goroutine 中将值发送到管道，并从另一个 goroutine 中接收值
-// 默认情况下，发送和接收都会阻塞，直到发送者和接收者都已准备好
+// channel 的零值是 nil
+// 两个 channel 可以使用 == 进行比较
+// 一个可以发送 int 类型数据的 channel 一般写为 chan int
+// channel 有两个主要操作，send 和 receive，都使用 <- 运算符
+// channel 支持第三种操作，即 close，它设置一个标志，表示该 Channel 上不会再发送任何值，后续的发送尝试将导致 panic
+// 对一个已经被 close 的 channel 进行接收操作依然可以接收到之前已经成功发送的数据，如果 channel 中已经没有数据则接收操作立刻完成，并返回发送类型的零值
+// 一般来说没必要主动关闭 channel，垃圾回收器会决定何时回收不管 channel 有没有关闭
+// 尝试关闭一个已经关闭的 channel 会导致 panic，关闭 nil channel 也一样
 
-// 创建 channel
-messages := make(chan string)
-// 发送 "ping" 到 messages 管道
-go func() { messages <- "ping" }()
-// 接收管道中的信息
-msg := <-messages
+
+// 使用内置的 make 函数创建 channel
+ch := make(chan int) // ch has type 'chan int'
+ch <- x // a send statement
+x = <-ch // a receive expression in an assignment statement
+<-ch // a receive statement; result is discarded
+// ok 为 true 时表示接收成功，为 false 时表示 channel 已关闭并没有未取得的值
+x, ok = <-ch
+
+// for 循环
+for x := range ch {
+	fmt.Println(x)
+}
+
+// 使用内置的 close 函数关闭 channel
+close(ch)
+
+
+// 以最简单方式调用 make 函数创建的是 unbuffered channel
+// make 接受第二个可选参数，即一个整数，表示通道的容量。如果容量非零，make 会创建一个 buffered channel
+// 在 unbuffered channel 上执行发送操作会阻塞发送 goroutine，直到另一个 goroutine 在同一 channel 上执行相应的接收操作。相反，如果首先尝试接收操作，则接收 goroutine 将被阻塞，直到另一个 goroutine 在同一 channel 上执行发送操作
+ch = make(chan int) // unbuffered channel
+ch = make(chan int, 0) // unbuffered channel
+ch = make(chan int, 3) // buffered channel with capacity 3
 ```
 ## 基于共享变量的并发
 ## 包和工具
@@ -995,4 +1016,18 @@ strings.Join("hello", " world")
 ## io
 ```go
 io 包保证任何由文件结束引起的读取失败都返回同一个错误 io.EOF，该错误在 io 包中定义
+```
+## net
+```go
+import "net"
+
+listener, err := net.Listen("tcp", "localhost:8000")
+for {
+	conn, err := listener.Accept()
+	io.WriteString(conn, time.Now().Format("15:04:05\n"))
+}
+
+
+conn, err := net.Dial("tcp", "localhost:8000")
+
 ```
