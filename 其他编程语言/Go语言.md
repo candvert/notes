@@ -36,6 +36,7 @@
 - [函数](#函数)
 	- [错误](#错误)
 	- [defer](#defer)
+	- [recover](#recover)
 - [方法](#方法)
 	- [String方法](#String方法)
 - [接口](#接口)
@@ -45,6 +46,7 @@
 	- [Channels](#Channels)
 - [基于共享变量的并发](#基于共享变量的并发)
 - [包和工具](#包和工具)
+	- [go的环境变量](#go的环境变量)
 - [泛型](#泛型)
 - [测试](#测试)
 - [反射](#反射)
@@ -73,6 +75,10 @@ Go 语言中 i++ 是语句，而不是表达式，因此 j = i++ 是非法的
 Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有异常，没有宏
 
 Go 没有三元运算符
+
+数组或切片越界会导致 panic
+
+当 panic 发生时，defer 的函数会执行，然后程序崩溃
 
 Go 语言只有 for 循环这一种循环语句，for 循环有多种形式
 
@@ -126,8 +132,8 @@ go 1.25.1
 package 声明语句之后是 import 语句
 必须恰当导入需要的包，缺少了必要的包或者导入了不需要的包，程序都无法编译通过。这项严格要求避免了程序开发过程中引入未使用的包
 ## 包
-一个包由单个目录下的一个或多个 .go 源代码文件组成
-一个目录下所有的 .go 源文件必须归属于同一个包
+一个包由单个目录下的 .go 文件组成
+一个目录下所有的 .go 文件必须归属于同一个包
 ## 名字的可见性
 如果一个名字是在函数外部定义，那么将在当前包的所有文件中都可以访问。
 名字的开头字母的大小写决定了名字在包外的可见性。如果一个名字是大写字母开头的，那么它将是导出的，也就是说可以被外部的包访问，例如 fmt 包的 Printf 函数就是导出的，可以在 fmt 包外部访问。包本身的名字一般总是用小写字母。
@@ -290,6 +296,7 @@ p := new(int) // p, *int 类型, 指向匿名的 int 变量
 ## import
 ```go
 // Go 语言不允许导入未使用的包
+// 每个导入声明都会建立从当前包到导入包的依赖关系。如果这些依赖关系形成一个循环，go build 命令会报错
 
 
 // 第一种写法
@@ -302,6 +309,17 @@ import (
 	"fmt"
 	"math/rand"
 )
+
+
+// 重命名导入
+import (
+	"crypto/rand"
+	mrand "math/rand" // alternative name mrand avoids conflict
+)
+
+
+// 包的匿名导入，使用空标识符_
+import _ "image/png"
 
 
 // 在 Go 语言中，每个包都有一个全局唯一的导入路径
@@ -629,7 +647,7 @@ nums := []int{1, 2, 3, 4}
 sum(nums...)
 
 
-// 函数变量，函数类型的零值是nil。调用值为nil的函数值会引起panic错误
+// 函数变量，函数类型的零值是 nil。调用值为 nil 的函数值会引起 panic 错误
 func square(n int) int { return n * n }
 f := square
 fmt.Println(f(3))
@@ -808,6 +826,21 @@ var issueList = template.Must(template.New("issuelist").Parse(`
 {{end}}
 </table>
 `))
+```
+## recover
+```go
+// 有些情况无法恢复，比如内存不足，Go 运行时会以致命错误终止程序
+
+// 如果在 deferred 函数中调用了内置函数 recover，并且包含该 defer 语句的外层函数发生了 panic，recover 函数会使程序从 panic 中恢复，并返回 panic value。发生 panic 的函数不会继续运行，但会正常返回。如果未发生 panic，recover 调用会返回 nil
+
+func Parse() (s *Syntax, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			err = fmt.Errorf("internal error: %v", p)
+		}
+	}()
+	// ...parser...
+}
 ```
 ## 方法
 ```go
@@ -1088,9 +1121,24 @@ func Icon(name string) image.Image {
 }
 ```
 ## 包和工具
-```go
+## go的环境变量
+go env 命令打印所有和 go 有关的环境变量
 
+GOOS：所在操作系统
+GOARCH：处理器架构（amd64、arm 等）
+## go doc
+```sh
+# 整个包的注释
+go doc time
+
+# 某个包成员的注释
+go doc time.Since
+
+# 某个方法的注释
+go doc time.Duration.Seconds
 ```
+## 内部包
+Go语言的构建工具对包含 internal 名字的路径段的包导入路径做了特殊处理。这种包叫 internal 包，一个 internal 包只能被和 internal 目录有同一个父目录的包所导入。例如，net/http/internal/chunked 内部包只能被 net/http/httputil 或 net/http 包导入，但是不能被net/url包导入
 ## 泛型
 ## 测试
 ## 反射
