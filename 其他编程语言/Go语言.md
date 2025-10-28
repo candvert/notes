@@ -21,7 +21,7 @@
 	- [if](#if)
 	- [switch](#switch)
 	- [循环](#循环)
-	- [类型别名](#类型别名)
+	- [类型别名和类型定义](#类型别名和类型定义)
 	- [类型转换](#类型转换)
 - [基本数据类型](#基本数据类型)
 	- [复数](#复数)
@@ -37,16 +37,21 @@
 	- [错误](#错误)
 	- [defer](#defer)
 	- [recover](#recover)
+	- [匿名函数](#匿名函数)
 - [方法](#方法)
 	- [String方法](#String方法)
 - [接口](#接口)
 	- [类型断言](#类型断言)
+	- [type switch语句](#type%20switch语句)
 - [Goroutines和Channels](#Goroutines和Channels)
 	- [Goroutines](#Goroutines)
 	- [Channels](#Channels)
+	- [select](#select)
 - [基于共享变量的并发](#基于共享变量的并发)
 - [包和工具](#包和工具)
 	- [go的环境变量](#go的环境变量)
+	- [go doc](#go%20doc)
+	- [内部包](#内部包)
 - [泛型](#泛型)
 - [测试](#测试)
 - [反射](#反射)
@@ -78,7 +83,7 @@ Go 没有三元运算符
 
 数组或切片越界会导致 panic
 
-当 panic 发生时，defer 的函数会执行，然后程序崩溃
+当 panic 发生时，所有 defer 的函数会执行，然后程序崩溃
 
 Go 语言只有 for 循环这一种循环语句，for 循环有多种形式
 
@@ -418,27 +423,29 @@ for _, num := range nums {
 	fmt.Println("num:", num)
 }
 ```
-## defer
+## 类型别名和类型定义
 ```go
-// 只需要在调用普通函数或方法前加上关键字 defer，就完成了 defer 所需要的语法
+// 类型别名
+// 类型别名与源类型​​完全相同​，相互之间不需要类型转换
+type byte = uint8
 
-// 直到包含 defer 语句的外层函数执行完毕，defer 语句的函数才会执行
-// 即使外层函数发生 panic，defer 语句也会执行
 
-// defer 语句的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用
-// defer 语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接
-func main() {
-	defer fmt.Println("world")
-	fmt.Println("hello")
-}
-// 你可以在一个函数中执行多条 defer 语句，它们的执行顺序与声明顺序相反
-func main() {
-	fmt.Println("counting")
-	for i := 0; i < 10; i++ {
-		defer fmt.Println(i)
-	}
-	fmt.Println("done")
-}
+
+// 类型定义
+// 类型定义创建一个​​新类型​，相互之间需要​​显式转换，它们拥有相同的底层数据表示，但方法集是独立的，​​新类型不继承​​源类型的方法集
+type Celsius float64
+```
+## 类型转换
+```go
+// go 没有隐式类型转换
+
+
+var i int = 42
+var f float64 = float64(i)
+var u uint = uint(f)
+
+// 将字符串 "x"转换为字节切片（[]byte）
+var r = []byte("x")
 ```
 ## 基本数据类型
 ## 复数
@@ -584,91 +591,6 @@ delete(m, "charlie")
 clear(m)
 // 可选的第二个返回值是布尔类型，true 表示键存在
 age, ok := m["charlie"]
-```
-## 函数
-```go
-// 如果两个函数参数列表和返回值列表中的变量类型一一对应，就被视为同一函数类型
-// 函数调用必须按照声明顺序为所有参数提供实参
-// Go语言没有默认参数，也没有任何方法可以通过参数名指定形参，因此形参和返回值的变量名对于函数调用者而言没有意义
-// Go语言使用可变栈，栈的大小按需增加（初始时很小）。这使得我们使用递归时不必考虑溢出和安全问题
-// 在Go中，函数被看作第一类值（first-class values）：函数像其他值一样，拥有类型，可以被赋值给其他变量，传递给函数，从函数返回。对函数值（function value）的调用类似函数调用
-
-
-func say() {
-	fmt.Println("hi")
-}
-
-// 没有函数体的函数，表示不是由 Go 实现的
-func Sin(x float64) float //implemented in assembly language
-
-// 一组形参有相同的类型，我们不必为每个形参都写出参数类型
-func add(x, y int) int {
-	return x + y
-}
-// 返回值也可以命名，值为对应类型的零值
-func sub(x, y int) (z int) { z = x - y; return}
-// _ 表示不使用该参数
-func first(x int, _ int) int { return x }
-// 不提供参数名称
-func zero(int, int) int { return 0 }
-
-
-// 多个返回值
-func val() (int, int) {
-    return 3, 7
-}
-_, b := val()
-// 一个函数内部可以将另一个有多返回值的函数作为返回值
-func val2(x, y int) (int, int) {
-    return vals()
-}
-// 当你调用接受多参数的函数时，可以将一个返回多参数的函数作为该函数的参数
-val2(val())
-
-
-// bare return
-func val3() (x, y int) {
-	x = 3
-	return
-}
-
-
-
-
-// 可变参数，需要在参数列表的最后一个参数类型之前加上省略符号 “...”
-// nums 被看作是 []int
-func sum(nums...int) {
-    fmt.Println("hi")
-}
-sum(1, 2)
-sum(1, 2, 3)
-// 如果参数是切片，可以使用 nums...
-nums := []int{1, 2, 3, 4}
-sum(nums...)
-
-
-// 函数变量，函数类型的零值是 nil。调用值为 nil 的函数值会引起 panic 错误
-func square(n int) int { return n * n }
-f := square
-fmt.Println(f(3))
-```
-## 匿名函数
-```go
-// 匿名函数可以访问其定义时环境中的变量
-func squares() func() int {
-	var x int
-	return func() int {
-		x++
-		return x * x
-	}
-}
-func main() {
-	f := squares()
-	fmt.Println(f()) // "1"
-	fmt.Println(f()) // "4"
-	fmt.Println(f()) // "9"
-	fmt.Println(f()) // "16"
-}
 ```
 ## 结构体
 ```go
@@ -827,6 +749,105 @@ var issueList = template.Must(template.New("issuelist").Parse(`
 </table>
 `))
 ```
+## 函数
+```go
+// 如果两个函数参数列表和返回值列表中的变量类型一一对应，就被视为同一函数类型
+// 函数调用必须按照声明顺序为所有参数提供实参
+// Go语言没有默认参数，也没有任何方法可以通过参数名指定形参，因此形参和返回值的变量名对于函数调用者而言没有意义
+// Go语言使用可变栈，栈的大小按需增加（初始时很小）。这使得我们使用递归时不必考虑溢出和安全问题
+// 在Go中，函数被看作第一类值（first-class values）：函数像其他值一样，拥有类型，可以被赋值给其他变量，传递给函数，从函数返回。对函数值（function value）的调用类似函数调用
+
+
+func say() {
+	fmt.Println("hi")
+}
+
+// 没有函数体的函数，表示不是由 Go 实现的
+func Sin(x float64) float //implemented in assembly language
+
+// 一组形参有相同的类型，我们不必为每个形参都写出参数类型
+func add(x, y int) int {
+	return x + y
+}
+// 返回值也可以命名，值为对应类型的零值
+func sub(x, y int) (z int) { z = x - y; return}
+// _ 表示不使用该参数
+func first(x int, _ int) int { return x }
+// 不提供参数名称
+func zero(int, int) int { return 0 }
+
+
+// 多个返回值
+func val() (int, int) {
+    return 3, 7
+}
+_, b := val()
+// 一个函数内部可以将另一个有多返回值的函数作为返回值
+func val2(x, y int) (int, int) {
+    return vals()
+}
+// 当你调用接受多参数的函数时，可以将一个返回多参数的函数作为该函数的参数
+val2(val())
+
+
+// bare return
+func val3() (x, y int) {
+	x = 3
+	return
+}
+
+
+
+
+// 可变参数，需要在参数列表的最后一个参数类型之前加上省略符号 “...”
+// nums 被看作是 []int
+func sum(nums...int) {
+    fmt.Println("hi")
+}
+sum(1, 2)
+sum(1, 2, 3)
+// 如果参数是切片，可以使用 nums...
+nums := []int{1, 2, 3, 4}
+sum(nums...)
+
+
+// 函数变量，函数类型的零值是 nil。调用值为 nil 的函数值会引起 panic 错误
+func square(n int) int { return n * n }
+f := square
+fmt.Println(f(3))
+```
+## 错误
+```go
+// 按照惯例，错误是最后一个返回值
+func f(arg int) (int, error) {
+    if arg == 42 {
+        return -1, errors.New("can't work with 42")
+    }
+    return arg + 3, nil
+}
+```
+## defer
+```go
+// 只需要在调用普通函数或方法前加上关键字 defer，就完成了 defer 所需要的语法
+
+// 直到包含 defer 语句的外层函数执行完毕，defer 语句的函数才会执行
+// 即使外层函数发生 panic，defer 语句也会执行
+
+// defer 语句的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用
+// defer 语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接
+func main() {
+	defer fmt.Println("world")
+	fmt.Println("hello")
+}
+// 你可以在一个函数中执行多条 defer 语句，它们的执行顺序与声明顺序相反
+func main() {
+	fmt.Println("counting")
+	for i := 0; i < 10; i++ {
+		defer fmt.Println(i)
+	}
+	fmt.Println("done")
+}
+```
 ## recover
 ```go
 // 有些情况无法恢复，比如内存不足，Go 运行时会以致命错误终止程序
@@ -840,6 +861,24 @@ func Parse() (s *Syntax, err error) {
 		}
 	}()
 	// ...parser...
+}
+```
+## 匿名函数
+```go
+// 匿名函数可以访问其定义时环境中的变量
+func squares() func() int {
+	var x int
+	return func() int {
+		x++
+		return x * x
+	}
+}
+func main() {
+	f := squares()
+	fmt.Println(f()) // "1"
+	fmt.Println(f()) // "4"
+	fmt.Println(f()) // "9"
+	fmt.Println(f()) // "16"
 }
 ```
 ## 方法
@@ -883,7 +922,17 @@ func (P) f() { /* ... */ } // compile error: invalid receiver type
 ```
 ## 接口
 ```go
-// 一个类型如果拥有一个接口需要的所有方法，那么这个类型就实现了这个接口
+// 接口类型只包含方法的声明
+// 一个类型只要实现了接口中声明的所有方法，那么就实现了该接口
+// 因为空接口 interface{} 不包含任何方法声明，所以 Go 语言中的所有类型都默认实现了空接口
+
+type Shower interface {
+	show()
+}
+// 接口类型的零值是 nil
+var w Shower
+// 对值为 nil 的接口变量调用方法会导致 panic
+w.show() // panic: nil pointer dereference
 
 
 
@@ -906,89 +955,111 @@ func measure(g geometry) {
     fmt.Println(g.perim())
 }
 r := rect{2, 4}
+// 因为 rect 实现了 geometry 接口，所以可以这样调用
 measure(r)
 
 
 
 // 接口内嵌
-type ok interface {
-	geometry
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+type Writer interface {
+	Write(p []byte) (n int, err error)
+}
+type ReadWriter interface {
+	Reader
+	Writer
 }
 
 
-// 赋值语法，等号右边需要满足左边的接口
-var g geometry
-r := rect{2, 4}
-g = r
-var o ok
-g = ok
 
-
-// *rect 类型满足了 one 接口，而 rect 类型没有
-type one interface {
-    on()
+// *rect 类型满足了 Reader 接口，而 rect 类型没有
+type Reader interface {
+    Read()
 }
-func (r *rect) on() int {
+func (r *rect) Read() int {
     fmt.Println("ok")
 }
 var r rect
-var one = &r
-var one = r // compile error: r lacks on method
+var i Reader = &r
+var i Reader = r // compile error: r lacks Read method
+// 赋值给接口类型的变量后就只能调用该接口类型声明的方法
+i.Read()
+i.Close() // compile error: Reader lacks Close method
 
 
 
-// 空接口，因为空接口类型对实现它的类型没有要求，所以我们可以将任意一个值赋给空接口类型
+// 空接口，因为空接口不包含任何方法声明，所以 Go 语言中的所有类型都默认实现了空接口
 var any interface{}
-any = true
 any = 12.34
 any = "hello"
+any = map[string]int{"one": 1}
+
+
+
+// 可以这样在编译时检查某个类型是否满足某个接口
+var _ io.Writer = (*bytes.Buffer)(nil)
 ```
 ## 类型断言
 ```go
-// 在运行时检查接口变量底层具体类型
+// 判断接口类型变量的动态类型是否为断言类型
 
 // 非安全断言
-// 语法 value := interfaceVar.(T)
 var i interface{} = "hello"
 s := i.(string) // 断言成功，s 的值为 "hello"
 f := i.(int)    // 断言失败，程序 panic
+z, ok := i.(string) // 断言成功时 ok 为 true
 
 
-// 安全断言
-// 语法 value, ok := interfaceVar.(T)
-var i interface{} = "hello"
-if s, ok := i.(string); ok {
-    fmt.Println("是字符串:", s)
-} else {
-    fmt.Println("不是字符串类型")
+
+
+
+// 断言是否满足接口
+type Reader interface{
+	Read()
 }
-```
-## 类型别名
-```go
-type Celsius float64
-type byte = uint8
-```
-## 类型转换
-```go
-// go 没有隐式类型转换
+type Writer interface {
+	Write()
+}
+type Ok struct{ x int }
+func (* Ok) Read() { fmt.Println("Read") }
+func (* Ok) Write() { fmt.Println("Write") }
 
-
-var i int = 42
-var f float64 = float64(i)
-var u uint = uint(f)
-
-// 将字符串 "x"转换为字节切片（[]byte）
-var r = []byte("x")
+var o Ok{5}
+var w Reader
+w = o
+z1 := w.(Writer) // 成功
+z2 := w.(Water) // panic
+z3, ok := w.(Writer) // 断言成功时 ok 为 true
 ```
-## 错误
+## type switch语句
 ```go
-// 按照惯例，错误是最后一个返回值
-func f(arg int) (int, error) {
-    if arg == 42 {
-        return -1, errors.New("can't work with 42")
+// type 是一个关键字，​​且只能用在 switch 语句中​​，不能在其它地方单独使用
+func printType(v interface{}) {
+	// 当 case 后跟​​单个类型​​时，变量 t 为该具体类型
+    switch t := v.(type) {
+    case int:
+        fmt.Printf("整数: %d\n", t)
+    case string:
+        fmt.Printf("字符串: %s\n", t)
+	// 当 case 后跟​​​​多个类型​​时，变量 t 为变量 v 的接口类型
+    case bool, float64:
+        fmt.Printf("未知类型: %T\n", t)
+	// 当 case 后为 nil ​​时，变量 t 为变量 v 的接口类型
+	case nil:
+		fmt.Printf("未知类型: %T\n", t)
+	// default 分支，变量 t 为变量 v 的接口类型
+    default:
+        fmt.Printf("未知类型: %T\n", t)
     }
-    return arg + 3, nil
 }
+
+// 调用示例
+printType(42)        // 输出: 整数: 42
+printType("hello")   // 输出: 字符串: hello
+printType(true)      // 输出: 布尔值: true
+printType(3.14)      // 输出: 未知类型: float64
 ```
 ## Goroutines和Channels
 为 go build、go run、go test 添加 -race 选项，会记录所有对共享变量的访问，所有同步操作，包括 go 语句，channel 操作，和对 sync.Mutex.Lock 等的调用
