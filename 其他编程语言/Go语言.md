@@ -403,15 +403,17 @@ for _, num := range nums {
 ## defer
 ```go
 // 只需要在调用普通函数或方法前加上关键字 defer，就完成了 defer 所需要的语法
-// 当 defer 语句被执行时，跟在 defer 后面的函数会被延迟执行。直到包含该 defer 语句的函数执行完毕时，defer 后的函数才会被执行，不论包含 defer 语句的函数是通过 return 正常结束，还是由于 panic 导致的异常结束
-// 你可以在一个函数中执行多条 defer 语句，它们的执行顺序与声明顺序相反
-// 推迟调用的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用
+
+// 直到包含 defer 语句的外层函数执行完毕，defer 语句的函数才会执行
+// 即使外层函数发生 panic，defer 语句也会执行
+
+// defer 语句的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用
 // defer 语句经常被用于处理成对的操作，如打开、关闭、连接、断开连接
 func main() {
 	defer fmt.Println("world")
 	fmt.Println("hello")
 }
-// 推迟调用的函数调用会被压入一个栈中。当外层函数返回时，被推迟的调用会按照后进先出的顺序调用
+// 你可以在一个函数中执行多条 defer 语句，它们的执行顺序与声明顺序相反
 func main() {
 	fmt.Println("counting")
 	for i := 0; i < 10; i++ {
@@ -956,6 +958,13 @@ func f(arg int) (int, error) {
 }
 ```
 ## Goroutines和Channels
+为 go build、go run、go test 添加 -race 选项，会记录所有对共享变量的访问，所有同步操作，包括 go 语句，channel 操作，和对 sync.Mutex.Lock 等的调用
+
+goroutines 和 threads 的区别：
+- 操作系统的 threads 有一个固定大小的栈（通常是 2MB）。而 goroutines 起始时有一个较小的栈（通常是 2KB），栈的大小会随需要增大或缩小，最大可达 1GB
+- 切换操作系统的 threads 开销较大。go 运行时包含自己的调度器，使得切换 goroutines 的开销较小
+- go 的调度器使用 GOMAXPROCS 来决定同时有多少个操作系统线程执行 go 代码。其默认的值是 CPU 的核心数，所以在一个有 8 个核心的机器上时，最多有 8 个线程同时运行 go 代码
+- 操作系统的每个 threads 都有一个 id，因此可以使用该 id 做到线程局部存储。而 goroutinues 没有 id，这是设计上故意为之，因为线程局部存储总被滥用
 ## Goroutines
 ```go
 // goroutine 由 go 语句创建
@@ -1042,6 +1051,7 @@ default:
 ```go
 import "sync"
 
+// 惯例是 sync.Mutex 变量初始化的下一行紧跟使用该互斥锁的变量的初始化
 var mu sync.Mutex
 var	balance int
 
@@ -1049,18 +1059,38 @@ mu.Lock()
 balance += 1
 mu.Unlock()
 ```
-多个读取器，单个写入器锁：
+多个读取器，单个写入器锁（只有很特定的情况才使用，因为相比 Mutex，RWMutex 需要更复杂的内部记录）：
 ```go
-import "sync"
-
 var mu sync.RWMutex
-var balance int
+var number int
 
-mu.RLock()
-result := balance
-mu.RUnlock()
+func Get() int {
+	mu.RLock()
+	defer mu.RUnlock()
+	return number
+}
+
+func Set(i int) {
+	mu.Lock()
+	defer mu.Unlock()
+	number = i
+}
+```
+考虑并发的懒加载：
+```go
+// sync.Once 只有一个 Do 方法，该方法接收一个函数作为参数，确保该函数只调用一次
+var loadIconsOnce sync.Once
+var icons map[string]image.Image
+
+func Icon(name string) image.Image {
+	loadIconsOnce.Do(loadIcons)
+	return icons[name]
+}
 ```
 ## 包和工具
+```go
+
+```
 ## 泛型
 ## 测试
 ## 反射
