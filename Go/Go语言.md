@@ -8,6 +8,8 @@
 	- [每个源文件的结构](#每个源文件的结构)
 	- [包](#包)
 	- [名字的可见性](#名字的可见性)
+	- [包初始化](#包初始化)
+	- [init初始化函数](#init初始化函数)
 	- [示例程序结构](#示例程序结构)
 	- [零值](#零值)
 	- [所有关键字](#所有关键字)
@@ -15,9 +17,9 @@
 	- [注释](#注释)
 	- [常量和变量](#常量和变量)
 	- [变量的生命周期](#变量的生命周期)
+	- [原始字符串](#原始字符串)
 	- [import](#import)
 	- [声明语句](#声明语句)
-	- [init初始化函数](#init初始化函数)
 	- [if](#if)
 	- [switch](#switch)
 	- [循环](#循环)
@@ -49,6 +51,7 @@
 	- [select](#select)
 - [基于共享变量的并发](#基于共享变量的并发)
 - [包和工具](#包和工具)
+	- [包注释](#包注释)
 	- [go的环境变量](#go的环境变量)
 	- [go doc](#go%20doc)
 	- [内部包](#内部包)
@@ -56,12 +59,6 @@
 - [测试](#测试)
 - [反射](#反射)
 - [unsafe](#unsafe)
-
-
-- [标准库](#标准库)
-	- [strings](#strings)
-	- [io](#io)
-	- [net](#net)
 
 ## Go语言的特点
 ```go
@@ -137,12 +134,34 @@ go 1.25.1
 package 声明语句之后是 import 语句
 必须恰当导入需要的包，缺少了必要的包或者导入了不需要的包，程序都无法编译通过。这项严格要求避免了程序开发过程中引入未使用的包
 ## 包
-一个包由单个目录下的 .go 文件组成
-一个目录下所有的 .go 文件必须归属于同一个包
+一个包由单个目录下的一个或多个 .go 文件组成
+一个目录下所有的 .go 文件必须归属于同一个包，惯例是包名和该目录名相同
 ## 名字的可见性
 如果一个名字是在函数外部定义，那么将在当前包的所有文件中都可以访问。
-名字的开头字母的大小写决定了名字在包外的可见性。如果一个名字是大写字母开头的，那么它将是导出的，也就是说可以被外部的包访问，例如 fmt 包的 Printf 函数就是导出的，可以在 fmt 包外部访问。包本身的名字一般总是用小写字母。
+名字的首字母的大小写决定了名字在包外的可见性。如果一个名字是大写字母开头的，那么它将是导出的，也就是说可以被外部的包访问，例如 fmt 包的 Printf 函数就是导出的，可以在 fmt 包外部访问。包本身的名字一般总是用小写字母。
 结构体的字段也遵循相同规则。
+## 包初始化
+包初始化首先按照声明顺序初始化包级变量，但依赖关系会先被解析
+```go
+package any
+
+var a = b + c // a 第三个初始化, 为 3
+var b = f() // b 第二个初始化, 为 2
+var c = 1 // c 第一个初始化, 为 1
+
+func f() int { return c + 1 }
+```
+如果包有多个 .go 源文件，它们按照源文件提供给编译器的顺序进行初始化；在调用编译器之前，go 工具会先按名称对 .go 源文件进行排序
+
+程序启动时，每次只初始化一个包，按照程序中导入的顺序进行，先初始化被依赖的包，main 包是最后初始化的
+## init初始化函数
+```go
+// 每个源文件都可以包含任意多个 init 初始化函数，此类 init 函数不能被调用或引用，但除此之外，它们和普通函数相同
+// 在每个源文件中，init 函数都会在程序启动时按照声明的顺序自动执行
+
+// init 函数必须是这种形式，即没有返回值
+func init() { /* ... */ }
+```
 ## 示例程序结构
 目录结构：
 ```go
@@ -298,6 +317,11 @@ p := new(int) // p, *int 类型, 指向匿名的 int 变量
 ```go
 对于在包一级声明的变量来说，它们的生命周期和整个程序的运行周期是一致的
 ```
+## 原始字符串
+```go
+s := `hello
+world`
+```
 ## import
 ```go
 // Go 语言不允许导入未使用的包
@@ -325,18 +349,10 @@ import (
 
 // 包的匿名导入，使用空标识符_
 import _ "image/png"
-
-
-// 在 Go 语言中，每个包都有一个全局唯一的导入路径
 ```
 ## 声明语句
 ```go
 // Go语言主要有四种类型的声明语句：var、const、type 和 func
-```
-## init初始化函数
-```go
-// 每个文件都可以包含多个 init 初始化函数，这些 init 初始化函数不能被调用或引用
-func init() { /* ... */ }
 ```
 ## if
 ```go
@@ -444,8 +460,8 @@ var i int = 42
 var f float64 = float64(i)
 var u uint = uint(f)
 
-// 将字符串 "x"转换为字节切片（[]byte）
-var r = []byte("x")
+// 将字符串 "hello" 转换为字节切片
+var r = []byte("hello")
 ```
 ## 基本数据类型
 ## 复数
@@ -650,6 +666,24 @@ toDraw2(p)
 
 
 
+type Point struct {
+	X, Y int
+}
+type Circle struct {
+	P Point
+	Radius int
+}
+c := Circle{
+	P: Point{
+		X: 10,
+		Y: 10, // NOTE: trailing comma necessary here (and at Radius)
+	},
+	Radius: 5, 
+}
+c.P.X = 20
+c.X // 错误
+
+
 
 
 // 匿名结构体
@@ -690,6 +724,7 @@ if err != nil {
 	log.Fatalf("JSON marshaling failed: %s", err)
 }
 fmt.Printf("%s\n", data)
+
 
 
 // Unmarshal 函数
@@ -1000,6 +1035,13 @@ any = map[string]int{"one": 1}
 
 // 可以这样在编译时检查某个类型是否满足某个接口
 var _ io.Writer = (*bytes.Buffer)(nil)
+
+
+// strct 可以拥有接口类型字段
+type See struct {
+	what interface{}
+	who string
+}
 ```
 ## 类型断言
 ```go
@@ -1192,6 +1234,23 @@ func Icon(name string) image.Image {
 }
 ```
 ## 包和工具
+## 包注释
+每个包应该只有一个源文件有包注释，包注释位于 package 语句之前
+```go
+// Package tempconv performs Celsius and Fahrenheit conversions.
+package tempconv
+```
+如果包注释内容很多，惯例是将其放入专门的 doc.go 文件中
+```go
+// Copyright 2009 The Go Authors. All rights reserved.
+
+/*
+...
+...
+...
+*/
+package tempconv
+```
 ## go的环境变量
 go env 命令打印所有和 go 有关的环境变量
 
@@ -1214,26 +1273,3 @@ Go语言的构建工具对包含 internal 名字的路径段的包导入路径�
 ## 测试
 ## 反射
 ## unsafe
-## 标准库
-## strings
-```go
-strings.Join("hello", " world")
-```
-## io
-```go
-io 包保证任何由文件结束引起的读取失败都返回同一个错误 io.EOF，该错误在 io 包中定义
-```
-## net
-```go
-import "net"
-
-listener, err := net.Listen("tcp", "localhost:8000")
-for {
-	conn, err := listener.Accept()
-	io.WriteString(conn, time.Now().Format("15:04:05\n"))
-}
-
-
-conn, err := net.Dial("tcp", "localhost:8000")
-
-```
