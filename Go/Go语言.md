@@ -20,6 +20,7 @@
 	- [原始字符串](#原始字符串)
 	- [import](#import)
 	- [声明语句](#声明语句)
+	- [字符串](#字符串)
 	- [if](#if)
 	- [switch](#switch)
 	- [循环](#循环)
@@ -238,17 +239,54 @@ continue for import return var
 
 
 // Unicode 字符 rune 类型是和 int32 等价的类型，通常用于表示一个 Unicode 码点。这两个名称可以互换使用。同样 byte 也是 uint8 类型的等价类型
+type byte = uint8
+type rune = int32
 
 
 
-// 按照优先级递减的顺序排列的二元运算符，同一行为同一优先级
-// 取模运算符 % 仅用于整数间的运算
-// 5/4 的结果是 1
+// 优先级递减顺序排列的二元运算符，同一行为同一优先级
+// 前两行的每个运算符都有相应的赋值运算符，例如 +=、*=
+// 取模运算符 % 仅用于整数间的运算。余数的符号始终与被除数的符号相同，-5%3 和 -5%-3 的结果都为 -2
+// 整数除法会将结果向零截断，5/4 的结果是 1，-7/4 的结果为 -1
+// 有符号数的右移操作会将空出的位填充为符号位的值
 * / % << >> & &^
 + - | ^
 == != < <= > >=
 &&
 ||
+
+
+
+
+// 8 进制
+n := 0666
+// 16 进制
+n = 0xde12
+n = 0Xde12
+n = 0xdE12
+
+
+// rune 类型
+// Rune literals are written as a character within single quotes
+unicode := '国'
+newline := '\n'
+
+
+var z float64
+fmt.Println(z, -z, 1/z, -1/z, z/z) // "0 -0 +Inf -Inf NaN"
+
+
+nan := math.NaN()
+fmt.Println(nan == nan, nan < nan, nan > nan) // "false false false"
+
+
+
+var x complex128 = complex(1, 2) // 1+2i
+var y complex128 = complex(3, 4) // 3+4i
+fmt.Println(x*y) // "(-5+10i)"
+fmt.Println(real(x*y)) // "-5"
+fmt.Println(imag(x*y)) // "10"
+z :=  3 + 4i
 ```
 ## 命令行参数
 ```go
@@ -354,6 +392,25 @@ import _ "image/png"
 ```go
 // Go语言主要有四种类型的声明语句：var、const、type 和 func
 ```
+## 字符串
+```go
+// 字符串是不可变的字节序列
+// 字符串可以使用 ==、< 等进行比较
+
+
+
+s := "hello, world"
+// 内置的 len 函数返回字符串包含的字节数
+fmt.Println(len(s)) // 12
+fmt.Println(s[0], s[7]) // 104 119
+c := s[len(s)] // panic: index out of range
+fmt.Println(s[0:5]) // hello
+s += " good"
+// 字符串是不可变的
+s[0] = 'L' // compile error: cannot assign to s[0]
+```
+
+![](/images/go_1.png)
 ## if
 ```go
 if command == "go" {
@@ -458,6 +515,7 @@ type Celsius float64
 
 var i int = 42
 var f float64 = float64(i)
+// 浮点数到整数的转换会丢弃任何小数部分
 var u uint = uint(f)
 
 // 将字符串 "hello" 转换为字节切片

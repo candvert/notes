@@ -117,3 +117,8 @@ func Sleep(d Duration)
 
 time.Sleep(time.Second)
 ```
+## math
+```go
+math.MaxFloat32
+math.MaxFloat64
+```
