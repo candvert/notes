@@ -92,3 +92,28 @@ for {
 
 conn, err := net.Dial("tcp", "localhost:8000")
 ```
+## net/http
+```go
+import "net/http"
+
+
+// 当 err 为 nil 时，resp 始终包含一个非 nil 的 resp.Body。调用者在读取完 resp.Body 后应将其关闭
+func Get(url string) (resp *Response, err error)
+
+
+resp, err := http.Get("http://baidu.com/")
+b := make([]byte, 9999)
+resp.Body.Read(b)
+fmt.Println(string(b))
+```
+## time
+```go
+import "time"
+
+
+// 如果参数 d 为负数或零，则立即返回
+func Sleep(d Duration)
+
+
+time.Sleep(time.Second)
+```

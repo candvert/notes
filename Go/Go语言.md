@@ -36,10 +36,10 @@
 	- [Json支持](#Json支持)
 	- [模板语法](#模板语法)
 - [函数](#函数)
+	- [匿名函数](#匿名函数)
 	- [错误](#错误)
 	- [defer](#defer)
 	- [recover](#recover)
-	- [匿名函数](#匿名函数)
 - [方法](#方法)
 	- [String方法](#String方法)
 - [接口](#接口)
@@ -74,7 +74,7 @@ Go 中没有 ++i，只有 i++
 
 Go 语言中 i++ 是语句，而不是表达式，因此 j = i++ 是非法的
 
-Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，也没有继承，没有异常，没有宏
+Go 没有隐式的数值转换，没有构造函数和析构函数，没有运算符重载，没有默认参数，没有继承，没有异常，没有宏，不支持函数和方法重载
 
 Go 没有三元运算符
 
@@ -494,6 +494,12 @@ twoD := [2][3]int{
 }
 
 
+s := [...]string{
+	"George",
+	"Ringo",
+	"Pete", // 句尾的,是必须的
+}
+
 
 // 如果数组的元素类型是可比较的，那么该数组类型也是可比较的
 a := [2]int{1, 2}
@@ -516,9 +522,17 @@ var s []string
 // 对于 nil 切片，len 和 cap 函数都会返回 0
 fmt.Println("uninit:", s, s == nil, len(s) == 0)
 
+
 // 声明并初始化切片
-s := []int{0, 1, 2, 3}
-s2 := []int{9: -2, 6: -5}
+a1 := []int{0, 1, 2, 3}
+// 下标为 9 的元素的值为 -2，下标为 6 的元素的值为 -5
+a2 := []int{9: -2, 6: -5}
+s := []string{
+	"George",
+	"Ringo",
+	"Pete", // 句尾的,是必须的
+}
+
 
 // 创建数组的切片
 arr := [...]int{1, 2, 3, 4, 5, 6, 7, 8, 9}
@@ -526,6 +540,7 @@ l := arr[2:5]
 // 创建指针的切片
 ptr := &arr
 l = ptr[2:5]
+
 
 // 使用内置 make 创建非零长度的切片
 // 调用 make 时，它​​会分配一个数组并返回一个该数组的切片
@@ -581,13 +596,13 @@ for i := range 3 {
 // Map 是哈希表的引用，键必须是唯一的，键值对是无序的
 // 键必须可以使用 == 进行比较，以确认该键是否存在
 // Map 的零值是 nil
-// Map 不可比较，唯一合法的 Map 比较是和 nil 相比，即 m == nil
+// Map 之间不可比较，唯一合法的 Map 比较是和 nil 相比，即 m == nil
 
 
 // 创建 Map
 ages := map[string]int{
 	"alice": 31,
-	"charlie": 34,
+	"charlie": 34, // 句尾的,是必须的
 }
 // 遍历
 for name, age := range ages {
@@ -602,7 +617,7 @@ m["bob"] = m["bob"] + 1
 // 使用内置 len 函数返回 Map 的元素数量
 fmt.Println("len:", len(m))
 // 内置 delete 函数从 Map 中删除键值对
-delete(m, "charlie")
+delete(m, "alice")
 // 使用内置的 clear 函数删除所有键值对
 clear(m)
 // 可选的第二个返回值是布尔类型，true 表示键存在
@@ -836,7 +851,7 @@ func val3() (x, y int) {
 
 // 可变参数，需要在参数列表的最后一个参数类型之前加上省略符号 “...”
 // nums 被看作是 []int
-func sum(nums...int) {
+func sum(nums ...int) {
     fmt.Println("hi")
 }
 sum(1, 2)
@@ -846,10 +861,39 @@ nums := []int{1, 2, 3, 4}
 sum(nums...)
 
 
-// 函数变量，函数类型的零值是 nil。调用值为 nil 的函数值会引起 panic 错误
+// 函数变量，函数类型的零值是 nil。调用值为 nil 的函数值会引起 panic
 func square(n int) int { return n * n }
 f := square
 fmt.Println(f(3))
+
+
+// 匿名函数
+f := func() {
+	fmt.Println("hi")
+}
+// 直接调用
+func() {
+	fmt.Println("hi")
+}()
+```
+## 匿名函数
+```go
+// 匿名函数可以访问其定义时环境中的变量
+func squares() func() int {
+	var x int
+	return func() int {
+		x++
+		return x * x
+	}
+}
+
+func main() {
+	f := squares()
+	fmt.Println(f()) // "1"
+	fmt.Println(f()) // "4"
+	fmt.Println(f()) // "9"
+	fmt.Println(f()) // "16"
+}
 ```
 ## 错误
 ```go
@@ -898,24 +942,6 @@ func Parse() (s *Syntax, err error) {
 	// ...parser...
 }
 ```
-## 匿名函数
-```go
-// 匿名函数可以访问其定义时环境中的变量
-func squares() func() int {
-	var x int
-	return func() int {
-		x++
-		return x * x
-	}
-}
-func main() {
-	f := squares()
-	fmt.Println(f()) // "1"
-	fmt.Println(f()) // "4"
-	fmt.Println(f()) // "9"
-	fmt.Println(f()) // "16"
-}
-```
 ## 方法
 ```go
 // 方法可以被声明到任意类型
@@ -939,12 +965,19 @@ rp.area()
 rp.perim() // 编译器解引用，同 (*r).area()
 
 
-// 当对象是 nil 时也可以调用
-func (r *rect) area() int {
-    return r.width * r.height
+
+// 当变量的值为 nil 时也可以调用
+type Person struct{}
+func (p *Person) Say() {
+	fmt.Println("hi")
 }
-r := nil
-r.area
+r := new(Person)
+r = nil
+r.Say()
+// 不使用 receiver 则可以省略
+func (*Person) Move() {
+	fmt.Println("move")
+}
 
 
 // 如果一个类型名本身是一个指针的话，是不允许其出现在接收器中的
@@ -962,12 +995,12 @@ func (P) f() { /* ... */ } // compile error: invalid receiver type
 // 因为空接口 interface{} 不包含任何方法声明，所以 Go 语言中的所有类型都默认实现了空接口
 
 type Shower interface {
-	show()
+	show(string) int
 }
 // 接口类型的零值是 nil
 var w Shower
 // 对值为 nil 的接口变量调用方法会导致 panic
-w.show() // panic: nil pointer dereference
+w.show("hi") // panic: nil pointer dereference
 
 
 
@@ -997,15 +1030,21 @@ measure(r)
 
 // 接口内嵌
 type Reader interface {
-	Read(p []byte) (n int, err error)
+	Read()
 }
-type Writer interface {
-	Write(p []byte) (n int, err error)
-}
-type ReadWriter interface {
+type All interface {
 	Reader
-	Writer
 }
+type rect struct {
+    width, height float64
+}
+func (*rect) Read() {
+    fmt.Println("read")
+}
+var r All
+re := &rect{10, 10}
+r = re
+r.Read()
 
 
 
@@ -1042,6 +1081,13 @@ type See struct {
 	what interface{}
 	who string
 }
+
+
+
+// 通常使用空接口作为参数类型来接收任意类型参数
+// args 被看作是 []interface{}
+func Add(args ...interface{}) { /* ... */ }
+Add(4, "who")
 ```
 ## 类型断言
 ```go
