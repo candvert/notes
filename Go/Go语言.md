@@ -15,7 +15,8 @@
 	- [所有关键字](#所有关键字)
 	- [命令行参数](#命令行参数)
 	- [注释](#注释)
-	- [常量和变量](#常量和变量)
+	- [常量](#常量)
+	- [变量](#变量)
 	- [变量的生命周期](#变量的生命周期)
 	- [原始字符串](#原始字符串)
 	- [import](#import)
@@ -268,14 +269,16 @@ n = 0xdE12
 
 // rune 类型
 // Rune literals are written as a character within single quotes
-unicode := '国'
-newline := '\n'
+// 小于 256 的值可以使用 '\x41' 形式表示，但是更大的值就不能使用，比如 '\xe4\xb8\x96' 非法。更大的值要用 '\u4e16' 或 '\U00004e16' 表示
+// \u 后面要跟 4 个十六进制数，即 '\uhhhh'。\U 后面要跟 8 个十六进制数，即 '\Uhhhhhhhh'
+// 都表示 '世'
+c1 := '世'
+c2 := '\u4e16'
+c3 := '\U00004e16'
 
 
 var z float64
 fmt.Println(z, -z, 1/z, -1/z, z/z) // "0 -0 +Inf -Inf NaN"
-
-
 nan := math.NaN()
 fmt.Println(nan == nan, nan < nan, nan > nan) // "false false false"
 
@@ -303,7 +306,7 @@ z :=  3 + 4i
 
 // 在每个源文件的包声明前仅跟着的注释是包注释。通常，包注释的第一句应该先是包的功能概要说明。一个包通常只有一个源文件有包注释。如果包注释很大，通常会放到一个独立的 doc.go文件中
 ```
-## 常量和变量
+## 常量
 ```go
 const z = 1
 const x, y = 1, "hi"
@@ -316,9 +319,9 @@ const (
 	x int = 1
 	y = 2
 )
-
-
-
+```
+## 变量
+```go
 // 没有明确初始化的变量会被赋予对应类型的零值
 // 零值是：
 // 	数值类型为 0
@@ -357,8 +360,12 @@ p := new(int) // p, *int 类型, 指向匿名的 int 变量
 ```
 ## 原始字符串
 ```go
-s := `hello
-world`
+// 使用 ``
+s := `Go is a tool for managing Go source code.
+Usage:
+go command [arguments]
+...
+`
 ```
 ## import
 ```go
@@ -394,20 +401,56 @@ import _ "image/png"
 ```
 ## 字符串
 ```go
+// go 的字符串使用的是 UFT-8 编码，也就是 ASCII 只占用一个字节，其他字符占用 1 ~ 4 个字节
+// 字符串的零值是 "" （空字符串）
 // 字符串是不可变的字节序列
 // 字符串可以使用 ==、< 等进行比较
+
+
 
 
 
 s := "hello, world"
 // 内置的 len 函数返回字符串包含的字节数
 fmt.Println(len(s)) // 12
+fmt.Println(len("世界")) // 6
 fmt.Println(s[0], s[7]) // 104 119
 c := s[len(s)] // panic: index out of range
 fmt.Println(s[0:5]) // hello
 s += " good"
 // 字符串是不可变的
 s[0] = 'L' // compile error: cannot assign to s[0]
+
+
+// 使用八进制表示一个字节，最大不能超过 \377
+"\123"
+// 使用十六进制表示一个字节
+"\x8F"
+
+
+// 都表示 6 个字节的 “世界”
+"世界"
+"\xe4\xb8\x96\xe7\x95\x8c" // 每个字节使用 \xhh 表示
+"\u4e16\u754c" // 每两个字节使用 \uhhhh 表示
+"\U00004e16\U0000754c" // 每三个字节使用 \Uhhhhhhhh 表示
+
+
+// 返回字符串中有多少个 UTF-8 字符
+n := utf8.RuneCountInString(s)
+
+
+// 使用 range 循环时，会自动按字符进行迭代，而不是按字节
+for i, r := range "Hello, 世界" {
+	fmt.Printf("%d\t%q\t%d\n", i, r, r)
+}
+
+
+// 因为 rune 的大小固定，可以将字符串转换为 []rune 以方便索引
+s := "プログラム"
+r := []rune(s)
+fmt.Printf("%x\n", r) // [30d7 30ed 30b0 30e9 30e0]
+fmt.Printf("%q\n", r[0]) // プ
+fmt.Println(string(r)) // プログラム
 ```
 
 ![](/images/go_1.png)

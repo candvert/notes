@@ -2,6 +2,10 @@
 	- [io](#io)
 	- [net](#net)
 
+var buf bytes.Buffer
+buf.WriteByte('[')
+buf.WriteString(", ")
+buf.WriteRune('世')
 ## string操作
 ```go
 import "strings"
