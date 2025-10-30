@@ -308,6 +308,9 @@ z :=  3 + 4i
 ```
 ## 常量
 ```go
+// 常量的求值是在编译时
+
+
 const z = 1
 const x, y = 1, "hi"
 const x, y int = 1, 2
@@ -318,6 +321,43 @@ const (
 const (
 	x int = 1
 	y = 2
+)
+
+
+// 声明一组常量时，除了组中的第一个常量外，其余常量都可以省略右侧表达式，这意味着应该再次使用之前的表达式及其类型
+const (
+	a=1
+	b
+	c=2
+	d
+)
+fmt.Println(a, b, c, d) // "1 1 2 2"
+
+
+// iota 每次递增 1
+type Weekday int
+const (
+	Sunday Weekday = iota
+	Monday
+	Tuesday
+	Wednesday
+	Thursday
+	Friday
+	Saturday
+)
+fmt.Println(Sunday, Monday, Tuesday) // "0 1 2"
+
+
+
+// 许多常量并没有被指定为特定的类型。编译器会以比基本类型值更高的数值精度来表示这些未指定类型的常量，并且对它们进行的算术运算也比机器算术运算更精确；您可以假设至少有 256 位的精度
+const (
+	deadbeef = 0xdeadbeef // untyped int with value 3735928559
+	a=uint32(deadbeef) // uint32 with value 3735928559
+	b=float32(deadbeef) // float32 with value 3735928576 (rounded up)
+	c=float64(deadbeef) // float64 with value 3735928559 (exact)
+	d=int32(deadbeef) // compile error: constant overflows int32
+	e=float64(1e309) // compile error: constant overflows float64
+	f=uint(-1) // compile error: constant underflows uint
 )
 ```
 ## 变量
@@ -353,6 +393,13 @@ var (
 z := 1
 x, y := 1, "hi"
 p := new(int) // p, *int 类型, 指向匿名的 int 变量
+
+
+
+i := 0 // implicit int(0)
+r := '\000' // implicit rune('\000')
+f := 0.0 // implicit float64(0.0)
+c := 0i // implicit complex128(0i)
 ```
 ## 变量的生命周期
 ```go
@@ -1418,5 +1465,90 @@ go doc time.Duration.Seconds
 Go语言的构建工具对包含 internal 名字的路径段的包导入路径做了特殊处理。这种包叫 internal 包，一个 internal 包只能被和 internal 目录有同一个父目录的包所导入。例如，net/http/internal/chunked 内部包只能被 net/http/httputil 或 net/http 包导入，但是不能被net/url包导入
 ## 泛型
 ## 测试
+在包目录下的以 `_test.go` 结尾的文件是测试文件
+
+测试函数的名字以 Test 开头
+基准测试函数（benchmark function）的名字以 Benchmark 开头，作用是测量性能
+example function 的名字以 Example 开头，提供 machine-checked 文档
+
+每个测试文件都必须导入 testing 包
+```go
+import "testing"
+
+// 测试函数的签名（函数名 Test 后面的单词必须以大写字母开头）
+func TestSin(t *testing.T) { /* ... */ }
+
+
+t.Logf("%d", 10)
+t.Errorf("%d", 10)
+```
+示例（这种 table-driven 的测试在 go 中很常见）：
+```go
+import "testing"
+
+func TestIsPalindrome(t *testing.T) {
+	var tests = []struct {
+		input string
+		want bool
+	}{
+		{"", true},
+		{"a", true},
+		{"aa", true},
+		{"ab", false},
+		{"kayak", true},
+		{"detartrated", true},
+		{"A man, a plan, a canal: Panama", true},
+		{"Evil I did dwell; lewd did I live.", true},
+		{"Able was I ere I saw Elba", true},
+		{"été", true},
+		{"Et se resservir, ivresse reste.", true},
+		{"palindrome", false}, // non-palindrome
+		{"desserts", false}, // semi-palindrome
+	}
+	for _, test := range tests {
+		if got := IsPalindrome(test.input); got != test.want {
+			t.Errorf("IsPalindrome(%q) = %v", test.input, got)
+		}
+	}
+}
+```
+go test 命令不带任何参数运行当前目录下的测试文件
+-v 选项会打印每个测试的名称和执行时间
+-run 选项指定正则表达式，只有函数名满足该正则表达式的测试会运行
+```go
+ go test -v -run="French|Canal"
+```
+测试失败的消息通常是 "f(x) = y，want z" 的形式，x 为传递的参数，y 为得到的结果
+## 外部测试包
+外部测试包通过将测试代码声明为独立的包来解决包循环依赖问题
+外部测试包的文件以 `_test.go` 结尾，和其他测试文件位于同一目录，不同之处在于其包声明语句为 `package xxx_test`，包名需要以 `_test` 结尾
+```go
+myproject
+├── go.mod
+├── main.go
+└── play/
+    ├── logic.go
+	├── logic_test.go // 普通测试文件
+	├── play_test.go  // 外部测试文件
+    └── export_test.go  // 用于导出包内部名字的测试文件
+	
+```
+play_test.go 文件：
+```go
+package play_test
+
+import (
+    "play"
+    "testing"
+)
+
+func TestNewBuffer(t *testing.T) { /* ... */ }
+```
+若外部测试包需访问被测包的未导出函数，可通过包内测试文件 `_test.go` 暴露内部细节，如果该测试文件仅用于此目的且本身不包含任何测试，则通常将其称为 export_test.go
+```go
+package play
+
+var IsSpace = isSpace  // 导出内部函数 isSpace，这样外部测试包就可以通过 IsSpace 访问
+```
 ## 反射
 ## unsafe

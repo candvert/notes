@@ -6,6 +6,20 @@ var buf bytes.Buffer
 buf.WriteByte('[')
 buf.WriteString(", ")
 buf.WriteRune('世')
+## go list
+```go
+// 可以使用 go list 命令列出一个包目录下的哪些文件是源文件，哪些是测试文件，哪些是外部测试文件
+
+// 列出 fmt 包目录下的源文件
+go list -f={{.GoFiles}} fmt
+
+// 列出 fmt 包目录下的测试文件
+go list -f={{.TestGoFiles}} fmt
+
+// 列出 fmt 包目录下的外部测试文件
+ go list -f={{.XTestGoFiles}} fmt
+```
+
 ## string操作
 ```go
 import "strings"
@@ -70,9 +84,9 @@ if err != nil {
 
 import "math/rand"
 
-source := rand.NewSource(time.Now().UnixNano())
-r := rand.New(source)
-i := r.Intn(5)
+seed := time.Now().UTC().UnixNano()
+rng := rand.New(rand.NewSource(seed))
+i := rng.Intn(5)
 
 
 // 返回一个介于 [0,n) 之间的伪随机数
