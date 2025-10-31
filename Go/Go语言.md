@@ -59,6 +59,10 @@
 	- [内部包](#内部包)
 - [泛型](#泛型)
 - [测试](#测试)
+	- [外部测试包](#外部测试包)
+	- [测试覆盖率](#测试覆盖率)
+	- [基准测试函数](#基准测试函数)
+	- [示例函数](#示例函数)
 - [反射](#反射)
 - [unsafe](#unsafe)
 
@@ -1469,7 +1473,7 @@ Go语言的构建工具对包含 internal 名字的路径段的包导入路径�
 
 测试函数的名字以 Test 开头
 基准测试函数（benchmark function）的名字以 Benchmark 开头，作用是测量性能
-example function 的名字以 Example 开头，提供 machine-checked 文档
+示例函数（example function）的名字以 Example 开头，提供 machine-checked 文档
 
 每个测试文件都必须导入 testing 包
 ```go
@@ -1550,5 +1554,68 @@ package play
 
 var IsSpace = isSpace  // 导出内部函数 isSpace，这样外部测试包就可以通过 IsSpace 访问
 ```
+## 测试覆盖率
+go test 的 -coverprofile 选项收集覆盖率数据
+```sh
+ go test -coverprofile=c.out
+ # 处理日志，生成 HTML，并在浏览器打开
+ go tool cover -html=c.out
+
+
+# 打印已执行语句的比例的摘要
+ go test -cover
+
+
+# "hotter" 块的代码和 "colder" 块的代码
+ -covermode=count
+```
+## 基准测试函数
+基准测试函数的名字以 Benchmark 开头，参数为 `*testing.B`。testing.B 有一个导出的字段 N，指定测量次数
+```go
+import "testing"
+
+// 基准测试函数的签名
+func BenchmarkIsPalindrome(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		IsPalindrome("A man, a plan, a canal: Panama")
+	}
+}
+
+
+t.Logf("%d", 10)
+t.Errorf("%d", 10)
+```
+`go test -bench=.` 命令运行当前目录下的所有基准测试函数，-bench 选项指定正则表达式，符合正则表达式的基准测试函数才会运行
+-benchmem 选项会包含内存分配数据
+```go
+go test -bench=. -benchmem
+```
+测试不同数据量的惯例做法（比如操作 10 个数组元素和操作 100 个数组元素）：
+```go
+func benchmark(b *testing.B, size int) { /* ... */ }
+func Benchmark10(b *testing.B) { benchmark(b, 10) }
+func Benchmark100(b *testing.B) { benchmark(b, 100) }
+func Benchmark1000(b *testing.B) { benchmark(b, 1000) }
+```
+`go test -cpuprofile=cpu.out` CPU 占用时间分析
+`go test -blockprofile=block.out` goroutinue 阻塞分析
+`go test -memprofile=mem.out` 内存占用分析
+```go
+go test -run=NONE -bench=ClientServerParallelTLS64 \
+-cpuprofile=cpu.log net/http
+go tool pprof -text -nodecount=10 ./http.test cpu.log
+```
+## 示例函数
+示例函数的名字以 Example 开头，ExampleIsPalindrome 将会显示在 IsPalindrome 函数的文档中，而一个名为 Example 的示例函数则会与整个包关联起来
+```go
+func ExampleIsPalindrome() {
+	fmt.Println(IsPalindrome("A man, a plan, a canal: Panama"))
+	fmt.Println(IsPalindrome("palindrome"))
+	// Output:
+	// true
+	// false
+}
+```
+如果示例函数包含类似上面的 `// Output:` 注释，go test 将执行该函数，并检查其标准输出是否与注释中的文本匹配
 ## 反射
 ## unsafe
