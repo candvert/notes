@@ -83,7 +83,7 @@ rustc a.rs
 cargo new <project_name>
 运行项目
 cargo run
-添加包
+添加包，安装的包默认在 C:\Users\leiyu\.cargo\registry\src 目录下
 cargo add <package_name>
 删除包
 cargo rm <package_name>

@@ -1,3 +1,4 @@
+- [添加包](#添加包)
 - [标准库](#标准库)
 	- [io](#io)
 	- [net](#net)
@@ -6,6 +7,13 @@ var buf bytes.Buffer
 buf.WriteByte('[')
 buf.WriteString(", ")
 buf.WriteRune('世')
+## 添加包
+```go
+// 默认安装到 $GOPATH/pkg/mod 目录下，一般为 C:\Users\leiyu\go\pkg\mod
+// go env GOPATH 命令打印 GOPATH 变量的值
+go get github.com/gin-gonic/gin
+go get go.uber.org/zap
+```
 ## go list
 ```go
 // 可以使用 go list 命令列出一个包目录下的哪些文件是源文件，哪些是测试文件，哪些是外部测试文件

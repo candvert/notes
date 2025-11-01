@@ -1,3 +1,7 @@
+- [添加包](#添加包)
+- [dir函数](#dir函数)
+
+
 - [python创建用于测试的http服务器](#python创建用于测试的http服务器)
 - [python的内置api和一些三方库的api](#python的内置api和一些三方库的api)
 	- [列表](#列表)
@@ -21,6 +25,30 @@
 
 	- [os模块](#os模块)
 
+
+## 添加包
+```sh
+# windows 上的默认安装目录：
+# C:\Users\leiyu\AppData\Local\Programs\Python\Python313\Lib\site-packages
+
+
+# 安装包
+pip install package_name
+# 卸载包
+pip uninstall package_name
+# 列出包
+pip list
+```
+## dir函数
+```python
+# 内置函数 dir() 用于查找模块定义的名称。返回结果是经过排序的字符串列表
+import sys
+dir(sys)
+
+
+# 没有参数时，dir() 列出当前已定义的名称
+dir()
+```
 # python创建用于测试的http服务器
 ```sh
 mkdir test_server && cd test_server

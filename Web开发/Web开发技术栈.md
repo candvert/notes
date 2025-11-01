@@ -12,13 +12,10 @@ Deno 是一个 JavaScript、TypeScript 和 WebAssembly 运行时，于 2020 年�
 Fresh 是 Deno 官方开发的全栈框架
 
 Nextjs 全栈框架的后端使用 Nodejs，前端使用 React
-
-
-时间 2025/09，全栈推荐使用 Nextjs，因为 Fresh 还远未成熟。后端推荐 Deno，因为其是取代 Nodejs 的新一代 JavaScript 运行时。
 ```
 
 ```sh
-时间 2025/09，开发网页最推荐 Next.js，使用 Typescript 语言和 Tailwind 样式，使用 Shadcn UI 组件库，页面布局使用 Tailwind 中的 flex 和 grid
+时间 2025/09，开发网页最推荐 Next.js，使用 Typescript 语言和 Tailwind 样式，使用 Shadcn UI 组件库，页面布局使用 Tailwind
 
 Vscode 中 Javascript 和 Typescript 的插件使用 ESLint，Prettier
 
