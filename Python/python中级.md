@@ -1,5 +1,6 @@
 - [添加包](#添加包)
 - [dir函数](#dir函数)
+- [functools.wraps](#functools.wraps)
 
 
 - [python创建用于测试的http服务器](#python创建用于测试的http服务器)
@@ -48,6 +49,52 @@ dir(sys)
 
 # 没有参数时，dir() 列出当前已定义的名称
 dir()
+```
+## functools.wraps
+```python
+# 当使用装饰器包装函数时，实际上是用装饰器内部的包装函数（通常命名为 wrapper）替换了原函数。这会导致原函数的元数据（如 __name__、__doc__等）被包装函数的元数据覆盖
+# functools.wraps是一个装饰器，它能将原函数的重要元数据复制到装饰器返回的包装函数上。使用时，只需用 @wraps(原函数名)来装饰你的包装函数
+
+from functools import wraps
+
+def my_decorator(func):
+    @wraps(func)  # 使用 wraps 保留原函数元数据
+    def wrapper(*args, **kwargs):
+        """包装函数的文档字符串"""
+        print("函数被调用了")
+        return func(*args, **kwargs)
+    return wrapper
+
+@my_decorator
+def example():
+    """这是原函数的文档字符串"""
+    print("Hello, World!")
+
+print(example.__name__)  # 输出: example
+print(example.__doc__)   # 输出: 这是原函数的文档字符串
+```
+## 使用functools.lru_cache做备忘
+```python
+# 它把耗时的函数的结果保存起来，避免传入相同的参数时重复计算
+
+import functools
+from clockdeco import clock
+
+@functools.lru_cache()
+@clock
+def fibonacci(n):
+	if n < 2:
+		return n
+	return fibonacci(n-2) + fibonacci(n-1)
+
+print(fibonacci(6))
+
+
+
+
+# lru_cache 可以使用两个可选的参数来配置
+# maxsize 参数指定存储多少个调用的结果。缓存满了之后，旧的结果会被扔掉
+functools.lru_cache(maxsize=128, typed=False)
 ```
 # python创建用于测试的http服务器
 ```sh

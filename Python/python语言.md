@@ -27,14 +27,16 @@
 	- [集合](#集合)
 - [函数](#函数)
 	- [lambda表达式](#lambda表达式)
+	- [装饰器](#装饰器)
 - [类](#类)
 	- [继承](#继承)
+- [简洁语法](#简洁语法)
 - [异常处理](#异常处理)
 - [判断是否是main](#判断是否是main)
 
 ## python特点
 ```python
-# python 中一切皆是对象，包括整数，字符串，函数等。所有的类都直接或间接地继承自 object 类
+# python 中一切皆是对象，包括整数，字符串，函数，类等。所有的类都直接或间接地继承自 object 类
 
 # python 有垃圾回收机制。它主要依靠引用计数来管理内存，原理是每个对象都有一个计数器，记录着当前有多少个引用指向它
 ```
@@ -426,10 +428,9 @@ l2 = l + [36, 49, 64, 81, 100]
 # 内置函数 len() 返回列表的长度
 len(l)
 
-# 可以嵌套列表
-a = ['a', 'b', 'c']
-n = [1, 2, 3]
-x = [a, n] # [['a', 'b', 'c'], [1, 2, 3]]
+# 嵌套列表
+a = ['hi', [0, 1, 2]]
+print(a[1][0])
 
 # 空列表
 l2 = []
@@ -547,11 +548,113 @@ b = lambda: print('hi')		# 没有参数
 ```
 ## lambda表达式
 ```python
-f = lambda x: x + 1
-f()
+# lambda 参数列表: 表达式
+# 参数列表：可以包含零个、一个或多个参数，多个参数之间用逗号分隔
+# 表达式：这是一个单一的 python 表达式（不能是复杂的代码块或多个语句），其计算结果将作为 lambda 表达式的返回值
+
+
+f = lambda: 'hello'
+f2 = lambda x, y: x + y
+f2(1, 2)
+```
+## 函数的作用域
+```python
+b = 6
+def f1(a):
+	print(a)
+	print(b)
+	b = 9
+
+# 该函数调用会报错
+# Python 编译函数的定义体时，它判断 b 是局部变量，因为在函数中给它赋值了
+f1(3) # 报错
+
+
+
+
+# 如果在函数中赋值时想让解释器把 b 当成全局变量，要使用 global 声明
+b = 6
+def f1(a):
+	global b
+	print(a)
+	print(b)
+	b = 9
+```
+## 闭包
+```python
+# 闭包的核心特征是“能够捕获并记住其创建时所在词法作用域中的变量”
+# 其实，闭包指延伸了作用域的函数，函数是不是匿名的没有关系，关键是它能访问定义体之外定义的非全局变量
+
+
+# nonlocal 用于在嵌套函数内部声明并修改外层（非全局）函数变量
+def make_averager():
+	 count = 0
+	 total = 0
+	 def averager(new_value):
+		 nonlocal count, total
+		 count += 1
+		 total += new_value
+		 return total / count
+	 return averager
+
+avg = make_averager()
+print(avg(10))
+print(avg(11))
+```
+## 装饰器
+```python
+# 装饰器是可调用的对象，其参数是另一个函数（被装饰的函数）
+# 装饰器在被装饰的函数定义之后立即运行，通常是在导入时（即 Python 加载模块时）
+# 装饰器最好通过实现 __call__ 方法的类实现，下面的函数实现用于说明原理
+
+
+# 假如有个名为 decorate 的装饰器：
+@decorate
+def target():
+	print('running target()')
+# 上述代码的效果与下述写法一样：
+def target():
+	print('running target()')
+target = decorate(target)
+# 两种写法的最终结果一样：上述两个代码片段执行完毕后得到的 target 不一定是原来那个target 函数，而是 decorate(target) 返回的函数
+
+
+# 严格来说，装饰器只是语法糖
+# 示例：
+>>> def deco(func):
+...     def inner():
+...         print('running inner()')
+...     return inner
+...
+>>> @deco
+... def target():
+...     print('running target()')
+...
+>>> target()
+running inner()
+>>> target
+<function deco.<locals>.inner at 0x10063b598>
+
+
+
+# 叠放装饰器
+@d1
+@d2
+def f():
+	print('f')
+# 等同于：
+def f():
+	print('f')
+f = d1(d2(f))
 ```
 ## 类
 ```python
+# 支持面向对象编程的所有标准特性：类的继承机制支持多个基类、派生的类能覆盖基类的方法、类的方法能调用基类中的同名方法
+# 所有成员函数都为 virtual
+# “私有”实例变量在 Python 中并不存在。但是，大多数 Python 代码都遵循这样一个约定：带有一个下划线的名称 (例如 _spam) 应该被当作是 API 的非公有部分 (无论它是函数、方法或是数据成员)
+
+
+
 class Student:
     pass
 
@@ -559,33 +662,86 @@ class Student:
 s = Student()
 
 
-# __init__ 函数和 c++ 的构造函数相同
-# 可以在类中通过 @staticmethod 和 @classmethod 定义方法，不加注解的方法必须要有一个 self 参数
+# 当进入类定义时，将创建一个新的命名空间，并将其用作局部作用域
+# 当 (从结尾处) 正常离开类定义时，将创建一个类对象。这基本上是一个围绕类定义所创建的命名空间的包装器。 原始的 (在进入类定义之前有效的) 作用域将重新生效，类对象将在这里与类定义头所给出的类名称进行绑定
 class Student:
-    a = 'a'
-	# 参数 self 是必须的，并且要位于其他参数的前面
+    """一个简单的示例类"""
+    i = 12345
+	# 方法的特殊之处就在于实例对象会作为函数的第一个参数被传入
+    def f(self):
+        return 'hello world'
+
+# 属性引用
+Student.i = 20
+f2 = Student.f
+# __doc__ 也是一个有效的属性，将返回所属类的文档字符串
+print(Student.__doc__) # 一个简单的示例类
+
+
+
+
+# __init__ 函数和 c++ 的构造函数相同
+# 参数 self 是必须的，并且要位于其他参数的前面
+class Student:
     def __init__(self, name):
 		self.name = name
         pass
+# 数据属性无需声明；与局部变量一样，它们在首次赋值时就会出现
+x = Student('John')
+x.counter = 1
+del x.counter
 
-    def ni(self):
-        pass
 
-    @staticmethod
-    def ok():
-        pass
 
-    @classmethod
-    def cdd(cls):
-        pass
-    
-# 因为python是动态语言，所以可以动态的添加属性和方法，下面代码添加一个 age 属性
-a = Student()
-a.age = 18
-# 下面代码添加一个 say 方法并进行调用
-a = Student()
-a.say = lambda: print("eat")
-a.say()
+# 实例变量用于每个实例的唯一数据，而类变量用于类的所有实例共享的属性和方法
+class Dog:
+
+    kind = 'canine'         # 类变量被所有实例所共享
+
+    def __init__(self, name):
+        self.name = name    # 实例变量为每个实例所独有
+
+
+
+# 方法可以通过使用 self 参数调用其他方法
+class Bag:
+    def __init__(self):
+        self.data = []
+
+    def add(self, x):
+        self.data.append(x)
+
+    def addtwice(self, x):
+        self.add(x)
+        self.add(x)
+
+
+
+# classmethod 装饰器用于定义类方法
+# 按照约定，类方法的第一个参数名为 cls（但是 Python 不介意具体怎么命名）
+# staticmethod 装饰器用于定义静态函数
+class Demo:
+	@classmethod
+	def klassmeth(cls, name):
+		return name
+	@staticmethod
+	def statmeth(*args):
+		return args
+
+
+
+# 在 Python 中，除了 __init__，类里还有许多以双下划线开头和结尾的特殊方法（常被称为“魔法方法”或“双下方法”），它们用于实现类的特定行为
+# __call__(self, ...)：让类的实例可以像函数一样被“调用”，例如 obj()
+# __iter__(self)：应返回一个迭代器对象。通常返回 self，但需要类同时实现 __next__方法
+# __next__(self)：定义迭代器下一次返回的值。当没有更多元素时，应抛出 StopIteration 异常
+# __str__(self)：当你使用 print(obj)或 str(obj)时，该方法被调用
+# __add__(self, other)：实现加法 +
+# __len__(self)：当使用内置函数 len(obj)时被调用，应返回容器的“长度”
+# __getitem__(self, key)：定义通过索引或键访问元素的行为，对应 obj[key]
+# __setitem__(self, key, value)：定义通过索引或键赋值的行为，对应 obj[key] = value
+# __delitem__(self, key)：定义通过索引或键删除元素的行为，对应 del obj[key]
+# __contains__(self, item)：定义使用 in 运算符进行成员测试时的行为
+
 ```
 ## 继承
 ```python
@@ -604,10 +760,32 @@ class Dog(Animal):
     def eat(self):
         super().eat()
         print("dog eat")
-        
-# 多继承
-class Dog(Animal, Object):
+
+
+# 多重继承
+class Dog(Animal, Pet):
     pass
+```
+## dataclass
+```python
+# 类似于 C 语言 struct 的数据类型
+
+from dataclasses import dataclass
+
+@dataclass
+class Employee:
+    name: str
+    dept: str
+    salary: int
+```
+## 简洁语法
+```python
+def f1:
+	pass
+def f2:
+	pass
+promos = [f1, f2]
+max(promo(order) for promo in promos)
 ```
 ## 异常处理
 ```python

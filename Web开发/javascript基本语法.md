@@ -1,13 +1,15 @@
-- [javascript基本语法](#javascript基本语法)
+- [javascript特点](#javascript特点)
 	- [编写地方](#编写地方)
-	- [输入输出](#输入输出)
+	- [输出](#输出)
 	- [变量](#变量)
 	- [常量](#常量)
+	- [注释](#注释)
+	- [字符串](#字符串)
 	- [数据类型](#数据类型)
+	- [类型转换](#类型转换)
 	- [数组](#数组)
-	- [字符串模板](#字符串模板)
-	- [比较](#比较)
-	- [添加和循环语句](#添加和循环语句)
+	- [相等运算符](#相等运算符)
+	- [条件语句](#条件语句)
 	- [解构赋值的重命名](#解构赋值的重命名)
 	- [...扩展运算符](#...扩展运算符)
 	- [?.](#?.)
@@ -26,6 +28,7 @@
 - [dom相关](#dom相关)
 	- [操控video](#操控video)
 	- [DOMContentLoaded事件](#DOMContentLoaded事件)
+	- [弹出对话框](#弹出对话框)
 
 - [api和框架](#api和框架)
 	- [内置api](#内置api)
@@ -36,80 +39,186 @@
 	- [第三方api](#第三方api)
 		- [firebase](#firebase)
 
-# javascript基本语法
 关于worker、异步等不熟悉的主题可以在[mozilla](https://developer.mozilla.org/en-US/docs/Learn/JavaScript)上学习
+## javascript特点
+```js
+// js 有垃圾回收
+
+// js 是动态类型语言
+
+// js 中除了七种基本数据类型（也称为原始类型）外，其他所有值都是对象
+
+// 如果一条语句独占一行，则分号可以省略。但是好的做法是每条语句末尾都加上分号
+
+// js 有三元运算符 1 < 2 ? 'hello' : 'world'
+```
 ## 编写地方
 ```html
-<!--在html中直接编写js语句，下面这句通常放在</body>前-->
-<script> alert("ok") </script>
+<!--在 html 文件中直接编写 js 语句，下面这句通常放在 </body> 标签前-->
+<script>
+	// 在此编写 JavaScript 代码
+</script>
 
-<!--单独编写一个js文件，再通过下面语句引入到html中，下面这句通常放在<head>标签中-->
+
+<!--单独编写一个 js 文件，再通过下面语句引入到 html 文件中，下面这句通常放在 <head> 标签中-->
 <script type="module" src="script.js"></script>
 ```
-## 输入输出
+## 运行单个文件
 ```js
-// javascript的输入输出是相对于网页来说的，输入输出会显示在网页上
-// 输入
-prompt("ok")
-// 输出
-document.write("<h1>ok</h1>")
-alert("ok")
-console.log("ok")
+node a.js
 ```
-
-```sh
-如果一条语句独占一行的话，那么分号是可以省略的
-然而，在一条语句的末尾总是加上分号被认为是最佳实践
+## 输出
+```js
+console.log("ok");
 ```
 ## 变量
 ```js
-let name = 'hello', age = 20	// 新标准的写法，推荐使用
+// 变量声明，当变量被声明但未被赋值时，其值就是 undefined
+let num;
+// js 是动态类型语言，可以重新赋值为不同类型的值
+num = 10;
+num = "hello"
 
-var grade = 10	// var是遗留的，不建议使用
-grade = 10	// 也可以不加关键字，不建议使用，和python一样，这是由于var可以先初始化再声明，但是这会造成代码混乱
+
+// 声明并初始化多个变量
+let name = 'hello', age = 20;
+
+
+
+
+// var 是遗留的，不建议使用
+var grade = 10;
+// 可以在初始化一个变量之后用 var 声明它，它仍然可以工作，但不推荐使用
+age = 18;
+var age;
 ```
 ## 常量
 ```js
-const GRADE = 78
+const num = 78;
+```
+## 注释
+```js
+// 单行注释
+
+
+/*
+多行注释
+*/
+```
+## 字符串
+```js
+// 单引号和双引号都可以
+const s1 = 'hello';
+const s2 = "hello";
+
+
+
+const name = "John";
+// 模板字符串，用反引号包裹，可以在 ${ } 中放入 JavaScript 变量或表达式
+const greeting = `hello, ${name}`;
+
+
+// 使用 + 运算符连接普通字符串
+console.log(greeting + "，" + name);
+
+
+// 多行字符串，模板字符串会保留源代码中的换行符
+s = `hello
+	world`;
+
+
+// 连接字符串和数字
+console.log("top " + 3); // "top 3"
+console.log(3 + "apple"); // "3 apple"
 ```
 ## 数据类型
 ```js
 // 七种基本数据类型：Boolean、null、undefined、Number、BigInt、String、Symbol
-// undefined即变量未赋值
-console.log(typeof name)	// 使用typeof关键字来判断类型
-let a = Number(name)		// 使用Number()来进行显式类型转换
+// 当变量被声明但未被赋值时，其值就是 undefined
+
+
+// typeof 返回变量的类型
+const name = "hi";
+console.log(typeof name);
+```
+## 类型转换
+```js
+// 显式类型转换
+const num = "10";
+const n = Number(num);
+const s = String(n);
 ```
 ## 数组
 ```js
-let arr = ['hello', 'world', 42, "end"]
-let arr = new Array("hello", "world", 42, 'end')
+// 数组可以包含不同类型的元素
+const arr = ["tree", 795, [0, 1, 2]];
+arr[1] = "food";
+arr[2][0] = 3;
+
+// 空数组
+const l = [];
+
+
+// 数组的长度
+console.log(arr.length);
+
+
 // 添加元素
-arr.push("ok")		// 添加到尾部，返回数组新的长度
-arr.unshift("ok")	// 添加到首部，返回数组新的长度
+arr.push("ok");
+arr.push("hello", "world");
+// 添加到数组开头
+arr.unshift("ok");
+
+
 // 删除元素
-arr.pop()			// 删除尾部元素，返回被删除的元素
-arr.shift()			// 删除首部元素，返回被删除的元素
+arr.pop();
+// 删除第一个元素
+arr.shift();
 ```
-## 字符串模板
+## 相等运算符
 ```js
-let a = "hello"				// 字符串可以用单引号或双引号或反引号括起来，反引号中可以使用字符串模板
-alert("hello" + "world")	// 字符串可以通过+号拼接
-alert("hello" + a)			// 字符串可以通过+号拼接
-alert(`this is ${a} world`)	// 字符串模板${a}，使用反引号会包括换行符，也就是说多行不需要像在单引号和双引号中那样使用\n
+// 结果为 true，== 只测试值是否相同，而不判断类型是否相同
+console.log(2 == '2');
+
+
+// 结果为 false，进行比较时应该使用 === 和 !==
+console.log(2 === '2');
 ```
-## 比较
+## 条件语句
 ```js
-console.log(2 == '2')		// 结果为true，==只测试值是否相同，而不判断数据类型是否相同
-console.log(2 === '2')		// 结果为false，进行比较时推荐用===或!==
+// if 语句，switch 语句和 c++ 相同
+
+
+// if 语句
+const num = 16;
+if (num > 10) {
+	console.log("hello");
+} else if (num > 20) {
+	console.log("hello");
+} else {
+	console.log("hello");
+}
+
+
+// switch 语句
+const age = 18
+switch (age) {
+	case 18:
+		console.log("hello");
+		break;
+	default:
+		console.log("hello");
+}
 ```
-## 添加和循环语句
+## 循环语句
 ```js
-// if语句，switch语句，while语句，for语句，do...while语句和c++中的相同
-// 但范围for语句和c++中的不同
+// while 语句，for 语句，do...while 语句和 c++ 相同
+
+
+// 但范围 for 语句和 c++ 中的不同
 let nums = [23, 35, 67]
 for (num of nums) {}	// num为每个元素值
 for (index in nums) {}	// index为每个元素下标
-// js中也有三元运算符 ? :
 ```
 ## 解构赋值的重命名
 ```js
@@ -623,6 +732,10 @@ const handleMouseMove = (e: MouseEvent) => {
 // DOMContentLoaded事件在HTML文档解析完成，DOM树构建完毕时触发
 // 无需等待样式表，图片等外部资源加载完成
 document.addEventListener('DOMContentLoaded', function() {})
+```
+## 弹出对话框
+```js
+const name = prompt("What's your name?");
 ```
 # api和框架
 ## 内置api
