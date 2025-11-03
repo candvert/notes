@@ -21,6 +21,7 @@
 - [类](#类)
 - [异常](#异常)
 - [异步](#异步)
+- [fetch](#fetch)
 - [其他知识点](#其他知识点)
 	- [解构赋值的重命名](#解构赋值的重命名)
 	- [...扩展运算符](#...扩展运算符)
@@ -28,7 +29,7 @@
 	- [??空值合并运算符](#??空值合并运算符)
 	- [处理json](#处理json)
 
-关于worker、异步等不熟悉的主题可以在[mozilla](https://developer.mozilla.org/en-US/docs/Learn/JavaScript)上学习
+关于异步、worker等不熟悉的主题可以在[mozilla](https://developer.mozilla.org/zh-CN/)上学习
 ## javascript特点
 ```js
 // js 有垃圾回收
@@ -530,81 +531,108 @@ console.log(person.#name); // SyntaxError: 私有字段必须在声明类中访�
 ```
 ## 异常
 ```js
+// finally 块是可选的：无论是否发生异常，该块中的代码都会执行。常用于清理资源，如关闭文件或网络连接
 
+
+// 抛出异常
+throw new Error("输入值不能为空");
+
+
+try {
+	nonExistentFunction(); // 这是一个不存在的函数，会抛出 ReferenceError
+} catch (error) {
+	console.error("出错了：", error.message);
+} finally {
+	console.log("这部分代码总是会执行。");
+}
 ```
 ## 异步
 ```js
-// js中调用异步函数会立即返回一个Promise对象
-// 使用Promise.then(() => {})会在异步函数调用成功时调用传进的函数
-// 由于Promise.then()返回Promise，因此可以chain在一起，形成Promise chaining
-const fetchPromise = fetch(
-  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
-)
-fetchPromise.then((response) => {console.log(`Received response: ${response.status}`)})
-// 使用Promise.catch(() => {})会在异步函数调用失败时调用传进的函数
-fetchPromise.then((response) => {console.log(`Received response: ${response.status}`)}).catch(() => {})
-// await会等待结果返回，async加在函数前使函数成为异步函数
-async function myFunction() {
-  const response = await fetch('URL')
+// 回调函数，不过容易形成“回调地狱”
+function fetchData(callback) {
+	setTimeout(() => {
+		callback('Data received');
+	}, 1000);
 }
-// ---------------------------------------------------------------------------------------------------------
+fetchData((data) => {
+	console.log(data);
+});
 
 
-// 使用Promise.all()
-const fetchPromise1 = fetch(
-  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
-);
-const fetchPromise2 = fetch(
-  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/not-found",
-);
-const fetchPromise3 = fetch(
-  "https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json",
-);
 
-Promise.all([fetchPromise1, fetchPromise2, fetchPromise3])
-  .then((responses) => {
-    for (const response of responses) {
-      console.log(`${response.url}: ${response.status}`);
-    }
-  })
-  .catch((error) => {
-    console.error(`Failed to fetch: ${error}`);
-  });
-// ---------------------------------------------------------------------------------------------------------
-
-
-// 使用Promise.any()
-const fetchPromise1 = fetch(
-  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
-);
-const fetchPromise2 = fetch(
-  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/not-found",
-);
-const fetchPromise3 = fetch(
-  "https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json",
-);
-
-Promise.any([fetchPromise1, fetchPromise2, fetchPromise3])
-  .then((response) => {
-    console.log(`${response.url}: ${response.status}`);
-  })
-  .catch((error) => {
-    console.error(`Failed to fetch: ${error}`);
-  });
-
-
-// 实现一个基于Promise的函数，resolve即then中传递的函数，reject即catch中传递的函数
-function alarm(person, delay) {
-  return new Promise((resolve, reject) => {
-    if (delay < 0) {
-      throw new Error("Alarm delay must not be negative");
-    }
-    setTimeout(() => {
-      resolve(`Wake up, ${person}!`);
-    }, 500);
-  });
+// Promise
+// 本质上 Promise 是一个函数返回的对象，我们可以在它上面绑定回调函数
+function doSomething() {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			// promise 的兑现值
+			resolve("hello");
+		}, 200);
+	});
 }
-alarm('John', 500).then(() => {}).catch(() => {})
+// 成功时调用 then 传递进来的函数，失败时调用 catch 传递进来的函数
+doSomething()
+	.then(data => console.log(data)) // "hello"
+	.catch(error => console.error(error));
+
+// 链式调用
+fetch('https://api.example.com/data')
+	.then(response => response.json())
+	.then(json => console.log(json))
+	.catch(error => console.error('Error:', error))
+	// 无论是否成功，finally 传递的函数都会被调用
+	.finally(() => { /* ... */ });
+
+
+
+// async 和 await，它们是基于 Promise 的语法糖，进一步提升了代码的可读性
+// await 关键字必须在 async 函数内部使用
+// 一个使用 async 关键字声明的函数，无论其内部是否包含 await，它都会返回一个 Promise 对象
+// 在模块的顶层作用域中，可以直接使用 await，而无需包裹在 async 函数内。这个特性被称为顶层 await
+async function fetchDataAsync() {
+	try {
+		const response = await fetch('https://api.example.com/data');
+		const data = await response.json();
+		console.log(data);
+	} catch (error) {
+		console.error('Request Failed', error);
+	}
+}
+fetchDataAsync();
+```
+## fetch
+```js
+// 最基本的 GET 请求
+fetch('https://api.example.com/data')
+	.then(response => response.json())
+	.then(data => console.log(data))
+	.catch(error => console.error('Error:', error));
+
+
+
+// 发送 JSON 数据的 POST 请求
+fetch('https://api.example.com/users', {
+	method: 'POST',
+	headers: {
+		'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({
+		name: 'John',
+		age: 30
+	})
+})
+	.then(response => response.json())
+	.then(data => console.log(data))
+	.catch(error => console.error('Error:', error));
+
+
+
+// fetch() 函数返回的 Response 对象
+.ok // true 或 false
+.status // 状态码
+.url // url
+.text() // 返回 USVString 格式的 Promise 对象
+.json() // 返回 JSON 格式的 Promise 对象
 ```
 ## 其他知识点
 ## 解构赋值的重命名
