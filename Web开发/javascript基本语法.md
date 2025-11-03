@@ -1,4 +1,5 @@
 - [javascript特点](#javascript特点)
+- [基础](#基础)
 	- [编写地方](#编写地方)
 	- [输出](#输出)
 	- [变量](#变量)
@@ -10,14 +11,16 @@
 	- [数组](#数组)
 	- [相等运算符](#相等运算符)
 	- [条件语句](#条件语句)
+	- [循环](#循环)
+	- [import](#import)
+- [函数](#函数)
+- [对象](#对象)
+- [其他知识点](#其他知识点)
 	- [解构赋值的重命名](#解构赋值的重命名)
 	- [...扩展运算符](#...扩展运算符)
 	- [?.](#?.)
 	- [??空值合并运算符](#??空值合并运算符)
 	- [调试](#调试)
-	- [函数](#函数)
-	- [对象](#对象)
-	- [import](#import)
 	- [处理json](#处理json)
 	- [绑定事件和取消事件](#绑定事件和取消事件)
 	- [DOM](#DOM)
@@ -210,108 +213,109 @@ switch (age) {
 		console.log("hello");
 }
 ```
-## 循环语句
+## 循环
 ```js
-// while 语句，for 语句，do...while 语句和 c++ 相同
+// for 语句，while 语句，do...while 语句和 c++ 相同
 
 
-// 但范围 for 语句和 c++ 中的不同
-let nums = [23, 35, 67]
-for (num of nums) {}	// num为每个元素值
-for (index in nums) {}	// index为每个元素下标
-```
-## 解构赋值的重命名
-```js
-// data: metadata的意思是将data的值赋给metadata，两个变量都能使用
-let { data: metadata, content } = readMDXFile();
-console.log(metadata);
-```
-## ...扩展运算符
-```js
-// ...是扩展运算符，用于将可迭代对象（如数组或字符串）展开为单个元素
-// 合并数组
-const arr1 = [1, 2];
-const arr2 = [3, 4];
-const mergedArr = [...arr1, ...arr2]; // [1, 2, 3, 4]
-
-// 扩展运算符进行的是​​浅拷贝
-const originalObj = { a: 1, b: 2 };
-const copyObj = { ...originalObj }; // { a: 1, b: 2 }
-```
-## ?.
-```js
-// ?.在JavaScript中如果调用对象是null，则返回undefined
-// 假设我们有一个用户对象，但不确定某些信息是否存在
-const user = {
-  name: 'Alice',
-  address: {
-    city: 'Beijing'
-  },
-  sayHello: function() {
-    return `Hello, ${this.name}!`;
-  }
-};
-
-// 安全访问可能不存在的属性
-console.log(user?.address?.city); // 输出 "Beijing"
-console.log(user?.contact?.phone); // 输出 undefined，而不会报错
-
-// 安全调用可能不存在的方法
-console.log(user.sayHello?.()); // 输出 "Hello, Alice!"
-console.log(user.nonExistentMethod?.()); // 输出 undefined，而不会报错
-
-// 结合空值合并运算符提供默认值
-const phoneNumber = user?.contact?.phone ?? '暂无电话';
-console.log(phoneNumber); // 输出 "暂无电话"
-
-// 访问数组元素
-const firstItem = someArray?.[0]; // 如果 someArray 为 null 或 undefined，则返回 undefined
-```
-## ??空值合并运算符
-```js
-// ??是空值合并运算符（Nullish Coalescing Operator）。它的作用是返回其左侧操作数，如果左侧操作数为null或undefined，则返回右侧操作数
-const nullValue = null;
-const undefinedValue = undefined;
-const zero = 0;
-const emptyString = '';
-const normalText = 'Hello';
-
-console.log(nullValue ?? 'default');        // 输出: 'default'
-console.log(undefinedValue ?? 'default');  // 输出: 'default'
-console.log(zero ?? 42);                   // 输出: 0 (保留了 0)
-console.log(emptyString ?? 'default');     // 输出: '' (保留了空字符串)
-console.log(normalText ?? 'default');      // 输出: 'Hello'
-```
-## 调试
-```js
-// js的调试是在浏览器中进行的，通过F12调出的窗口有和ide相似的调试功能
-```
-## typeof判断类型
-```js
-console.log(typeof 'hi')				// string
-```
-## 函数
-```js
-// 形参过多，会自动为undefined
-// 实参过多，多余的实参被忽略
-function eat(a, b = 0, c) {
-    return b
+// for 语句
+for (let i = 0; i < 10; i++) {
+	if (i === 5) continue;
+	if (i === 8) break;
+	console.log(i);
 }
 
 
-// 匿名函数（下面这种形式在javascript中称为arrow function，推荐使用）
-let a = () => {alert('hi')}
-let a = event => {alert('hi')}		// 如果只有一个参数，可以省略括号
-let a = event => alert('hi')		// 如果函数体只有一条语句，可以省略花括号
-a()
+// while 语句
+let i = 5;
+while (i > 0) {
+	console.log(i);
+	i--;
+}
 
 
-// 匿名函数
-let a = function() {}
-a()
+// do...while 语句
+let i = 5;
+do {
+	console.log(i);
+	i--;
+} while (i > 0);
+
+
+// 遍历可迭代对象
+let nums = [23, 35, 67];
+for (num of nums) {
+	console.log(num);
+}
+
+
+// 遍历对象的属性
+let Person = {
+    name: 'John',
+    age: 20,
+}
+for (key in Person) {
+	console.log(Person[key]);
+}
+```
+## import
+```js
+// 文件中包含import或export语句，则该文件被视为模块，模块导入<script type="module" src="a.js"></script>要有type属性
+// 通过import语句导入的文件中需要有export，比如math.js中有export const PI = 3.14，则main.js才可以导入math.js中的PI
+// 基本语法
+import { namedExport1, namedExport2 } from './module.js';
+// 导入整个模块并使用一个命名空间
+import * as moduleName from './module.js';
+// 模块使用 export default 导出一个默认值
+import defaultExport from './module.js';
+// 同时导入默认导出和命名导出
+import defaultExport, { namedExport1, namedExport2 } from './module.js';
+// 使用 as 关键字重命名导入的内容，以避免命名冲突
+import { namedExport as newName } from './module.js';
+// 使用 import() 函数进行动态导入，这在需要按需加载模块时非常有用。动态导入返回一个 Promise
+import('./module.js')
+    .then(module => {
+        // 使用模块
+        module.namedExport();
+    })
+    .catch(err => {
+        console.error('Error loading module:', err);
+    });
+```
+## 函数
+```js
+function eat(a, b = 0, c) {
+    console.log(a, b, c);
+}
+// 若对应位置的实参未提供，则值为 undefined
+eat();               // undefined 0 undefined
+eat(2, 3, 4);        // 2 3 4
+// 多余的实参会被忽略
+eat(2, 3, 4, 5);     // 2 3 4
+
+
+
+// 匿名函数（arrow function）
+// 没有参数
+let f1 = () => console.log("hi");
+// 一个参数
+let f2 = num => console.log(num);
+// 多个参数
+let f3 = (a, b) => { console.log(a, b); };
+f1();
+f2(5);
+f3(5, 6);
+
+
+
+// 匿名函数，不推荐使用，推荐使用 arrow function
+let f1 = function() { console.log("hi") };
+let f2 = ( function() { console.log("hi") } );
+f1();
+f2();
 // 直接调用
-(function(){})()
-(function(){}())
+( function() { console.log("hi") } )();
+( function() { console.log("hi") }() );
 ```
 ## 对象
 ```js
@@ -421,29 +425,67 @@ for (a in Person) {			// a为属性名，类型是字符串，比如name属性�
     console.log(Person[a])	// 通过Person[a]访问属性对应的值
 }
 ```
-## import
+## 解构赋值的重命名
 ```js
-// 文件中包含import或export语句，则该文件被视为模块，模块导入<script type="module" src="a.js"></script>要有type属性
-// 通过import语句导入的文件中需要有export，比如math.js中有export const PI = 3.14，则main.js才可以导入math.js中的PI
-// 基本语法
-import { namedExport1, namedExport2 } from './module.js';
-// 导入整个模块并使用一个命名空间
-import * as moduleName from './module.js';
-// 模块使用 export default 导出一个默认值
-import defaultExport from './module.js';
-// 同时导入默认导出和命名导出
-import defaultExport, { namedExport1, namedExport2 } from './module.js';
-// 使用 as 关键字重命名导入的内容，以避免命名冲突
-import { namedExport as newName } from './module.js';
-// 使用 import() 函数进行动态导入，这在需要按需加载模块时非常有用。动态导入返回一个 Promise
-import('./module.js')
-    .then(module => {
-        // 使用模块
-        module.namedExport();
-    })
-    .catch(err => {
-        console.error('Error loading module:', err);
-    });
+// data: metadata的意思是将data的值赋给metadata，两个变量都能使用
+let { data: metadata, content } = readMDXFile();
+console.log(metadata);
+```
+## ...扩展运算符
+```js
+// ...是扩展运算符，用于将可迭代对象（如数组或字符串）展开为单个元素
+// 合并数组
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+const mergedArr = [...arr1, ...arr2]; // [1, 2, 3, 4]
+
+// 扩展运算符进行的是​​浅拷贝
+const originalObj = { a: 1, b: 2 };
+const copyObj = { ...originalObj }; // { a: 1, b: 2 }
+```
+## ?.
+```js
+// ?.在JavaScript中如果调用对象是null，则返回undefined
+// 假设我们有一个用户对象，但不确定某些信息是否存在
+const user = {
+  name: 'Alice',
+  address: {
+    city: 'Beijing'
+  },
+  sayHello: function() {
+    return `Hello, ${this.name}!`;
+  }
+};
+
+// 安全访问可能不存在的属性
+console.log(user?.address?.city); // 输出 "Beijing"
+console.log(user?.contact?.phone); // 输出 undefined，而不会报错
+
+// 安全调用可能不存在的方法
+console.log(user.sayHello?.()); // 输出 "Hello, Alice!"
+console.log(user.nonExistentMethod?.()); // 输出 undefined，而不会报错
+
+// 结合空值合并运算符提供默认值
+const phoneNumber = user?.contact?.phone ?? '暂无电话';
+console.log(phoneNumber); // 输出 "暂无电话"
+
+// 访问数组元素
+const firstItem = someArray?.[0]; // 如果 someArray 为 null 或 undefined，则返回 undefined
+```
+## ??空值合并运算符
+```js
+// ??是空值合并运算符（Nullish Coalescing Operator）。它的作用是返回其左侧操作数，如果左侧操作数为null或undefined，则返回右侧操作数
+const nullValue = null;
+const undefinedValue = undefined;
+const zero = 0;
+const emptyString = '';
+const normalText = 'Hello';
+
+console.log(nullValue ?? 'default');        // 输出: 'default'
+console.log(undefinedValue ?? 'default');  // 输出: 'default'
+console.log(zero ?? 42);                   // 输出: 0 (保留了 0)
+console.log(emptyString ?? 'default');     // 输出: '' (保留了空字符串)
+console.log(normalText ?? 'default');      // 输出: 'Hello'
 ```
 ## 处理json
 ```js
