@@ -430,6 +430,11 @@ console.log(child.method()); // 5
 ```
 ## 类
 ```js
+// js 中的 class 本质上是一个语法糖，底层仍是 js 的原型链机制
+// js 是单继承模型，没有多继承
+
+
+
 // 空类
 class Student {}
 
@@ -528,6 +533,32 @@ class Person {
 }
 const person = new Person('David', 25);
 console.log(person.#name); // SyntaxError: 私有字段必须在声明类中访问
+
+
+
+
+// js 是单继承模型，没有多继承
+// 父类的使用 # 前缀定义的私有字段，子类是无法直接访问的
+class Animal {
+	constructor(name) {
+		this.name = name;
+	}
+	speak() {
+		console.log(`${this.name} makes a noise.`);
+	}
+}
+class Dog extends Animal {
+	constructor(name, breed) {
+		// 调用父类的构造函数
+		super(name);
+		this.breed = breed; // 子类自己的属性
+	}
+	
+	speak() {
+		super.speak(); // 先调用父类的 speak 方法
+		console.log(`${this.name} barks.`); // 然后扩展子类自己的行为
+	}
+}
 ```
 ## 异常
 ```js
