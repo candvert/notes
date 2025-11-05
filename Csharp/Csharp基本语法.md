@@ -7,23 +7,35 @@
 - [访问限制](#访问限制)
 - [数据类型](#数据类型)
 - [注释](#注释)
-- [常量和变量](#常量和变量)
-- [类型默认值](#类型默认值)
+- [变量](#变量)
+- [常量](#常量)
 - [using指令](#using指令)
 - [类型转换](#类型转换)
 - [格式化输出](#格式化输出)
 - [定义对象](#定义对象)
 - [main方法](#main方法)
+- [原始字符串](#原始字符串)
+- [控制流](#控制流)
+	- [if](#if)
+
+c# 中的每个项目在编译后都会生成一个独立的程序集（即编译后的 .dll 或 .exe 文件）
 
 c# 有垃圾回收
 
-在 c# 中 bool 不会隐式转换为 int
+在 c# 中，如果源文件分布在不同的目录，但只要它们属于同一个项目，可以直接使用 using 指令导入其他源文件中定义的命名空间
 
-c# 不能在类外定义函数和变量
+c# 要求所有的变量和函数（方法）都必须属于某个类或结构体
 
 任何未显式包裹在 namespace 内的类、结构等类型，默认都属于​​全局命名空间
 
+直接在命名空间级别定义的类、结构、接口等类型，其访问权限只能设置为 public 或 internal
+
+internal 限定的类型只能在同一个程序集内部被访问
+
 struct 不支持继承
+
+在 c# 中 bool 不会隐式转换为 int
+
 ## 程序入口
 程序入口是某个类中的 Main 函数（类的名称无所谓）
 ```c#
@@ -140,6 +152,8 @@ dotnet run file.cs
 ```
 ## 访问限制
 ```c#
+internal 限定的类型只能在同一个程序集内部被访问
+
 类默认权限为 ​​internal。其成员默认为 private
 结构默认访问权限为 internal。其成员默认为 private
 
@@ -158,7 +172,7 @@ object, string, delegate, dynamic
 
 
 // C# 类型关键字都是相应 .NET 类型的别名
-// int a = 10; 和 System.Int32 a = 10; 是完全相同的
+// 例如 int a = 10; 和 System.Int32 a = 10; 是完全相同的
 
 
 
@@ -181,26 +195,24 @@ System.Object, System.String, System.Delegate, System.Object
 /* this is
 comment */
 ```
-## 常量和变量
-```c#
-const int i = 10;
-
-
-
-int i = 10;
-
-// 类型自动推断
-var i = 10;
-```
-## 类型默认值
+## 变量
 ```c#
 // 所有引用类型的默认值为 null
 // 数值类型默认值为 0
 // 布尔类型默认值为 false
 // 字符串默认值为 ""（空字符串）
 
-
 // 局部变量必须显式初始化
+
+
+// 明确指定类型
+int i = 10;
+// 自动推断类型
+var i = 10;
+```
+## 常量
+```c#
+const int i = 10;
 ```
 ## using指令
 ```c#
@@ -212,13 +224,13 @@ using MyAlias = Some.Very.Long.Namespace.MyClass;
 using IO = System.IO;
 
 
-// 使用using static可以引入一个类的静态成员，从而直接使用静态方法或属性，无需类名限定
+// 使用 using static 可以引入一个类的静态成员，从而直接使用静态方法或属性，无需类名限定
 using static System.Math; // 引入Math类的静态成员
 using static System.Console; // 引入Console类的静态成员
 PI * Pow(radius, 2);
 
 
-// 从 C# 10.0 开始，使用global using指令可以在一个项目中全局引入命名空间或静态成员，这样项目中的所有文件都不需要再单独引入
+// 从 C# 10.0 开始，使用 global using 指令可以在一个项目中全局引入命名空间或静态成员，这样项目中的所有文件都不需要再单独引入
 global using System;
 global using static System.Math;
 ```
@@ -453,4 +465,158 @@ static async Task Main() { }
 static async Task<int> Main() { }
 static async Task Main(string[] args) { }
 static async Task<int> Main(string[] args) { }
+```
+## 原始字符串
+```c#
+// 单行原始字符串
+string singleLine = """Friends say "hello" as they pass by.""";
+
+
+// 多行原始字符串
+// 起始和结束引号需独占一行
+// 编译器会自动删除结束引号左侧的所有空格
+string multiLine = """
+    This line is indented in the code. // 输出时左侧无缩进空格
+    This line too. // 输出时左侧无缩进空格
+    """;
+```
+## 控制流
+## if
+```c#
+if (score >= 90)
+{
+    Console.WriteLine("优秀");
+}
+else if (score >= 60)
+{
+    Console.WriteLine("及格");
+}
+else
+{
+    Console.WriteLine("不及格");
+}
+```
+## switch
+```c#
+int dayOfWeek = 3;
+switch (dayOfWeek)
+{
+    case 1:
+    case 2:
+    case 3:
+        Console.WriteLine("工作日");
+        break;
+    default:
+        Console.WriteLine("无效的日期");
+        break;
+}
+
+
+// 可以匹配字符串
+string command = "start";
+switch (command)
+{
+    case "start":
+        Console.WriteLine("程序启动...");
+        break;
+    default:
+        Console.WriteLine("未知命令");
+        break;
+}
+
+
+// 匹配类型
+switch (obj)
+{
+	case int i:
+		return $"这是一个整数: {i}";
+	case string s:
+		return $"这是一个字符串: {s}";
+	case double d:
+		return $"这是一个双精度浮点数: {d}";
+	default:
+		return "未知类型";
+}
+
+
+// when 子句
+int score = 85;
+switch (score)
+{
+    case int n when n >= 90:
+        Console.WriteLine("优秀");
+        break;
+    default:
+        Console.WriteLine("不及格");
+        break;
+}
+
+
+// 简洁的 switch 表达式语法
+int number = 2;
+string result = number switch
+{
+    1 => "数字是1",
+    2 => "数字是2", // result将被赋值为"数字是2"
+    3 => "数字是3",
+    _ => "未知数字" // _ 代表默认情况
+};
+```
+## for
+```c#
+int sum = 0;
+for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine($"{i}");
+	break;
+}
+
+for (;;)
+{
+	Console.WriteLine("hi");
+}
+```
+## while
+```c#
+int num = 5;
+while (num > 0)
+{
+    Console.WriteLine($"{num}");
+	num--;
+}
+
+
+
+
+int num = 5;
+do
+{
+	Console.WriteLine($"{num}");
+	num--;
+} while (num > 0);
+```
+## foreach
+```c#
+int[] numbers = { 1, 2, 3, 4, 5 };
+foreach (var num in numbers)
+{
+    Console.WriteLine(num * 2); // 输出：2, 4, 6, 8, 10
+}
+
+
+
+// 遍历字典
+Dictionary<string, string> capitals = new Dictionary<string, string>
+{
+    { "France", "Paris" }, 
+    { "Japan", "Tokyo" }
+};
+foreach (KeyValuePair<string, string> pair in capitals)
+{
+    Console.WriteLine($"国家：{pair.Key}，首都：{pair.Value}");
+}
+```
+## 构造函数
+```c#
+
 ```

@@ -18,10 +18,10 @@
 	- [常量](#常量)
 	- [变量](#变量)
 	- [变量的生命周期](#变量的生命周期)
-	- [原始字符串](#原始字符串)
 	- [import](#import)
 	- [声明语句](#声明语句)
 	- [字符串](#字符串)
+	- [原始字符串](#原始字符串)
 	- [if](#if)
 	- [switch](#switch)
 	- [循环](#循环)
@@ -409,15 +409,6 @@ c := 0i // implicit complex128(0i)
 ```go
 对于在包一级声明的变量来说，它们的生命周期和整个程序的运行周期是一致的
 ```
-## 原始字符串
-```go
-// 使用 ``
-s := `Go is a tool for managing Go source code.
-Usage:
-go command [arguments]
-...
-`
-```
 ## import
 ```go
 // Go 语言不允许导入未使用的包
@@ -505,6 +496,15 @@ fmt.Println(string(r)) // プログラム
 ```
 
 ![](/images/go_1.png)
+## 原始字符串
+```go
+// 使用 ``
+s := `Go is a tool for managing Go source code.
+Usage:
+go command [arguments]
+...
+`
+```
 ## if
 ```go
 if command == "go" {
