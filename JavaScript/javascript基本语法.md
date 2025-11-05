@@ -715,7 +715,7 @@ const firstItem = someArray?.[0]; // 如果 someArray 为 null 或 undefined，�
 ```
 ## ??空值合并运算符
 ```js
-// ??是空值合并运算符（Nullish Coalescing Operator）。它的作用是返回其左侧操作数，如果左侧操作数为null或undefined，则返回右侧操作数
+// ??是空值合并运算符（Nullish Coalescing Operator）。它的作用是返回其左侧操作数，如果左侧操作数为 null 或 undefined，则返回右侧操作数
 const nullValue = null;
 const undefinedValue = undefined;
 const zero = 0;

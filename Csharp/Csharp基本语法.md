@@ -17,6 +17,7 @@
 - [原始字符串](#原始字符串)
 - [控制流](#控制流)
 	- [if](#if)
+- [??空值合并运算符](#??空值合并运算符)
 
 c# 中的每个项目在编译后都会生成一个独立的程序集（即编译后的 .dll 或 .exe 文件）
 
@@ -43,6 +44,7 @@ using System;
 
 class Program
 {
+	// 与 C 和 C++ 不同，程序名称不被视为第一个命令行参数
 	static void Main(string[] args)
 	{
 		Console.WriteLine("Hello world!");
@@ -207,7 +209,10 @@ comment */
 
 // 明确指定类型
 int i = 10;
+
+
 // 自动推断类型
+// var 只能用于局部变量，不能用于声明类的字段等
 var i = 10;
 ```
 ## 常量
@@ -225,14 +230,30 @@ using IO = System.IO;
 
 
 // 使用 using static 可以引入一个类的静态成员，从而直接使用静态方法或属性，无需类名限定
-using static System.Math; // 引入Math类的静态成员
-using static System.Console; // 引入Console类的静态成员
+using static System.Math; // 引入 Math 类的静态成员
+using static System.Console; // 引入 Console 类的静态成员
 PI * Pow(radius, 2);
 
 
 // 从 C# 10.0 开始，使用 global using 指令可以在一个项目中全局引入命名空间或静态成员，这样项目中的所有文件都不需要再单独引入
 global using System;
 global using static System.Math;
+
+
+
+// 用于自动释放资源
+// 当程序执行离开这个作用域时（无论是正常执行完毕，还是因为发生了异常），fs 对象的 Dispose() 方法都会被自动调用，fs 对象也将不可访问
+using (FileStream fs = new FileStream("example.txt", FileMode.Create, FileAccess.Write))
+{
+    fs.Write(data, 0, data.Length);
+    fs.Flush();
+}
+// 如果声明多个变量，它们的类型必须相同
+using (Font font3 = new Font("Arial", 10.0f), 
+       font4 = new Font("Arial", 10.0f))
+{
+    // 使用 font3 和 font4
+}
 ```
 ## if
 ```c#
@@ -394,6 +415,28 @@ int i = 10;
 byte b = (byte)i;
 
 
+// System.Convert 类提供了一系列静态方法（如 ToInt32, ToString）
+string numberString = "123";
+int convertedNumber = Convert.ToInt32(numberString); // 字符串转整数
+
+
+// Parse 与 TryParse 方法​​：专门用于将字符串转换为特定的值类型（如整数、浮点数、日期等）
+// Parse 方法会抛出异常
+// TryParse 方法不会抛出异常，它会尝试进行转换，如果成功则返回 true 并将结果存储在 out 参数中；如果失败则返回 false
+string userInput = Console.ReadLine();
+if (int.TryParse(userInput, out int result))
+{
+    Console.WriteLine($"您输入的数字是: {result}");
+    // 可以安全地使用 result 进行数学运算
+    int doubled = result * 2;
+}
+else
+{
+    Console.WriteLine("输入无效，请输入一个整数。");
+}
+
+
+
 // 基类引用转换为派生类引用（向下转型）
 Animal someAnimal = new Dog();
 Dog myDogAgain = (Dog)someAnimal; // 向下转型，需要显式转换
@@ -414,17 +457,6 @@ if (someObject is string specificString)
     // 检查通过后，可以直接使用 specificString
     Console.WriteLine(specificString.Length);
 }
-
-
-
-// System.Convert类提供了一系列静态方法（如 ToInt32, ToString）
-string numberString = "123";
-int convertedNumber = Convert.ToInt32(numberString); // 字符串转整数
-
-
-// Parse 与 TryParse 方法​​：专门用于将字符串转换为特定的值类型（如整数、浮点数、日期等）
-string input = "true";
-bool result = bool.Parse(input); // 使用 Parse 转换
 ```
 ## 自定义类型
 ```c#
@@ -465,6 +497,33 @@ static async Task Main() { }
 static async Task<int> Main() { }
 static async Task Main(string[] args) { }
 static async Task<int> Main(string[] args) { }
+```
+## 字符串
+```c#
+// 逐字字符串
+// 取消转义字符的特殊含义，将字符串内的所有字符（包括反斜杠 ``、换行符等）都当作普通字符处理
+string path1 = @"C:\Users\Documents\file.txt";
+// 可以跨越多行，换行符和空格都会被原样保留
+string sqlQuery = @"SELECT UserId, UserName
+                    FROM Users
+                    WHERE City = 'Shanghai'";
+// 由于反斜杠不再具有转义功能，要在逐字字符串中表示一个双引号 "，需要使用两个连续的双引号 ""
+string quote = @"他说：""你好，世界！""";
+
+
+
+
+// 插值字符串
+// 允许在字符串中直接嵌入变量、表达式或方法调用
+string name = "Alice";
+int score = 95;
+string message3 = $"玩家 {name} 的得分是：{score}";
+
+
+
+// 组合使用
+string fileName = "report.pdf";
+string dynamicPath = $@"C:\Reports\{fileName}";
 ```
 ## 原始字符串
 ```c#
@@ -618,5 +677,45 @@ foreach (KeyValuePair<string, string> pair in capitals)
 ```
 ## 构造函数
 ```c#
+// 构造函数的名称和类名相同，无返回值
+public class Coords
+{
+    public int X { get; set; }
+    public int Y { get; set; }
 
+    // 默认构造函数
+    public Coords() : this(0, 0) // 使用this调用另一个构造函数
+    {
+    }
+
+    // 参数化构造函数
+    public Coords(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+
+	// 静态构造函数没有访问修饰符，不能有参数，并且不能直接调用
+	// 它在类型第一次被使用前（如创建第一个实例或访问任何静态成员时）自动调用，且在整个应用程序域生命周期内最多执行一次
+	// 通常用于初始化静态字段或执行只需一次的类型级别设置
+	static Coords()
+    {
+    }
+}
+Coords point1 = new Coords();
+Coords point2 = new Coords(5, 3);
+```
+## 输入
+```c#
+// 读取一行内容，不会包含换行符
+string s = Console.ReadLine() ?? "";
+```
+## ??空值合并运算符
+```c#
+string s = Console.ReadLine() ?? "hi"; // 如果返回 null，则 s 为 "hi"
+```
+## ?.空条件运算符
+```c#
+string? s = Console.ReadLine();
+int? length = input?.Length; // 如果 s 为 null，length 也会是 null，而不会抛出异常
 ```
