@@ -1,6 +1,11 @@
+- [python创建简单网页服务器](#python创建简单网页服务器)
+
 - [添加包](#添加包)
 - [dir函数](#dir函数)
 - [functools.wraps](#functools.wraps)
+
+
+- [pathlib](#pathlib)
 
 
 - [python创建用于测试的http服务器](#python创建用于测试的http服务器)
@@ -26,6 +31,13 @@
 
 	- [os模块](#os模块)
 
+## python创建简单网页服务器
+进入目标目录，在命令行输入：
+```python
+# 浏览器会默认显示目录下的 index.html 文件
+# 没有 index.html 文件，则会以文件列表的形式显示目录下的所有文件和文件夹
+python -m http.server 8880
+```
 
 ## 添加包
 ```sh
@@ -73,6 +85,67 @@ def example():
 print(example.__name__)  # 输出: example
 print(example.__doc__)   # 输出: 这是原函数的文档字符串
 ```
+## pathlib
+```python
+from pathlib import Path
+
+# 创建路径对象
+path = Path('/home/user/documents')
+
+# 路径拼接
+file_path = path / 'subfolder' / 'file.txt'
+
+# 获取各部分信息
+print(file_path.name)        # 'file.txt'
+print(file_path.parent)      # '/home/user/documents/subfolder'
+print(file_path.suffix)      # '.txt'
+print(file_path.stem)        # 'file'
+
+# 路径操作
+new_path = file_path.with_name('new_file.txt')
+new_suffix = file_path.with_suffix('.pdf')
+
+# 检查存在性
+if file_path.exists():
+    print("文件存在")
+
+# 遍历目录
+for item in path.iterdir():
+    print(item)
+```
+常用操作示例：
+```python
+from pathlib import Path
+
+# 获取当前工作目录
+current_dir = Path.cwd()
+
+# 家目录
+home_dir = Path.home()
+
+# 相对路径转绝对路径
+abs_path = Path('relative/path').resolve()
+
+# 创建目录
+Path('new_folder').mkdir(exist_ok=True)
+
+# 读取文件内容
+content = Path('file.txt').read_text()
+
+# 写入文件
+Path('output.txt').write_text('Hello World')
+```
+跨平台路径处理：
+```python
+from pathlib import Path
+
+# pathlib 自动处理不同操作系统的路径分隔符
+path = Path('folder') / 'subfolder' / 'file.txt'
+
+# 在Windows上会使用 \，在Unix系统上会使用 /
+```
+
+**建议**：对于新项目，优先使用 `pathlib`，它提供了更面向对象和直观的API，代码更易读和维护
 ## 使用functools.lru_cache做备忘
 ```python
 # 它把耗时的函数的结果保存起来，避免传入相同的参数时重复计算

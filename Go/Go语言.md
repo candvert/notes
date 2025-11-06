@@ -904,20 +904,33 @@ fmt.Println(titles) // "[{Casablanca} {Cool Hand Luke} {Bullitt}]"
 ```
 ## 模板语法
 ```go
+// 基本使用
+tmpl := `Hello, {{.Name}}! Your score is {{.Score}}.
+{{if .Passed}}Congratulations!{{else}}Try again.{{end}}`
+
+data := struct {
+	Name   string
+	Score  int
+	Passed bool
+}{"Alice", 85, true}
+
+t := template.Must(template.New("test").Parse(tmpl))
+t.Execute(os.Stdout, data)
+// 输出:
+// Hello, Alice! Your score is 85.
+// Congratulations!
+
+
+
+
 // {{...}} 叫做 actions
 // {{.Title | printf "%.64s"}} 中的 | 类似 Linux 命令行的管道符，printf 为模板语法内置的 fmt.Sprintf 功能
-const templ = `{{.TotalCount}} issues:
-{{range .Items}}----------------------------------------
-Number: {{.Number}}
-User: {{.User.Login}}
-Title: {{.Title | printf "%.64s"}}
-Age: {{.CreatedAt | daysAgo}} days
-{{end}}`
 
 
 // template.Must 接受一个模板和 err，如果 err 是 nil 则返回模板，否则 panic
 // template.New 创建并返回一个模板
 // Funcs 添加在模板中可以访问的函数，返回这个模板
+// template.New 的参数用于为创建的模板对象指定一个名称，起标识作用
 var report = template.Must(template.New("issuelist").
 	Funcs(template.FuncMap{"daysAgo": daysAgo}).
 	Parse(templ))

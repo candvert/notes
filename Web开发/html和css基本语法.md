@@ -22,6 +22,8 @@
 	- [实现弹跳动画效果](#实现弹跳动画效果)
 	- [css的特性](#css的特性)
 
+	- [底部居中](#底部居中)
+
 # html
 ## 基本结构
 ```html
@@ -820,4 +822,16 @@ flex-flow: row wrap;
 <div>
 	<span>hello</span>
 </div>
+```
+## 底部居中
+```css
+/* 如果没有 left 和 right，那么就无法居中 */
+.input-wrapper {
+    position: fixed;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+	width: 1000px;
+}
 ```

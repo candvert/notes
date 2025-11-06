@@ -54,6 +54,7 @@
 
 
 <!--单独编写一个 js 文件，再通过下面语句引入到 html 文件中，下面这句通常放在 <head> 标签中-->
+<!--需要注意：浏览器限制在 file:// 协议下加载 ES 模块，ES 模块设计为在 HTTP 服务器环境下工作，无法在本地文件协议下正常加载-->
 <script type="module" src="script.js"></script>
 ```
 ## 运行单个文件
@@ -633,32 +634,60 @@ fetchDataAsync();
 ```
 ## fetch
 ```js
-// 最基本的 GET 请求
-fetch('https://api.example.com/data')
-	.then(response => response.json())
-	.then(data => console.log(data))
-	.catch(error => console.error('Error:', error));
+// GET 请求
+const response = await fetch('/');
+// response.json() 返回的是一个对象
+const data = await response.json();
+// 访问 json 中 person 键对应的值
+console.log(data.person);
 
 
 
-// 发送 JSON 数据的 POST 请求
-fetch('https://api.example.com/users', {
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json'
-	},
-	body: JSON.stringify({
-		name: 'John',
-		age: 30
-	})
-})
-	.then(response => response.json())
-	.then(data => console.log(data))
-	.catch(error => console.error('Error:', error));
+// POST 请求
+const response = await fetch("/api/chat", {
+  method: "POST",
+  // 发送 json 数据
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name: "John" }),
+  // 发送纯文本
+  // headers: { "Content-Type": "text/plain" },
+  // body: "hello",
+});
+if (!response.ok) {
+  throw new Error(`HTTP error! status: ${response.status}`);
+}
+const data = await response.json(); 
+console.log(data.person);
 
 
 
-// fetch() 函数返回的 Response 对象
+// 如果连接是类型是 "Content-Type": "text/event-stream"，即流式传输，则这样处理
+const reader = response.body.getReader();
+const decoder = new TextDecoder('utf-8');
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  // 使用 { stream: true } 表示数据流还未结束
+  const chunk = decoder.decode(value, { stream: true });
+  // Server-Sent Events (SSE) 流式响应协议规定，服务器发送的每条完整消息必须以两个连续的换行符（即 \n\n）作为结束标志
+  const lines = chunk.split("\n\n");
+  for (const line of lines) {
+    if (line.startsWith('data: ')) {
+      try {
+	    const data = JSON.parse(line.slice(6));
+		// JSON.parse() 返回的是一个对象
+	    console.log(data.person);
+	  } catch (e) {
+	    console.error('解析JSON失败:', e, '，原始消息:', message);
+	  }
+    }
+  }
+}
+
+
+
+
+// fetch() 函数返回的 Response 对象具有的属性
 .ok // true 或 false
 .status // 状态码
 .url // url
@@ -686,7 +715,7 @@ const copyObj = { ...originalObj }; // { a: 1, b: 2 }
 ```
 ## ?.
 ```js
-// ?.在JavaScript中如果调用对象是null，则返回undefined
+// ?. 在 JavaScript 中如果调用对象是 null，则返回 undefined
 // 假设我们有一个用户对象，但不确定某些信息是否存在
 const user = {
   name: 'Alice',

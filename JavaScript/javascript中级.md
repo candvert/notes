@@ -1,3 +1,13 @@
+- [express启动本地服务器](#express启动本地服务器)
+- [.env文件实现环境变量](#.env文件实现环境变量)
+- [pkg将项目打包成exe](#pkg将项目打包成exe)
+- [为div元素添加keydown事件监听器](#为div元素添加keydown事件监听器)
+- [渲染markdown](#渲染markdown)
+- [解析yaml文件](#解析yaml文件)
+
+- [使用openai模块](#使用openai模块)
+
+
 - [dom相关](#dom相关)
 	- [操控video](#操控video)
 	- [DOMContentLoaded事件](#DOMContentLoaded事件)
@@ -14,6 +24,227 @@
 	- [electron](#electron)
 	- [第三方api](#第三方api)
 		- [firebase](#firebase)
+## 为div元素添加keydown事件监听器
+```js
+const textArea = document.querySelector('.text-area');
+// 添加事件监听器
+textArea.addEventListener('keydown', function(event) {
+    // 检查是否按下 Enter 键
+    if (event.key === 'Enter') {
+        // 阻止默认行为（如换行）
+        event.preventDefault();
+        
+        // 执行操作
+        const currentText = textArea.textContent;
+		textArea.innerHTML = "";
+    }
+	
+	// 检查是否按下 Shift + Enter 键
+	if (event.shiftKey && event.key === "Enter") {
+		// 阻止默认行为
+        event.preventDefault();
+
+		// 执行操作
+	}
+});
+```
+## 渲染markdown
+```js
+// 引入必要的库
+import { marked } from 'marked';
+import hljs from 'highlight.js';
+
+// 配置 marked 选项
+marked.setOptions({
+  highlight: function (code) {
+    return hljs.highlightAuto(code).value;
+  },
+  gfm: true,
+});
+
+// 使用 marked 解析 Markdown
+const markdownText = '```javascript\nconsole.log("Hello World");\n```';
+const htmlOutput = marked.parse(markdownText);
+
+// 将生成的HTML插入到DOM中
+document.querySelector(".data").innerHTML = htmlOutput;
+hljs.highlightAll();
+```
+还需要导入 highlight.js 相关的 css 文件
+## 解析yaml文件
+```js
+
+```
+## 使用openai模块
+```js
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: "https://api.deepseek.com",
+  apiKey: process.env.DEEPSEEK_API_KEY,
+});
+
+const stream = await openai.chat.completions.create({
+  model: "deepseek-reasoner",
+  messages: [
+	{ role: "system", content: "You are a helpful assistant." },
+	{ role: "user", content: userPrompt },
+  ],
+  temperature: 0.0,
+  stream: true,
+});
+
+for await (const chunk of stream) {
+  // reasoning_content 便是返回的思考内容，content 是返回的回答
+  const reasoning_content = chunk.choices[0]?.delta?.reasoning_content;
+  const content = chunk.choices[0]?.delta?.content;
+}
+```
+## express启动本地服务器
+最简单示例：
+```js
+import express from 'express';
+
+const app = express();
+const port = 3000;
+// 定义根路径路由
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+// 启动服务器
+app.listen(port, () => {
+  console.log(`服务器运行在 http://localhost:${port}`);
+});
+```
+显示 html 文件：
+```js
+import express from 'express';
+
+const app = express();
+const port = 3000;
+// 将当前目录设为静态资源目录，访问路由 / 时，会显示当前目录的 index.html
+app.use(express.static('./'));
+// 将路由 /about 映射到 about.html
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, 'about.html'));
+});
+// 接收客户端传来的消息
+app.post('/api/chat', async (req, res) => {
+  res.send('hi');
+});
+// 启动服务器
+app.listen(port, () => {
+  console.log(`服务器运行在 http://localhost:${port}`);
+});
+```
+中间件
+```js
+// 当客户端（如网页或移动应用）通过 POST、PUT 等 HTTP 方法向服务器发送数据，且该数据的 Content-Type 头为 application/json 时，express.json() 中间件会自动拦截并处理这个请求
+// 它会将收到的 json 字符串转换为一个 js 对象，并挂载到 req.body 属性中
+app.use(express.json());
+// 如果客户端发送的 JSON 数据是 {"name": "Alice", "age": 25}，那么可以这样访问
+const { name, age } = req.body;
+```
+可以设置流式响应头
+```js
+// 设置流式响应头
+app.get('/about', (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  // 流式传输
+  while (true) {
+    // Server-Sent Events (SSE) 流式响应协议规定，服务器发送的每条完整消息必须以两个连续的换行符（即 \n\n）作为结束标志
+    res.write(`data: ${JSON.stringify({ person: "John" })}\n\n`);
+	res.write(`data: ${JSON.stringify({ person: "Amily" })}\n\n`);
+  }
+  // 结束传输
+  res.end();
+});
+```
+返回 404 等错误
+```js
+app.get('/about', (req, res) => {
+  res.status(500).json({ error: "Failed to fetch from AI" });
+});
+```
+获取客户端通过 post 发送的信息
+```js
+app.post("/api/chat", async (req, res) => {
+  const { userPrompt } = req.body;
+});
+```
+自动打开浏览器网站
+```js
+app.listen(port, () => {
+  console.log(`服务器启动成功，请打开 http://localhost:${port}`);
+  
+  // 根据操作系统执行不同的打开浏览器命令
+  let command;
+  switch (process.platform) {
+    case 'win32': // Windows
+      command = `start http://localhost:${port}`;
+      break;
+    case 'darwin': // macOS
+      command = `open http://localhost:${port}`;
+      break;
+    default: // Linux和其他
+      command = `xdg-open http://localhost:${port}`;
+  }
+  
+  exec(command, (error) => {
+    if (error) {
+      console.error('打开浏览器失败:', error);
+    } else {
+      console.log('浏览器已自动打开');
+    }
+  });
+});
+```
+## .env文件实现环境变量
+需要先安装 dotenv 库
+```sh
+npm install dotenv
+```
+在项目根目录创建 .env 文件，使用 KEY=VALUE 格式
+```js
+DB_HOST=localhost
+DB_USER=root
+SECRET_KEY=mysecretkey
+```
+在 js 代码中访问变量
+```js
+import 'dotenv/config';
+// process.env.DB_HOST 的类型是 string
+console.log(process.env.DB_HOST);
+```
+## pkg将项目打包成exe
+确保你的 package.json 中正确指定了程序的启动入口文件
+```js
+{
+  "name": "my-express-app",
+  "version": "1.0.0",
+  "main": "app.js", // 这是关键的入口文件
+  "bin": "app.js", // 对 pkg 指明可执行文件的入口
+  "scripts": {
+    "start": "node app.js",
+    "build": "pkg . --targets node18-win-x64 --output myapp.exe" // 可在此配置打包脚本
+  },
+  "pkg": {
+    "assets": [
+      "views/**/*", 
+      "public/**/*", 
+      "dist/**/*"
+    ] // 重要：声明需要打包的静态资源（如模板、图片、CSS/JS等）
+  }
+}
+```
+
+```js
+// 打包为 Windows 可执行文件
+pkg . --targets node18-win-x64 --output myapp.exe
+```
 ## 绑定事件和取消事件
 ```html
 <!-- 通过html属性进行绑定，不建议 -->
