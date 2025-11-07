@@ -1,4 +1,5 @@
 - [添加包](#添加包)
+- [go mod tidy](#go%20mod%20tidy)
 
 - [使用http包创建本地服务器](#使用http包创建本地服务器)
 - [打包为exe](#打包为exe)
@@ -6,6 +7,12 @@
 - [标准库](#标准库)
 	- [io](#io)
 	- [net](#net)
+		- [net/http](#net/http)
+	- [time](#time)
+	- [bufio](#bufio)
+	- [math](#math)
+
+- [openai库](#openai库)
 
 var buf bytes.Buffer
 buf.WriteByte('[')
@@ -17,6 +24,11 @@ buf.WriteRune('世')
 // go env GOPATH 命令打印 GOPATH 变量的值
 go get github.com/gin-gonic/gin
 go get go.uber.org/zap
+```
+## go mod tidy
+```go
+// go mod tidy 会递归分析项目中所有 .go 源文件（包括测试文件）的 import 语句，然后自动下载添加缺失的模块和移除未被使用的模块
+// -v 选项输出具体添加或移除了哪些模块
 ```
 ## 使用http包创建本地服务器
 ```go
@@ -96,7 +108,7 @@ http.HandleFunc("/welcome", func(w http.ResponseWriter, r *http.Request) {
 $env:GOOS = "windows"
 $env:GOARCH = "amd64"
 // 再运行该命令，-ldflags="-H windowsgui" 的作用是隐藏默认打开的终端
-go build -ldflags="-H windowsgui" -o myapp.exe main.go
+go build -ldflags="-H windowsgui" -o myapp.exe
 ```
 多个文件打包成 exe，比如该目录
 ```go
@@ -122,6 +134,8 @@ import (
 //go:embed static/*
 var staticFiles embed.FS
 func main() {
+	// 使用 fs.Sub 将文件系统的根目录定位到 static 目录
+	// 这样访问路由 / 显示的就是 index.html 页面
 	staticFS, err := fs.Sub(staticFiles, "static")
 	if err != nil {
         log.Fatal("无法加载静态文件:", err)
@@ -139,7 +153,7 @@ func main() {
 $env:GOOS = "windows"
 $env:GOARCH = "amd64"
 // 再运行该命令，-ldflags="-H windowsgui" 的作用是隐藏默认打开的终端
-go build -ldflags="-H windowsgui" -o myapp.exe main.go
+go build -ldflags="-H windowsgui" -o myapp.exe
 ```
 ## go list
 ```go
@@ -249,7 +263,6 @@ conn, err := net.Dial("tcp", "localhost:8000")
 ```go
 import "net/http"
 
-
 // 当 err 为 nil 时，resp 始终包含一个非 nil 的 resp.Body。调用者在读取完 resp.Body 后应将其关闭
 func Get(url string) (resp *Response, err error)
 
@@ -258,6 +271,36 @@ resp, err := http.Get("http://baidu.com/")
 b := make([]byte, 9999)
 resp.Body.Read(b)
 fmt.Println(string(b))
+```
+post 请求
+```go
+import (
+	"context"
+	"time"
+	"net/http"
+	"strings"
+)
+
+client := &http.Client{
+	Timeout: 60 * time.Second,
+}
+
+reqBody := `{"user": "John"}`
+// context.Background() 表示空的上下文，没有超时、取消等限制
+req, err := http.NewRequestWithContext(context.Background(), "POST", "https://api.deepseek.com/chat/completions", strings.NewReader(reqBody))
+// 设置请求头
+req.Header.Set("Content-Type", "application/json")
+// 发送请求
+resp, err := client.Do(req)
+if err != nil {
+	log.Fatal(err)
+}
+defer resp.Body.Close()
+
+// 错误处理
+if resp.StatusCode != http.StatusOK {
+	// TODO
+}
 ```
 ## time
 ```go
@@ -270,8 +313,78 @@ func Sleep(d Duration)
 
 time.Sleep(time.Second)
 ```
+## bufio
+bufio 包实现了带缓冲的 I/O 操作，可以提高读写效率
+对于大量小 I/O 操作，bufio 能显著提升性能
+读取：
+```go
+import (
+    "bufio"
+    "fmt"
+    "strings"
+)
+
+// 创建字符串读取器
+str := "Hello World\nGolang bufio package\nThird line"
+reader := bufio.NewReader(strings.NewReader(str))
+
+// 逐行读取
+for {
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		break
+	}
+	fmt.Printf("读取到: %s", line)
+}
+
+// 重置读取器
+reader.Reset(strings.NewReader("New content"))
+data, _ := reader.ReadString(' ')
+fmt.Printf("重置后读取: %s\n", data)
+```
+写入：
+```go
+// 创建文件并写入
+file, err := os.Create("test.txt")
+if err != nil {
+	panic(err)
+}
+defer file.Close()
+
+writer := bufio.NewWriter(file)
+// 批量写入
+lines := []string{"第一行\n", "第二行\n", "第三行\n"}
+for _, line := range lines {
+	writer.WriteString(line)
+}
+
+// 必须调用 Flush 确保数据写入
+writer.Flush()
+fmt.Println("文件写入完成")
+```
 ## math
 ```go
 math.MaxFloat32
 math.MaxFloat64
+```
+## openai库
+```go
+import (
+	"github.com/openai/openai-go/v3" // imported as openai
+)
+
+func 
+client := openai.NewClient(
+	option.WithAPIKey("My API Key"),
+)
+chatCompletion, err := client.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
+	Messages: []openai.ChatCompletionMessageParamUnion{
+		openai.UserMessage("Say this is a test"),
+	},
+	Model: openai.ChatModelGPT4o,
+})
+if err != nil {
+	panic(err.Error())
+}
+println(chatCompletion.Choices[0].Message.Content)
 ```
