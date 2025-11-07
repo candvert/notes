@@ -678,7 +678,7 @@ while (true) {
 		// JSON.parse() 返回的是一个对象
 	    console.log(data.person);
 	  } catch (e) {
-	    console.error('解析JSON失败:', e, '，原始消息:', message);
+	    console.error('解析JSON失败:', e);
 	  }
     }
   }

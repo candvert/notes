@@ -1,4 +1,8 @@
 - [添加包](#添加包)
+
+- [使用http包创建本地服务器](#使用http包创建本地服务器)
+- [打包为exe](#打包为exe)
+
 - [标准库](#标准库)
 	- [io](#io)
 	- [net](#net)
@@ -13,6 +17,129 @@ buf.WriteRune('世')
 // go env GOPATH 命令打印 GOPATH 变量的值
 go get github.com/gin-gonic/gin
 go get go.uber.org/zap
+```
+## 使用http包创建本地服务器
+```go
+import "net/http"
+
+// 注册路由
+// 第二个参数为函数
+http.HandleFunc("/", helloHandler)
+http.HandleFunc("/api/info", infoHandler)
+
+// 监听端口
+port := ":8880"
+err := http.ListenAndServe(port, nil)
+if err != nil {
+	fmt.Printf("Server error: %v\n", err)
+}
+fmt.Printf("Server starting on http://localhost%s\n", port)
+
+// 处理函数
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+	// 发送文本数据
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Write([]byte("This is another line of text\n"))
+	// 发送 json 数据
+	w.Header().Set("Content-Type", "application/json")
+    fmt.Fprintf(w, `{"status": "ok", "message": "Server is running"}`)
+}
+```
+静态文件目录服务：
+```go
+// 创建文件服务器实例
+// http.FileServer 遵循常见的 Web 服务器约定：当请求的路径对应一个目录时，它会自动查找并返回该目录下的 index.html 文件作为默认页面
+// http.FileServer 会隐藏以点（.）开头的文件和目录
+fs := http.FileServer(http.Dir("./static"))
+// 访问路由 / 时，显示 ./static/index.html 文件
+http.Handle("/", fs)
+log.Fatal(http.ListenAndServe(":8880", nil))
+```
+流式传输
+```go
+w.Header().Set("Content-Type", "text/event-stream")
+w.Header().Set("Cache-Control", "no-cache")
+w.Header().Set("Connection", "keep-alive")
+
+// 获取Flusher支持流式输出
+flusher, ok := w.(http.Flusher)
+if !ok {
+	http.Error(w, "Streaming unsupported", http.StatusInternalServerError)
+	return
+}
+for {
+	fmt.Fprintf(w, "data: {\"person\": \"John\"}\n\n")
+	flusher.Flush() // 立即发送数据到客户端
+	fmt.Fprintf(w, "data: {\"person\": \"Amily\"}\n\n")
+	flusher.Flush()
+}
+```
+
+```go
+http.HandleFunc("/welcome", func(w http.ResponseWriter, r *http.Request) {
+	// 从 URL 参数获取数据
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		name = "Guest"
+	}
+})
+```
+## 打包为exe
+单个文件打包为 exe（在 Windows PowerShell 中）
+```go
+// 先设置 GOOS 和 GOARCH 环境变量
+$env:GOOS = "windows"
+$env:GOARCH = "amd64"
+// 再运行该命令，-ldflags="-H windowsgui" 的作用是隐藏默认打开的终端
+go build -ldflags="-H windowsgui" -o myapp.exe main.go
+```
+多个文件打包成 exe，比如该目录
+```go
+chat/
+├── main.go
+└── static/
+		└── index.html
+		├── style.css
+		└── script.js
+```
+需要使用 embed 标准库将静态文件嵌入到二进制中，在 main.go 中需要有这些代码：
+```go
+// //go:embed static/* 嵌入 static/ 目录下的所有文件
+// http.FS(staticFiles)：将嵌入的文件系统转换为 http.FileServer 可用的格式
+package main
+import (
+	"io/fs"
+    "embed"
+    "log"
+    "net/http"
+)
+
+//go:embed static/*
+var staticFiles embed.FS
+func main() {
+	staticFS, err := fs.Sub(staticFiles, "static")
+	if err != nil {
+        log.Fatal("无法加载静态文件:", err)
+    }
+	
+    http.Handle("/", http.FileServer(http.FS(staticFS)))
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Fatal("服务器启动失败:", err)
+    }
+}
+```
+打包为 exe（在 Windows PowerShell 中）
+```go
+// 先设置 GOOS 和 GOARCH 环境变量
+$env:GOOS = "windows"
+$env:GOARCH = "amd64"
+// 再运行该命令，-ldflags="-H windowsgui" 的作用是隐藏默认打开的终端
+go build -ldflags="-H windowsgui" -o myapp.exe main.go
 ```
 ## go list
 ```go
