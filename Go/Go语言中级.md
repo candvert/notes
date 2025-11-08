@@ -58,8 +58,8 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.Write([]byte("This is another line of text\n"))
 	// 发送 json 数据
-	w.Header().Set("Content-Type", "application/json")
-    fmt.Fprintf(w, `{"status": "ok", "message": "Server is running"}`)
+	// w.Header().Set("Content-Type", "application/json")
+    // fmt.Fprintf(w, `{"status": "ok", "message": "Server is running"}`)
 }
 ```
 静态文件目录服务：
@@ -272,7 +272,7 @@ b := make([]byte, 9999)
 resp.Body.Read(b)
 fmt.Println(string(b))
 ```
-post 请求
+发送 POST 请求
 ```go
 import (
 	"context"
@@ -300,6 +300,24 @@ defer resp.Body.Close()
 // 错误处理
 if resp.StatusCode != http.StatusOK {
 	// TODO
+}
+```
+接收客户端发送的 POST 请求
+```go
+http.HandleFunc("/api/chat", chatHandler)
+http.ListenAndServe(":8880", nil)
+
+type ChatRequest struct {
+	UserPrompt string `json:"userPrompt"`
+}
+
+func chatHandler(w http.ResponseWriter, r *http.Request) {
+	var reqData ChatRequest
+	if err := json.NewDecoder(r.Body).Decode(&reqData); err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
 }
 ```
 ## time

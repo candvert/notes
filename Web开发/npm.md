@@ -6,6 +6,8 @@
 - [npm的常用命令](#npm的常用命令)
 - [npm的其他命令](#npm的其他命令)
 
+- [配置国内镜像](#配置国内镜像)
+
 npm 是 nodejs 的内置包管理工具
 ## 主要功能
 下载、管理项目依赖
@@ -97,12 +99,20 @@ npm config list
 npm config get prefix
 #
 npm config get cache
-#
+# 
 npm config get registry
-#
-npm config set registry https://registry.npm.taobao.org
+# 配置镜像源
+npm config set registry https://registry.npmmirror.com
 #
 npm view <包名> versions
 #
 npm cache clean --force
+```
+## 配置国内镜像
+```sh
+# 配置镜像源
+npm config set registry https://registry.npmmirror.com
+
+# 检查是否配置成功
+npm config get registry
 ```

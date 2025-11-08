@@ -516,8 +516,8 @@ if command == "go" {
 }
 
 
-if v := math.Pow(x, n); v < lim {
-	return v
+if err := json.Unmarshal(data, &z); err != nil {
+	fmt.Println("Error")
 }
 ```
 ## switch
@@ -864,46 +864,60 @@ dog := struct {
 ```
 ## Json支持
 ```go
-// `json:"released"` 称为字段标签，转换为 json 时默认会使用字段名作为 json 的键名，字段标签
-// `json:"released"` 中的键 json 控制 encoding/json 包的行为，其他的键控制相应的 encoding/... 包的行为
 // `json:"color,omitempty"` 中的 omitempty 意味着如果 Color 字段的值为零值，则该字段不会转换为 json
 type Movie struct {
-	Title string
+	Title string `json:"title"`
 	Year int `json:"released"`
 	Color bool `json:"color,omitempty"`
-	Actors []string
+	Director string
+	ok string
 }
-var movies = []Movie{
-	{Title: "Casablanca", Year: 1942, Color: false,
-		Actors: []string{"Humphrey Bogart", "Ingrid Bergman"}},
-	{Title: "Cool Hand Luke", Year: 1967, Color: true,
-		Actors: []string{"Paul Newman"}},
-	{Title: "Bullitt", Year: 1968, Color: true,
-		Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
-	// ...
+m := Movie{
+	Title: "Bullitt",
+	Year: 1968,
+	Color: false,
+	Director: "Steve",
+	ok: "won't show in result",
+}
+// Marshal 函数返回一个字节切片，该切片为一个 json 长字符串，不包含空格和换行符
+data, err := json.Marshal(m)
+if err != nil {
+	fmt.Println("Error")
 }
 // 只有导出的字段会转换为 json
-// Marshal 函数返回一个字节切片，该切片为一个长字符串，不包含空格和换行符
-data, err := json.Marshal(movies)
-// MarshalIndent 函数返回的是缩进良好的结果，后两个参数是可选的
-data, err := json.MarshalIndent(movies, "", " ")
+// 输出：{"title":"Bullitt","released":1968,"Director":"Steve"}
+fmt.Println(string(data))
+
+
+
+// MarshalIndent 函数返回的是缩进良好的结果
+data, err := json.MarshalIndent(m, "", " ")
 if err != nil {
-	log.Fatalf("JSON marshaling failed: %s", err)
+	fmt.Println("Error")
 }
-fmt.Printf("%s\n", data)
+fmt.Println(string(data))
 
 
 
 // Unmarshal 函数
 // 从 json 转换为 go 结构体的过程是大小写不敏感的，也就是说不用担心首字母大小写问题
-var titles []struct{ Title string }
-if err := json.Unmarshal(data, &titles); err != nil {
-log.Fatalf("JSON unmarshaling failed: %s", err)
+data := `{"title":"Bullitt","released":1968,"Director":"Steve"}`
+var z struct{
+	Title string
+	Year int `json:"released"`
+	Summary string
 }
-fmt.Println(titles) // "[{Casablanca} {Cool Hand Luke} {Bullitt}]"
+if err := json.Unmarshal(data, &z); err != nil {
+	fmt.Println("Error")
+}
+fmt.Println(z.Title) // Bullitt
+fmt.Println(z.Year) // 1968
+fmt.Println(z.Summary) // ""
 ```
 ## 模板语法
 ```go
+// {{...}} 叫做 actions
+
 // 基本使用
 tmpl := `Hello, {{.Name}}! Your score is {{.Score}}.
 {{if .Passed}}Congratulations!{{else}}Try again.{{end}}`
@@ -914,55 +928,57 @@ data := struct {
 	Passed bool
 }{"Alice", 85, true}
 
-t := template.Must(template.New("test").Parse(tmpl))
+t := template.New("id").Parse(tmpl)
 t.Execute(os.Stdout, data)
 // 输出:
 // Hello, Alice! Your score is 85.
 // Congratulations!
-
-
-
-
-// {{...}} 叫做 actions
-// {{.Title | printf "%.64s"}} 中的 | 类似 Linux 命令行的管道符，printf 为模板语法内置的 fmt.Sprintf 功能
-
-
-// template.Must 接受一个模板和 err，如果 err 是 nil 则返回模板，否则 panic
-// template.New 创建并返回一个模板
-// Funcs 添加在模板中可以访问的函数，返回这个模板
-// template.New 的参数用于为创建的模板对象指定一个名称，起标识作用
-var report = template.Must(template.New("issuelist").
-	Funcs(template.FuncMap{"daysAgo": daysAgo}).
-	Parse(templ))
-
-result, err := github.SearchIssues(os.Args[1:])
-if err := report.Execute(os.Stdout, result); err != nil {
-	log.Fatal(err)
-}
-
-
-
-// html/template 包
-import "html/template"
-var issueList = template.Must(template.New("issuelist").Parse(`
-<h1>{{.TotalCount}} issues</h1>
-<table>
-<tr style='text-align: left'>
-	<th>#</th>
-	<th>State</th>
-	<th>User</th>
-	<th>Title</th>
-</tr>
-{{range .Items}}
-<tr>
-	<td><a href='{{.HTMLURL}}'>{{.Number}}</a></td>
-	<td>{{.State}}</td>
-	<td><a href='{{.User.HTMLURL}}'>{{.User.Login}}</a></td>
-	<td><a href='{{.HTMLURL}}'>{{.Title}}</a></td>
-</tr>
+```
+条件判断
+```go
+{{if .Enabled}}
+  Status: Enabled
+{{else if .Pending}}
+  Status: Pending
+{{else}}
+  Status: Disabled
 {{end}}
-</table>
-`))
+
+{{/* 与条件 */}}
+{{if and .User .User.Active}}
+```
+循环迭代
+```go
+{{range .Items}}
+  Position: {{.}}  // 当前元素
+{{end}}
+
+{{range $index, $element := .Items}}
+  {{$index}}: {{$element}}
+{{end}}
+
+// 空循环处理
+{{range .Items}}
+  {{.}}
+{{else}}
+  No items found
+{{end}}
+```
+函数与管道
+```go
+// 内置函数
+{{printf "Value: %v" .Value}}
+{{html "<script>"}}  // 转义HTML（html/template）
+{{js "str"}}
+
+// 自定义函数
+t := template.New("").Funcs(template.FuncMap{
+    "add": func(a, b int) int { return a + b },
+})
+
+// 管道操作
+{{.Value | printf "%0.2f" | upper}}
+{{.Time | formatTime "2006-01-02"}}
 ```
 ## 函数
 ```go

@@ -1,3 +1,6 @@
+## 测试
+测试文件通常以 .test.ts 结尾，并通常放在源码所在目录下的 tests 文件夹中
+## other
 具有类型推断功能
 支持函数重载（JavaScript不支持）
 ```typescript
