@@ -13,6 +13,8 @@
 - [Ref语法](#Ref语法)
 - [useEffect](#useEffect)
 - [React.FC](#React.FC)
+- [createContext](#createContext)
+- [useContext](#createContext)
 
 - [npm命令](#npm命令)
 - [App Router](#App%20Router)
@@ -279,9 +281,13 @@ function TextInputWithFocusButton() {
 ## useEffect
 ```ts
 // 常用于监听浏览器事件（如窗口缩放、键盘事件）
-// 第二个参数为空数组 []​​ 表示仅在组件​​挂载后（Mount）​​ 执行一次
-useEffect(() => { return () => { } }, []);
-// 当 useEffect执行时，它可以返回一个函数，这个函数会在以下两种情况下被调用：
+// 第二个参数为空数组 []​​ 时表示仅在组件​​挂载后（Mount）​​ 执行一次
+useEffect(() => {
+  // 只在组件挂载时执行一次
+}, []);
+
+
+// 当 useEffect 执行时，它可以返回一个函数，这个函数会在以下两种情况下被调用：
 ​​// 组件卸载时​​：当组件从 DOM 中被移除时，React 会执行清理函数
 ​​// 依赖项变化时​​：如果 useEffect有依赖项数组，当依赖项发生变化导致副作用重新执行时，React 会先执行前一次的清理函数，再运行新的副作用
 ```
@@ -302,6 +308,37 @@ const Image3DRotate: React.FC<Image3DRotateProps> = ({
   perspective = 1000,
   maxRotation = 30,
 }) => { };
+```
+## createContext
+Context API 特别适用于以下场景：
+- 主题设置：如深色/浅色模式切换
+- 用户认证信息：用户登录状态、权限等
+- 多语言国际化：当前语言设置
+- 全局配置：API 端点、环境变量等
+```ts
+'use client'
+import { createContext, useContext } from 'react';
+
+// 1. 创建 Context
+// 当使用 useContext(MyContext) 来消费 Context 的值，但该组件没有被任何 <MyContext.Provider> 组件包裹，那么它接收到的值就是 createContext() 时传入的默认值
+const ThemeContext = createContext('light');
+
+// 2. 在父组件中提供值，使用 Provider 组件包裹需要共享数据的组件树
+function App() {
+  return (
+    <ThemeContext.Provider value="dark">
+      <Toolbar />
+    </ThemeContext.Provider>
+  );
+}
+
+// 3. 在子组件中使用值
+function Toolbar() {
+  const theme = useContext(ThemeContext);
+  console.log(typeof theme) // "string"
+  console.log(theme) // "dark"
+  return <div style={{ background: theme === 'dark' ? '#333' : '#FFF' }}>当前主题: {theme}</div>;
+}
 ```
 ## npm命令
 ```typescript

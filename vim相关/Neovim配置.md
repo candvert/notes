@@ -23,6 +23,7 @@
 	- [lspsaga.nvim](#lspsaga.nvim)
 	- [toggleterm.nvim](#toggleterm.nvim)
 	- [auto-save.nvim](#auto-save.nvim)
+	- [trouble.nvim](#trouble.nvim)
 配置完成之后每增加一门语言的支持就要进行下面三项。
 一个是 LSP 服务器，提供代码提示等功能。通过 Mason 插件安装。命令为 :Mason。
 一个是语法解析器，提供语法高亮等功能。通过修改 nvim-treesitter 配置文件安装。
@@ -620,6 +621,46 @@ return {
   event = { "InsertLeave", "TextChanged" },
   opts = {
     debounce_delay = 500,
+  },
+}
+```
+## trouble.nvim
+```lua
+return {
+  "folke/trouble.nvim",
+  opts = {}, -- for default options, refer to the configuration section for custom setup.
+  cmd = "Trouble",
+  keys = {
+    {
+      "<leader>xx",
+      "<cmd>Trouble diagnostics toggle<cr>",
+      desc = "Diagnostics (Trouble)",
+    },
+    {
+      "<leader>xX",
+      "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+      desc = "Buffer Diagnostics (Trouble)",
+    },
+    {
+      "<leader>cs",
+      "<cmd>Trouble symbols toggle focus=false<cr>",
+      desc = "Symbols (Trouble)",
+    },
+    {
+      "<leader>cl",
+      "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+      desc = "LSP Definitions / references / ... (Trouble)",
+    },
+    {
+      "<leader>xL",
+      "<cmd>Trouble loclist toggle<cr>",
+      desc = "Location List (Trouble)",
+    },
+    {
+      "<leader>xQ",
+      "<cmd>Trouble qflist toggle<cr>",
+      desc = "Quickfix List (Trouble)",
+    },
   },
 }
 ```

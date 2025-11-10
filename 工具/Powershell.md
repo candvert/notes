@@ -2,6 +2,10 @@
 ```powershell
 (Get-ChildItem -Recurse -File | Get-Content | Measure-Object).Count
 ```
+## 设置环境变量
+```powershell
+$env:GOOS = "windows"
+```
 
 ```powershell
 # 打开配置文件

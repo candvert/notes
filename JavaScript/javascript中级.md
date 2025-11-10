@@ -9,6 +9,7 @@
 
 
 - [dom相关](#dom相关)
+	- [监听form的submit事件](#监听form的submit事件)
 	- [操控video](#操控video)
 	- [DOMContentLoaded事件](#DOMContentLoaded事件)
 	- [弹出对话框](#弹出对话框)
@@ -410,6 +411,23 @@ function generatePrimes(quota) {
 }
 ```
 # dom相关
+## 监听form的submit事件
+```js
+<form id="myForm">
+  <input type="text" name="username" required>
+  <button type="submit">提交</button>
+</form>
+
+<script>
+  const myForm = document.querySelector('#myForm');
+  myForm.addEventListener('submit', function(event) {
+    // 阻止表单的默认提交行为（页面跳转）
+    event.preventDefault();
+    // 这里可以添加数据验证或异步提交的逻辑
+    console.log('表单已被拦截，准备进行自定义处理');
+  });
+</script>
+```
 ## 操控video
 ```js
 const video = document.querySelector('video')

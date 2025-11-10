@@ -7,6 +7,9 @@
 - [进程间通信](#进程间通信)
 - [代码签名](#代码签名)
 
+- [移除默认菜单栏](#移除默认菜单栏)
+- [自定义标题栏](#自定义标题栏)
+
 前端使用 Chromium 浏览器引擎进行渲染，后端则使用 Node.js 运行时环境
 
 主进程运行在 Node.js 环境中，负责控制应用程序的生命周期、显示原生界面、执行特权操作以及管理渲染进程
@@ -107,15 +110,111 @@ const createWindow = () => {
   win.loadFile('index.html')
 }
 ```
-修改 index.html 文件，导入 render.js 文件
+修改 index.html 文件，导入 renderer.js 文件
 ```html
 <script src="./renderer.js"></script>
 ```
-在 render.js 中就可以通过 window.versions 或直接使用 versions 访问此变量
+在 renderer.js 中就可以通过 window.versions 或直接使用 versions 访问此变量
 ```js
 console.log(versions.chrome())
 ```
 ## 进程间通信
 可以使用 Electron 的进程间通信模块在主进程和渲染进程之间进行通信
+
+通过向渲染器添加一个叫做 ping() 的全局函数来演示这一点。这个函数将返回一个从主进程翻山越岭而来的字符串
+首先使用 ipcMain.handle 设置一个主进程处理程序，修改 main.js 文件
+```js
+app.whenReady().then(() => {
+  // 添加这一行
+  ipcMain.handle('ping', () => 'pong')
+  createWindow()
+})
+```
+然后，在预处理脚本中设置 invoke 调用，修改 preload.js 文件
+```js
+const { contextBridge, ipcRenderer } = require('electron')
+
+contextBridge.exposeInMainWorld('versions', {
+  node: () => process.versions.node,
+  chrome: () => process.versions.chrome,
+  electron: () => process.versions.electron,
+  // 添加这一行
+  ping: () => ipcRenderer.invoke('ping')
+})
+```
+现在就可以在 renderer.js 文件中使用
+```js
+const func = async () => {
+  const response = await window.versions.ping()
+  console.log(response) // 打印 'pong'
+}
+func()
+```
 ## 代码签名
 代码签名是一种安全技术，用于证明桌面应用程序是由已知来源创建的
+## 移除默认菜单栏
+```js
+// 确保导入 Menu
+const { app, BrowserWindow, Menu } = require('electron')
+
+const createWindow = () => {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600
+  })
+
+  win.loadFile('index.html')
+
+  // 完全移除菜单栏
+  Menu.setApplicationMenu(null);
+}
+```
+## 自定义标题栏
+首先修改 main.js 文件
+```js
+const createWindow = () => {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+	// 隐藏原生标题栏
+    titleBarStyle: "hidden",
+	// 启用并自定义系统窗口控制按钮的位置和样式
+    titleBarOverlay: {
+      color: "#ffffff", // 标题栏区域背景色
+      symbolColor: "#333333", // 控件图标颜色
+      height: 40, // 可选：指定标题栏区域高度
+    },
+  });
+
+  win.loadFile("index.html");
+};
+```
+隐藏原生标题栏后，窗口将无法通过拖动来移动。需要在 HTML 页面中创建一个元素作为自定义标题栏，并为其添加 `-webkit-app-region: drag` 的 CSS 样式，使其可拖拽
+```html
+<body>
+  <!-- 自定义标题栏 -->
+  <header id="custom-title-bar">
+    <div class="title">我的 Electron 应用</div>
+  </header>
+  
+  <main>
+    <!-- 应用的主要内容 -->
+  </main>
+</body>
+```
+CSS 样式
+```css
+#custom-title-bar {
+  -webkit-app-region: drag; /* 允许通过这个区域拖动窗口 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+}
+
+/* 需要将自定义标题栏内的其他元素排除在拖拽区域外 */
+#custom-title-bar button {
+  -webkit-app-region: no-drag;
+}
+```

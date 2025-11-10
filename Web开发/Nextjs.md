@@ -15,6 +15,16 @@
 - [静态站点生成SSG](#静态站点生成SSG)
 
 nextjs 具有基于文件的路由，基于文件的 api （即GET，POST等请求），基于文件的 MD/MDX （将 md/mdx 文件解析为组件并显示）
+```ts
+// 创建项目
+// npx create-next-app@latest
+// npm run dev启动项目，然后便可在浏览器访问http://localhost:3000查看网页
+
+
+// 使用 bun 命令
+// bun create next-app
+// bun run dev
+```
 ## 添加自定义字体next/font
 ```typescript
 // 当浏览器最初以系统字体呈现文本，然后在字体网络请求并加载后将其换成自定义字体时，就会发生布局转变。可能会导致文本大小、间距或布局发生变化，并移动周围的元素。

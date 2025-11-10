@@ -10,6 +10,7 @@
 	- [表单form](#表单form)
 	- [块元素、行内元素和行内块元素](#块元素、行内元素和行内块元素)
 	- [简便语法(Emmet语法)](#简便语法(Emmet语法))
+	- [div做输入框](#div做输入框)
 - [css](#css)
 	- [基本语法](#基本语法)
 	- [引入方式](#引入方式)
@@ -384,6 +385,10 @@ div{hello}
 div{$}*3
 <!-- 复合写法 -->
 div{hello}*5
+```
+## div做输入框
+```html
+<div contenteditable="true" placeholder="输入您的问题..."></div>
 ```
 # css
 ## 基本语法
