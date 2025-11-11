@@ -14,6 +14,8 @@
 - [处理md/mdx文件](#处理md/mdx文件)
 - [静态站点生成SSG](#静态站点生成SSG)
 
+import { NextResponse } from 'next/server';
+
 nextjs 具有基于文件的路由，基于文件的 api （即GET，POST等请求），基于文件的 MD/MDX （将 md/mdx 文件解析为组件并显示）
 ```ts
 // 创建项目
