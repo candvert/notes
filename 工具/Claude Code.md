@@ -34,3 +34,7 @@ ccr restart
 ```sh
 ccr code
 ```
+## 添加MCP
+```sh
+claude mcp add stripe --transport http https://mcp.stripe.com/
+```

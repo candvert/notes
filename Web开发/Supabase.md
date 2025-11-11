@@ -47,55 +47,64 @@ const { data, error } = await supabase
   .from('peoper')
   .insert([
     {
-	  user: 'John',
+	  name: 'John',
       task: 'Learn Supabase',
       completed: false,
     }
   ])
-  .select() // 返回插入的数据
+  .select() // 添加此行以返回插入的数据
 console.log(data?.[0]);
 ```
 ## 更新数据
 ```ts
 const { data, error } = await supabase
   .from('peoper')
-  .update({ completed: true })
+  .update({ name: "Jack" })
   .eq('id', 1)
-console.log(data);
+  .select(); // 添加此行以返回更新后的数据
+console.log(data?.[0]);
 ```
 ## 删除数据
 ```ts
-const { error } = await supabase
+const { data, error } = await supabase
   .from('peoper')
   .delete()
-  .eq('id', 1)
+  .eq('id', 7);
+
+if (error) {
+  console.error("删除操作发生错误:", error);
+}
 ```
 ## 用户认证
 ## 注册用户
 ```ts
 // 注意邮箱必须是有效的，不然无法发验证码
 const { data, error } = await supabase.auth.signUp({
-  email: '"milkmili842@gmail.com',
+  email: 'milkmili842@gmail.com',
   password: 'canbelie283.'
-})
+});
 console.log(data?.user?.email);
 ```
 ## 登录用户
 ```ts
 const { data, error } = await supabase.auth.signInWithPassword({
-  email: 'leiyue159@example.com',
-  password: '12345678'
-})
+  email: 'leiyue159@gmail.com',
+  password: '123456789'
+});
 console.log(data?.user?.email);
 ```
 ## 获取当前用户
 ```ts
-const { data: { user } } = await supabase.auth.getUser()
+const { data: { user } } = await supabase.auth.getUser();
 console.log(user?.email);
 ```
 ## 退出登录
 ```ts
-const { error } = await supabase.auth.signOut()
+const { error } = await supabase.auth.signOut();
+
+if (error) {
+  console.error("删除操作发生错误:", error);
+}
 ```
 ## 实时订阅
 ```ts
