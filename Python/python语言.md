@@ -19,6 +19,7 @@
 	- [for语句](#for语句)
 	- [while语句](#while语句)
 	- [match语句](#match语句)
+	- [with语句](#with语句)
 - [复合类型](#复合类型)
 	- [列表](#列表)
 	- [列表生成式](#列表生成式)
@@ -412,6 +413,15 @@ def where_is(point):
             print("Somewhere else")
         case _:
             print("Not a point")
+```
+## with语句
+```python
+# 任何实现了上下文管理协议的对象都可以与 with 语句一起使用
+# 该协议要求对象必须实现两个特殊方法：
+# __enter__(self)：在进入 with 语句块时被调用。它的返回值（如果有的话）会赋值给 as 后面的变量
+# __exit__(self, exc_type, exc_value, traceback)：在退出 with 语句块（无论是正常结束还是因异常而结束）时被调用。它负责执行资源的清理工作，例如关闭文件、释放锁等
+with open('file.txt', 'r') as f:
+    content = f.read()
 ```
 ## 复合类型
 ## 列表

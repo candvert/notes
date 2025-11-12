@@ -14,6 +14,8 @@
 - [将镜像推送到DockerHub](#将镜像推送到DockerHub)
 - [将镜像保存为tar](#将镜像保存为tar)
 
+- [创建快照](#创建快照)
+
 ## 安装
 ### Windows安装
 对于 Windows，使用 Docker 有两种方式：
@@ -420,4 +422,13 @@ ls -lh nginx.tar
 
 docker load -i nginx.tar
 docker load -i nginx.tar.gz
+```
+## 创建快照
+```sh
+# -m "提交信息"：添加一条描述信息，说明这次保存做了哪些更改，类似于Git的提交信息
+# -a "作者信息"：指定镜像的作者
+docker commit [OPTIONS] <容器名称或ID> <新镜像名:标签>
+
+
+docker commit -m "保存了Nginx配置修改" my_container my_backup_image:v1
 ```

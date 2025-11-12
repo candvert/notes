@@ -6,6 +6,16 @@
 ```powershell
 $env:GOOS = "windows"
 ```
+## 特定单词的具体行号
+```powershell
+Get-ChildItem -Path "." -Recurse -File | Select-String -Pattern "你的特定单词"
+
+# 确匹配大小写，使用 -CaseSensitive 参数
+Select-String -Pattern "KeyWord" -CaseSensitive
+
+# -Filter 参数限定只搜索特定类型的文件（如只搜索 .log或 .txt文件）
+Get-ChildItem -Path "." -Recurse -Filter "*.log"
+```
 
 ```powershell
 # 打开配置文件

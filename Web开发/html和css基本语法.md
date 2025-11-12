@@ -322,8 +322,8 @@ ok
 <input type="text" name="username">
 
 
-<!-- text标签表示多行文本框 -->
-<textarea rows="3" clos="20"> </textarea>
+<!-- textarea 文本框 -->
+<textarea placeholder="请输入内容..."> </textarea>
 ```
 ## 块元素、行内元素和行内块元素
 ```html

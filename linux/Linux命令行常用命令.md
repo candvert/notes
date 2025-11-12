@@ -6,6 +6,9 @@
 - [删除包](#删除包)
 - [查看文件大小](#查看文件大小)
 - [find命令](#find命令)
+- [curl命令](#curl命令)
+
+- [特定单词的具体行号](#特定单词的具体行号)
 ## 查看系统架构
 ```sh
 uname -m
@@ -60,6 +63,69 @@ du -sh /path/to/directory
 ## find命令
 ```sh
 find . -name "*.txt"
+```
+## curl命令
+```sh
+# 基本语法结构
+curl [options] [URL]
+
+
+# GET 请求
+curl https://api.example.com/data
+
+# POST 请求，使用 -X POST 指定方法，并通过 -d 选项指定要发送的数据
+curl -X POST -d "username=admin&password=123456" https://api.example.com/login
+
+# 发送 JSON 数据，使用 -H 选项设置请求头
+curl -X POST -H "Content-Type: application/json" -d '{"name":"doubao","age":1}' https://api.example.com/users
+
+
+# 下载文件，使用 -O（大写字母 O）选项，文件将以其在服务器上的原始名称保存到当前目录
+curl -O https://example.com/file.zip
+# 使用 -o（小写字母 o）选项，可以指定下载后文件的本地名称
+curl -o my_download.zip https://example.com/file.zip
+# 如果大文件下载中断，可以使用 -C -选项从中断处继续下载
+curl -C - -O https://example.com/largefile.iso
+
+
+# 通过 -H 选项可以添加任意自定义请求头
+curl -H "Authorization: Bearer your_token" -H "Accept: application/json" https://api.example.com/data
+
+# -L 选项自动重定向
+curl -L https://example.com/redirect
+
+# 使用 -u 选项直接提供用户名和密码
+curl -u username:password https://protected.example.com
+
+# 使用 -v 选项可以打印出详细的连接过程和 HTTP 请求头、响应头信息
+curl -v https://example.com/api/endpoint
+
+# -s 选项开启静默模式
+curl -s https://api.example.com/data
+
+# -S 选项在静默模式下，如果发生错误，则显示错误信息
+curl -sS https://api.example.com/data
+
+# -f 选项当服务器返回 400 及以上的状态码，不输出响应内容，并以非零状态码退出
+curl -f https://api.example.com/data
+```
+## 特定单词的具体行号
+```sh
+# -r 表示递归
+# -n 选项则会输出匹配行所在的行号
+grep -rn "要查找的单词" /dir
+
+# -i 选项忽略大小写
+grep -rni "要查找的单词" /dir
+
+# -w 选项精确匹配单词
+grep -rnw "word" /path/to/directory
+
+# 使用 -A（之后）、-B（之前）或 -C（前后）选项可以显示匹配行周围若干行的内容
+# 显示匹配行及其后2行
+grep -rn -A 2 "exception" app.log
+# 显示匹配行及其前后各3行
+grep -rn -C 3 "critical" /var/log/
 ```
 ## 命令
 ```sh
