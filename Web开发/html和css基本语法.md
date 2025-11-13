@@ -24,11 +24,15 @@
 	- [css的特性](#css的特性)
 
 	- [底部居中](#底部居中)
+	- [:root伪类选择器](#root伪类选择器)
 
 - [网页布局1](#网页布局1)
 - [网页布局2](#网页布局2)
 - [设置chromium内核浏览器的滚动条样式](#设置chromium内核浏览器的滚动条样式)
 - [模态弹窗](#模态弹窗)
+
+- [下拉菜单](#下拉菜单)
+- [效果2](#效果2)
 # html
 ## 基本结构
 ```html
@@ -844,6 +848,25 @@ flex-flow: row wrap;
 	width: 1000px;
 }
 ```
+## :root伪类选择器
+```css
+/* :root 在 HTML 中与 html 选择器匹配的是同一个元素 */
+/* 但是 :root 有几个优势： */
+/* 作为伪类选择器，其优先级更高 */
+/* 声明全局的 CSS 变量，在 :root 上定义的变量可以被文档中的任何元素访问 */
+/* :root是CSS通用规范的一部分，它不仅适用于HTML，也适用于SVG、XML等其他文档类型 */
+:root {
+  --primary-color: #007aff;
+  --main-padding: 20px;
+}
+
+/* 在 :root 中定义变量后，可以在任何 CSS 规则中使用 var() 函数来引用它们 */
+.button {
+  background-color: var(--primary-color);
+  /* var() 函数还可以接受第二个参数作为回退值，当引用的变量未定义时使用 */
+  padding: var(--main-padding, 20px);
+}
+```
 ## 网页布局1
 效果：
 ![](/images/htmlcss_01.png)
@@ -1116,4 +1139,89 @@ style.css 文件：
 
 </body>
 </html>
+```
+## 下拉菜单
+![](/images/htmlcss_04.png)
+```html
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      /* 1. 父容器：设为相对定位，作为下拉框的定位基准 */
+      .menu-item {
+        position: relative;
+        display: inline-block;
+      }
+
+      /* 2. 下拉框：绝对定位 + 默认隐藏 */
+      .dropdown {
+        display: none;              /* 核心：默认不显示 */
+        position: absolute;         /* 核心：脱离文档流 */
+        top: 100%;                  /* 位于按钮正下方 */
+        left: 0;
+        z-index: 100;               /* 保证在最上层 */
+        
+        /* 基础布局与可视性 */
+        width: 340px;
+        background-color: #fff;     /* 需要背景色遮挡底部内容 */
+        border: 1px solid #ccc;     /* 基本边框 */
+        grid-template-columns: repeat(4, 1fr); /* 保持4列布局 */
+        gap: 10px;
+        padding: 10px;
+      }
+
+      /* 3. 交互：鼠标悬停时显示下拉框 (改为 grid 布局) */
+      .menu-item:hover .dropdown {
+        display: grid;
+      }
+
+      /* 辅助样式：让链接居中对齐，非核心功能但利于阅读 */
+      .dropdown a {
+        text-decoration: none;
+        color: #000;
+        display: block;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="menu-item">
+      <button>更多 ▾</button>
+      
+      <div class="dropdown">
+        <div><a href="#">动物</a></div>
+        <div><a href="#">家装房产</a></div>
+        <div><a href="#">旅游出行</a></div>
+        <div><a href="#">情感</a></div>
+        <div><a href="#">超高清</a></div>
+        <div><a href="#">vlog</a></div>
+        <div><a href="#">户外潮流</a></div>
+        <div><a href="#">三农</a></div>
+        <div><a href="#">生活兴趣</a></div>
+        <div><a href="#">绘画</a></div>
+        <div><a href="#">健身</a></div>
+        <div><a href="#">亲子</a></div>
+      </div>
+    </div>
+  </body>
+</html>
+```
+## 效果2
+![](/images/htmlcss_05.png)
+```html
+<div class="tip">
+	<strong>学习要点：</strong> 这个示例展示了现代CSS的强大功能，包括CSS Grid、backdrop-filter和transition等属性，<br />这些都是现代Web开发的重要技能。
+</div>
+
+<style>
+.tip {
+	background: #e6fffa;
+	border-left: 4px solid #38b2ac;
+	padding: 12px 15px;
+	margin-top: 15px;
+	border-radius: 0 8px 8px 0;
+}
+</style>
 ```
