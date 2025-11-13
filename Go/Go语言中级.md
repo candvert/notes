@@ -2,6 +2,7 @@
 - [go mod tidy](#go%20mod%20tidy)
 
 - [使用http包创建本地服务器](#使用http包创建本地服务器)
+- [自动打开浏览器并跳转](#自动打开浏览器并跳转)
 - [打包为exe](#打包为exe)
 
 - [标准库](#标准库)
@@ -100,6 +101,36 @@ http.HandleFunc("/welcome", func(w http.ResponseWriter, r *http.Request) {
 		name = "Guest"
 	}
 })
+```
+## 自动打开浏览器并跳转
+```go
+import (
+	"os/exec"
+	"runtime"
+	"log"
+)
+
+func openBrowser() {
+    url := "http://127.0.0.1:8880/" // 替换为你的目标网址
+    
+    var cmd *exec.Cmd
+    
+    switch runtime.GOOS {
+    case "windows":
+        cmd = exec.Command("cmd", "/c", "start", url)
+    case "darwin": // macOS
+        cmd = exec.Command("open", url)
+    case "linux":
+        cmd = exec.Command("xdg-open", url)
+    default:
+        log.Fatalf("Unsupported platform: %s", runtime.GOOS)
+    }
+    
+    err := cmd.Start()
+    if err != nil {
+        log.Fatal(err)
+    }
+}
 ```
 ## 打包为exe
 单个文件打包为 exe（在 Windows PowerShell 中）

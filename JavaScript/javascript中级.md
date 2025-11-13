@@ -2,6 +2,8 @@
 - [.env文件实现环境变量](#.env文件实现环境变量)
 - [pkg将项目打包成exe](#pkg将项目打包成exe)
 - [为div元素添加keydown事件监听器](#为div元素添加keydown事件监听器)
+- [通过js代码修改css属性](#通过js代码修改css属性)
+
 - [渲染markdown](#渲染markdown)
 - [解析yaml文件](#解析yaml文件)
 
@@ -49,7 +51,14 @@ textArea.addEventListener('keydown', function(event) {
 	}
 });
 ```
+## 通过js代码修改css属性
+```js
+const messages = document.querySelector(".messages");
+// 修改 display 属性
+messages.style.display = "block";
+```
 ## 渲染markdown
+推荐使用 [[markdown渲染]] 方法
 ```js
 // 引入必要的库
 import { marked } from 'marked';

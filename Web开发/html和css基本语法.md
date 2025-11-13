@@ -25,6 +25,10 @@
 
 	- [底部居中](#底部居中)
 
+- [网页布局1](#网页布局1)
+- [网页布局2](#网页布局2)
+- [设置chromium内核浏览器的滚动条样式](#设置chromium内核浏览器的滚动条样式)
+- [模态弹窗](#模态弹窗)
 # html
 ## 基本结构
 ```html
@@ -839,4 +843,277 @@ flex-flow: row wrap;
     margin: 0 auto;
 	width: 1000px;
 }
+```
+## 网页布局1
+效果：
+![](/images/htmlcss_01.png)
+index.html 文件：
+```html
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="content">
+      <div class="header"></div>
+      <div class="main"></div>
+      <div class="footer"></div>
+    </div>
+  </body>
+</html>
+```
+style.css 文件：
+```css
+/* 必须要为 .content 指定高度，即 min-height: 100vh; */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    height: 80px;
+    background-color: yellow;
+}
+
+.main {
+    flex: 1;
+}
+
+.footer {
+    height: 80px;
+    background-color: red;
+}
+```
+如果要使 footer 部分一直在底部可见，可以让中间的 .main 区域成为唯一的滚动区域：
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    /* 关键修改 1: 强制占满屏幕高度，不许超出 */
+    height: 100vh;
+}
+
+.header {
+    height: 80px;
+    background-color: yellow;
+}
+
+.main {
+    flex: 1;
+    /* 关键修改 2: 内容超出时，只在这里出现滚动条 */
+    overflow-y: auto;
+}
+
+.footer {
+    height: 80px;
+    background-color: red;
+}
+```
+## 网页布局2
+效果：
+![](/images/htmlcss_02.png)
+index.html 文件：
+```html
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="content">
+      <div class="header"></div>
+      <div class="main">
+          <div class="left"></div>
+          <div class="center"></div>
+          <div class="right"></div>
+      </div>
+      <div class="footer"></div>
+    </div>
+  </body>
+</html>
+```
+style.css 文件：
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    height: 80px;
+    background-color: yellow;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.left {
+    width: 200px;
+    background-color: purple;
+}
+
+.center {
+    flex: 1;
+}
+
+.right {
+    width: 200px;
+    background-color: blue;
+}
+
+.footer {
+    height: 80px;
+    background-color: red;
+}
+```
+## 设置chromium内核浏览器的滚动条样式
+```css
+/* 必须首先定义滚动条的整体尺寸 */
+::-webkit-scrollbar {
+  width: 13px;  /* 纵向滚动条的宽度 */
+  height: 13px; /* 横向滚动条的高度 */
+}
+
+/* 可选 */
+/* 隐藏滚动条两端的按钮（箭头） */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* 可选 */
+::-webkit-scrollbar-thumb {
+  background-color: #8b8b8b; /* 滑块颜色 */
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 10px;     /* 滑块圆角 */
+  cursor: pointer;
+}
+
+/* 可选 */
+::-webkit-scrollbar-track {
+  background: transparent; /* 轨道背景 */
+}
+```
+## 模态弹窗
+效果：
+![](/images/htmlcss_03.png)
+实现代码：
+```js
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>模态弹窗示例</title>
+<style>
+  body {
+    font-family: sans-serif;
+  }
+
+  /* 遮罩层 */
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none; /* 默认隐藏 */
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* 弹窗内容 */
+  .modal {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    width: 400px;
+    text-align: center;
+  }
+
+  .modal h3 {
+    margin-top: 0;
+    color: #d9534f;
+  }
+
+  .modal button {
+    margin: 10px;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .confirm {
+    background-color: #d9534f;
+    color: white;
+  }
+
+  .cancel {
+    background-color: #eee;
+  }
+</style>
+</head>
+<body>
+
+<button id="openModal">删除内容</button>
+
+<!-- 模态框 -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3>确认删除</h3>
+    <p>该对话内容将被删除且无法恢复。</p>
+    <button class="cancel" id="cancelBtn">取消</button>
+    <button class="confirm" id="confirmBtn">确认删除</button>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById('overlay');
+  const openModal = document.getElementById('openModal');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const confirmBtn = document.getElementById('confirmBtn');
+
+  openModal.onclick = () => overlay.style.display = 'flex';
+  cancelBtn.onclick = () => overlay.style.display = 'none';
+  confirmBtn.onclick = () => {
+    overlay.style.display = 'none';
+    alert('已删除！');
+  };
+</script>
+
+</body>
+</html>
 ```

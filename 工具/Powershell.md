@@ -16,6 +16,20 @@ Select-String -Pattern "KeyWord" -CaseSensitive
 # -Filter 参数限定只搜索特定类型的文件（如只搜索 .log或 .txt文件）
 Get-ChildItem -Path "." -Recurse -Filter "*.log"
 ```
+## 打印进程信息
+```powershell
+# 输出占用 8000 端口的进程详细信息，包括进程名、PID、CPU 和内存使用情况等
+Get-Process -Id (Get-NetTCPConnection -LocalPort 8000).OwningProcess
+
+# 结束进程
+Stop-Process -Id 12960 -Force
+
+# 查找进程名称中包含 "chrome" 的进程
+Get-Process | Where-Object { $_.ProcessName -like "*chrome*" }
+
+# 使用更简洁的语法（Where-Object 的别名是 ?）
+Get-Process | ? { $_.ProcessName -like "*chrome*" }
+```
 
 ```powershell
 # 打开配置文件
