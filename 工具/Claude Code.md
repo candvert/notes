@@ -5,7 +5,6 @@ npm install -g @musistudio/claude-code-router
 配置 `~/.claude-code-router/config.json` 文件
 ```json
 {
-  "PROXY_URL": "http://127.0.0.1:7897",
   "Providers": [
     {
       "name": "deepseek",
