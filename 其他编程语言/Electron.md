@@ -9,7 +9,11 @@
 
 - [移除默认菜单栏](#移除默认菜单栏)
 - [自定义标题栏](#自定义标题栏)
+- [实现F11调用chrome开发工具](#实现F11调用chrome开发工具)
+- [启动应用后全屏显示](#启动应用后全屏显示)
 
+## 基础
+## 基础知识
 前端使用 Chromium 浏览器引擎进行渲染，后端则使用 Node.js 运行时环境
 
 主进程运行在 Node.js 环境中，负责控制应用程序的生命周期、显示原生界面、执行特权操作以及管理渲染进程
@@ -204,17 +208,66 @@ const createWindow = () => {
 ```
 CSS 样式
 ```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 #custom-title-bar {
   -webkit-app-region: drag; /* 允许通过这个区域拖动窗口 */
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   height: 40px;
+  /* 更美观
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  */
 }
 
 /* 需要将自定义标题栏内的其他元素排除在拖拽区域外 */
 #custom-title-bar button {
   -webkit-app-region: no-drag;
+}
+```
+## 实现F11调用chrome开发工具
+```js
+const { app, BrowserWindow, globalShortcut } = require('electron');
+
+app.whenReady().then(() => {
+  createWindow();
+
+  // 注册全局快捷键 F11
+  globalShortcut.register('F11', () => {
+    // 切换开发者工具的开关状态
+    if (win.webContents.isDevToolsOpened()) {
+      win.webContents.closeDevTools();
+    } else {
+      win.webContents.openDevTools();
+    }
+  });
+});
+
+// 应用退出时，注销所有快捷键
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
+});
+```
+## 启动应用后全屏显示
+```js
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+	show: false, // 先不显示窗口，等全屏后再显示
+  });
+
+  win.maximize(); // 全屏窗口
+  win.show(); // 显示窗口
+
+  win.loadFile('index.html');
 }
 ```
