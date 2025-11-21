@@ -11,7 +11,7 @@
 可以从microsoft store下载
 ![](/images/window_01.png)
 ## 打开设置
-之后windows上打开的命令行工具和powershell都会变为Windows Terminal。
+之后windows上的命令行工具和powershell都会变为Windows Terminal。
 
 打开Windows Terminal之后按Ctrl + ,或点击下图的图标打开设置。
 ![](/images/window_02.png)
@@ -39,7 +39,7 @@ Get-ExecutionPolicy -List
 输出中CurrentUser应为RemoteSigned
 
 从microsoft store下载oh-my-posh
-![](/images/window_01.png)
+![](/images/window_11.png)
 打开powershell后输入下列命令
 ```sh
 New-Item -Path $PROFILE -Type File -Force

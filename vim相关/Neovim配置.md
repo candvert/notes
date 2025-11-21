@@ -258,7 +258,7 @@ return {
 
 	  configs.setup({
 		  -- 在这里添加要语法高亮的编程语言
-		  ensure_installed = { "python", "lua", "typescript", "css", "html", "javascript", "rust", "tsx" },
+		  ensure_installed = { "python", "lua", "go", "typescript", "css", "html", "javascript", "rust", "tsx" },
 		  sync_install = false,
 		  highlight = { enable = true },
 		  indent = { enable = true },  
