@@ -35,6 +35,7 @@
 	- [切片](#切片)
 	- [Map](#Map)
 	- [结构体](#结构体)
+	- [匿名结构体](#匿名结构体)
 	- [Json支持](#Json支持)
 	- [模板语法](#模板语法)
 - [函数](#函数)
@@ -849,11 +850,15 @@ c := Circle{
 }
 c.P.X = 20
 c.X // 错误
+```
+## 匿名结构体
+```go
+var z struct {
+	Title string
+	Year int
+	Summary string
+}
 
-
-
-
-// 匿名结构体
 dog := struct {
 	name   string
 	isGood bool
@@ -864,6 +869,7 @@ dog := struct {
 ```
 ## Json支持
 ```go
+// 结构体的字段首字母必须大写才能被外部包（如 encoding/json）访问和解析
 // `json:"color,omitempty"` 中的 omitempty 意味着如果 Color 字段的值为零值，则该字段不会转换为 json
 type Movie struct {
 	Title string `json:"title"`

@@ -1,6 +1,8 @@
 - [添加包](#添加包)
 - [go mod tidy](#go%20mod%20tidy)
 
+- [访问RESTful API](#访问RESTful%20API)
+
 - [使用http包创建本地服务器](#使用http包创建本地服务器)
 - [自动打开浏览器并跳转](#自动打开浏览器并跳转)
 - [打包为exe](#打包为exe)
@@ -13,6 +15,7 @@
 	- [bufio](#bufio)
 	- [math](#math)
 
+- [使用websocket](#使用websocket)
 - [openai库](#openai库)
 
 var buf bytes.Buffer
@@ -30,6 +33,62 @@ go get go.uber.org/zap
 ```go
 // go mod tidy 会递归分析项目中所有 .go 源文件（包括测试文件）的 import 语句，然后自动下载添加缺失的模块和移除未被使用的模块
 // -v 选项输出具体添加或移除了哪些模块
+```
+## 访问RESTful API
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"log"
+	"io"
+	"net/url"
+)
+
+func main() {
+	var base_url = "https://api.coingecko.com/api/v3/"
+	var price_endpoint = "simple/price"
+	var api_key = "CG-VQCFp5W7kK47MA2pi3xnSR6F"
+
+	proxyUrl, err := url.Parse("http://127.0.0.1:7897") 
+	if err != nil {
+		log.Fatal("代理地址解析错误:", err)
+	}
+	// 创建自定义 Transport
+	myTransport := &http.Transport{
+		Proxy: http.ProxyURL(proxyUrl),
+	}
+	// 将 Transport 注入到 Client 中
+	client := &http.Client{
+		Transport: myTransport,
+	}
+
+	params := url.Values{}
+	params.Add("ids", "bitcoin")       // 你想查的币 (ID 来自之前的列表)
+	params.Add("vs_currencies", "usd") // 计价货币 (美元)
+	// 拼接完整 URL
+	fullUrl := base_url + price_endpoint + "?" + params.Encode()
+
+	req, err := http.NewRequest("GET", fullUrl, nil)
+	if err != nil {
+		log.Fatal("创建请求失败:", err)
+	}
+
+	req.Header.Set("x-cg-demo-api-key", api_key)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal("创建请求失败2:", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal("读取响应失败:", err)
+	}
+	fmt.Println(string(body))
+}
 ```
 ## 使用http包创建本地服务器
 ```go
@@ -299,6 +358,7 @@ func Get(url string) (resp *Response, err error)
 
 
 resp, err := http.Get("http://baidu.com/")
+// req, err := http.NewRequest("GET", "http://example.com", nil)
 b := make([]byte, 9999)
 resp.Body.Read(b)
 fmt.Println(string(b))
@@ -415,6 +475,98 @@ fmt.Println("文件写入完成")
 ```go
 math.MaxFloat32
 math.MaxFloat64
+```
+## 使用websocket
+客户端
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/gorilla/websocket"
+)
+
+func main() {
+	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:8080/ws", nil)
+	if err != nil {
+		log.Fatal("dial:", err)
+	}
+	defer conn.Close()
+
+	err = conn.WriteMessage(websocket.TextMessage, []byte("你好 WebSocket"))
+	if err != nil {
+		log.Println("Write:", err)
+		return
+	}
+
+	_, msg, err := conn.ReadMessage()
+	if err != nil {
+		log.Println("Read:", err)
+		return
+	}
+
+	fmt.Println("收到:", string(msg))
+}
+```
+服务端
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/gorilla/websocket"
+)
+
+// 定义 WebSocket 连接升级器
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true // 允许跨域连接
+	},
+}
+
+// WebSocket 连接处理函数
+func wsHandler(w http.ResponseWriter, r *http.Request) {
+	// 1. 将标准的 HTTP 连接升级到 WebSocket
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("Upgrade failed:", err)
+		return
+	}
+	defer conn.Close() // 确保连接最终被关闭
+
+	log.Println("New WebSocket client connected!")
+
+	// 2. 持续循环处理客户端消息
+	for {
+		// ReadMessage 会阻塞，直到接收到一条消息
+		messageType, message, err := conn.ReadMessage()
+		if err != nil {
+			// 如果连接断开或发生错误，退出循环
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Printf("Read error: %v", err)
+			}
+			break
+		}
+
+		// 将收到的消息打印出来
+		log.Printf("Received: %s", message)
+
+		// 3. 将收到的消息原样发回 (Echo)
+		err = conn.WriteMessage(messageType, message)
+		if err != nil {
+			log.Println("Write error:", err)
+			break
+		}
+	}
+
+	log.Println("WebSocket client disconnected.")
+}
 ```
 ## openai库
 ```go
