@@ -2,6 +2,7 @@
 - [go mod tidy](#go%20mod%20tidy)
 
 - [访问RESTful API](#访问RESTful%20API)
+- [转换Unix时间戳为标准格式](#转换Unix时间戳为标准格式)
 
 - [使用http包创建本地服务器](#使用http包创建本地服务器)
 - [自动打开浏览器并跳转](#自动打开浏览器并跳转)
@@ -89,6 +90,14 @@ func main() {
 	}
 	fmt.Println(string(body))
 }
+```
+## 转换Unix时间戳为标准格式
+```go
+import "time"
+
+var updatedAt int64 = 1763970971
+tm := time.Unix(updatedAt, 0)
+fmt.Println(tm.Format("2006-01-02 15:04:05"))
 ```
 ## 使用http包创建本地服务器
 ```go
@@ -332,6 +341,7 @@ i := rng.Intn(5)
 // 如果 n <= 0，则函数会引发 panic
 func Intn(n int) int
 ```
+## 标准库
 ## io
 ```go
 // io 包保证任何由文件结束引起的读取失败都返回同一个错误 io.EOF

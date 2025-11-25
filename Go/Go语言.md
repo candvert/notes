@@ -180,6 +180,12 @@ func init() { /* ... */ }
 	- http
 		- http.go
 ```
+go.mod 文件：
+```go
+module candvert
+
+go 1.25.4
+```
 connect.go 文件：
 ```go
 package web
@@ -204,8 +210,8 @@ func Http() {
 ```go
 package main
 
-import "main/web"
-import "main/web/http"
+import "candvert/web"
+import "candvert/web/http"
 
 func main() {
 	web.Connect()
