@@ -15,6 +15,7 @@
 	- [time](#time)
 	- [bufio](#bufio)
 	- [math](#math)
+	- [context](#context)
 
 - [使用websocket](#使用websocket)
 - [openai库](#openai库)
@@ -485,6 +486,41 @@ fmt.Println("文件写入完成")
 ```go
 math.MaxFloat32
 math.MaxFloat64
+```
+## context
+```go
+// 用于在 API 边界和不同 goroutine 之间传递截止时间、取消信号以及请求范围内的值
+
+// 返回一个非空的空 Context，不包含任何值，也不会被取消
+ctx := context.Background()
+
+// 返回一个可手动取消的 Context
+ctx, f := context.WithCancel(context.Background())
+// 返回一个会在给定时间后自动取消的 Context
+ctx, f := context.WithTimeout(context.Background(), timeout)
+// 返回一个会在给定截止时间点自动取消的 Context
+ctx, f := context.WithDeadline(context.Background(), deadline)
+// 返回一个携带键值对的 Context。通常用于传递请求范围的数据，键必须是可比较的
+ctx, f := context.WithValue(context.Background(), key, val)
+
+
+// 通过 Context 的 Done() 方法返回的 <-chan struct{} 来监听取消信号。当 Context 被取消或超时时，该 Channel 会关闭
+func worker(ctx context.Context) {
+    for {
+        select {
+        case <-time.After(1 * time.Second):
+            // 正常执行业务逻辑
+            fmt.Println("Worker is running...")
+        case <-ctx.Done():
+            // 接收到取消信号，清理资源并退出
+            fmt.Println("Worker received cancellation signal:", ctx.Err())
+            return
+        }
+    }
+}
+
+// 使用 Value(key interface{}) interface{} 方法获取 Context 中携带的值
+requestID := ctx.Value(requestIDKey)
 ```
 ## 使用websocket
 客户端

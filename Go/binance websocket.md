@@ -165,3 +165,19 @@ func main() {
 	readLoop(ctx, streams)
 }
 ```
+
+```go
+proxyURL := "http://127.0.0.1:7897"
+dialer := websocket.Dialer{
+	Proxy: func(_ *http.Request) (*url.URL, error) {
+		return url.Parse(proxyURL)
+	},
+}
+conn, _, err := dialer.Dial("wss://stream.binance.com:9443", nil)
+conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+conn.SetPongHandler(func(appData string) error {
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	return nil
+})
+_, msg, err := conn.ReadMessage()
+```
