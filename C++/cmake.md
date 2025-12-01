@@ -15,7 +15,9 @@
 	- [include](#include)
 	- [set_target_properties](#set_target_properties)
 
-# cmake
+配置文件为 `CMakeLists.txt`
+需要创建一个 build 目录
+如果使用的是mingw，则在 build 目录中运行 `cmake -G "MinGW Makefiles" ..`，然后运行 `cmake --build .`
 ## 基本语句
 ```cmake
 cmake_minimum_required(VERSION 3.10)

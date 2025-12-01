@@ -24,6 +24,9 @@
 	- [toggleterm.nvim](#toggleterm.nvim)
 	- [auto-save.nvim](#auto-save.nvim)
 	- [trouble.nvim](#trouble.nvim)
+
+- [c++的配置](#c++的配置)
+
 配置完成之后每增加一门语言的支持就要进行下面三项。
 一个是 LSP 服务器，提供代码提示等功能。通过 Mason 插件安装。命令为 :Mason。
 一个是语法解析器，提供语法高亮等功能。通过修改 nvim-treesitter 配置文件安装。
@@ -663,4 +666,15 @@ return {
     },
   },
 }
+```
+## c++的配置
+只推荐在 wsl 和 linux 中使用，不推荐在 windows 上使用
+lsp 服务器为 clangd
+需要在项目根目录创建 .clangd 文件，用来指定 include 路径
+```sh
+CompileFlags:
+  Add: [
+    '-I/usr/include/opencv4',
+    '-I/usr/include/opencv4/opencv'
+  ]
 ```

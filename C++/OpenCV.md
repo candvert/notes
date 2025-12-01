@@ -1,8 +1,37 @@
+- [安装](#安装)
+- [使用g++编译](#使用g++编译)
+- [主要模块](#主要模块)
+- [示例](#示例)
+- [理论知识](#理论知识)
+- [Mat基本图像容器](#Mat基本图像容器)
+- [使用OpenCV扫描图像和查找表和时间测量](#使用OpenCV扫描图像和查找表和时间测量)
+- [矩阵的掩码运算](#矩阵的掩码运算)
+- [图像的基本操作](#图像的基本操作)
+- [使用OpenCV添加（混合）两幅图像](#使用OpenCV添加（混合）两幅图像)
+- [改变图像的对比度和亮度](#改变图像的对比度和亮度)
+- [离散傅里叶变换](#离散傅里叶变换)
+- [使用XML/YAML/JSON文件进行文件输入和输出](#使用XML/YAML/JSON文件进行文件输入和输出)
+- [如何使用OpenCV的parallel_for_来并行化你的代码](#如何使用OpenCV的parallel_for_来并行化你的代码)
+- [图形绘制](#图形绘制)
+- [图像通道合并与分离](#图像通道合并与分离)
+- [直方图](#直方图)
+- [查找表](#查找表)
+- [图像卷积](#图像卷积)
+
 截至2025年1月，opencv的最新版本为4.11.0，opencv的4.0.0版本发布于2018年11月18日。
 opencv中所有类和函数都放在cv命名空间里。
-opencv会处理所有底层内存问题。（官方文档的描述：使用OpenCV的C++接口，您不需要考虑内存管理。）
+opencv会处理所有底层内存问题。（官方的描述：使用OpenCV的C++接口，您不需要考虑内存管理。）
 异常都是cv::Exception的实例或其子类的实例，而cv::Exception是std::exception的子类，所以可以使用c++中的库处理。
 opencv的实现是完全可重入的。
+## 安装
+```sh
+sudo apt update
+sudo apt install libopencv-dev
+```
+## 使用g++编译
+```sh
+g++ main.cpp -o test $(pkg-config --cflags --libs opencv4)
+```
 ## 主要模块
 ```sh
 core                Core functionality
@@ -34,7 +63,7 @@ int main()
 ```
 ## 理论知识
 ![](/images/opencv_8.png)
-## Mat - 基本图像容器
+## Mat基本图像容器
 ```cpp
 // 如果无法读取图像（由于文件丢失、权限不正确或格式不受支持/无效），该函数将返回一个空矩阵。
 // 如果设置IMREAD_UNCHANGED，则按原样返回已加载的图像（带有alpha通道）
@@ -221,7 +250,7 @@ std::vector of points：
         vPoints[i] = Point2f((float)(i * 5), (float)(i % 7));
     cout << "A vector of 2D Points = " << vPoints << endl << endl;
 ```
-## 如何使用OpenCV扫描图像、查找表和时间测量
+## 使用OpenCV扫描图像和查找表和时间测量
 ```sh
 对于RGB图像，可以形成1600万种颜色。处理如此多的颜色可能会严重影响我们的算法性能。然而，有时只需处理一小部分就足以获得相同的结果。
 在这种情况下，我们通常会进行色彩空间缩减（color space reduction）。意味着我们将色彩空间当前值除以一个输入值，最终得到更少的颜色。例如，0到9之间的每个值都取新值0，10到19之间的每个值都为10，依此类推。
@@ -411,7 +440,7 @@ imshow("image", draw);
 waitKey();
 // 这里 cv::namedWindow 不是必需的，因为它后面紧跟着 cv::imshow。不过，它可以用于更改窗口属性，或者在使用 cv::createTrackbar 时使用
 ```
-## 使用 OpenCV 添加（混合）两幅图像
+## 使用OpenCV添加（混合）两幅图像
 ```cpp
 // 线性混合（linear blending）：g(x) = (1 - 𝛼)A(x) + 𝛼B(x)
 // 通过将 𝛼 从 0 →​​1 改变，此运算符可用于在两个图像或视频之间执行时间交叉溶解，如幻灯片和电影制作中所见（很酷，是吧？）
@@ -696,7 +725,7 @@ Normalize：
     normalize(magI, magI, 0, 1, NORM_MINMAX); // Transform the matrix with float values into a
                                             // viewable image form (float between values 0 and 1).
 ```
-## 使用 XML/YAML/JSON 文件进行文件输入和输出
+## 使用XML/YAML/JSON文件进行文件输入和输出
 ```cpp
 // XML/YAML/JSON 文件打开和关闭（FileStorage::WRITE、FileStorage::READ、FileStorage::APPEND）
 FileStorage fs(filename, FileStorage::WRITE);
