@@ -49,7 +49,7 @@ cmake --build build
 ## 示例
 目录结构：
 ```go
-content/
+project/
 ├── CMakeLists.txt
 ├── main.cpp
 ├── mainwindow.h

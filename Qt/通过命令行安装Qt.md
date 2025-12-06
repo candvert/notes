@@ -1,5 +1,9 @@
+- [Linux上安装](#Linux上安装)
+- [打开Qt文档和编写.ui文件](#打开Qt文档和编写.ui文件)
+- [测试安装成功](#测试安装成功)
+
 官方教程：[https://doc.qt.io/qt-6/get-and-install-qt-cli.html](https://doc.qt.io/qt-6/get-and-install-qt-cli.html)
-## Linux
+## Linux上安装
 下载安装脚本：
 ```sh
 curl -L -O https://download.qt.io/official_releases/online_installers/qt-online-installer-linux-x64-online.run
@@ -20,16 +24,17 @@ sudo apt install build-essential \
                  mesa-common-dev
 ```
 安装后的 moc，rcc，uic 等位于 ~/Qt/6.10.1/gcc_64/libexec/
-## 打开Qt文档
-将 assistant 添加到 PATH 中
+## 打开Qt文档和编写.ui文件
+将该路径添加到 PATH 中
 ```sh
 export PATH="~/Qt/6.10.1/gcc_64/bin:$PATH"
 ```
-在命令行输入：
+在命令行输入 assistant 便可打开 Qt 文档：
 ```sh
 assistant
 ```
-## 测试项目
+在命令行输入 designer 便可打开 Qt Designer 来创建并修改 .ui 文件
+## 测试安装成功
 CMakeLists.txt：
 ```cmake
 cmake_minimum_required(VERSION 3.16)

@@ -1,6 +1,6 @@
-- [Qt](#Qt)
+- [示例](#示例)
+- [基础](#基础)
 	- [关键概念](#关键概念)
-	- [CMakeLists.txt示例](#CMakeLists.txt示例)
 
 
 	
@@ -84,43 +84,15 @@
 	- [QDateTimeEdit](#QDateTimeEdit)
 	- [打包成exe](#打包成exe)
 
-# Qt
-## 关键概念
-QObject 是所有 Qt 对象的基类。它提供了信号与槽、对象树、国际化、定时器和运行时类型信息等核心服务，是 Qt 元对象系统 (Meta-Object System) 的基础
-
-当一个 QObject 在创建时被指定了父对象，则父对象析构时会删除所有子对象
-
-Qt 采用事件驱动模型。用户输入、系统通知或定时器触发的事件会被封装成 QEvent，通过事件队列和事件过滤器进行分发和处理
-
-资源系统 (Resource System): 允许将应用所需的非代码文件（如图片、图标、翻译文件）嵌入到可执行文件中，并通过统一的路径访问，简化部署
-## 渲染
-QWidget 是所有用户界面对象的基类，是 Qt GUI 的核心
-每个 QWidget 实例都是屏幕上的一个矩形区域，能够接收用户输入（事件）并进行绘制
-控件通过布局管理器进行组织和定位
-## 模块化设计
-Qt 框架被划分为多个模块，这使得应用程序可以只链接它们实际需要的组件，从而减小可执行文件的大小：
-核心模块 (QtCore): 提供了非 GUI 的核心功能，如对象模型、文件系统、定时器、线程等。
-GUI 模块 (QtGui): 提供了基本的 GUI 类，如字体、颜色、图标、2D 绘图等。
-控件模块 (QtWidgets): 提供了大量的标准用户界面控件，如按钮、文本框、表格等。
-其他模块： 如网络 (QtNetwork)、数据库 (QtSql)、XML (QtXml)、以及高级 3D 和多媒体模块。
-## MOC
-MOC（Meta-Object Compiler），Qt 的动态能力依赖于此结构
-```cpp
-// 1. 对象树
-// 当一个控件删除时，它包含的所有子控件被删除
-
-// 2. 信号与槽
-// 使用信号与槽必须是QObject的子类并在类定义时包含Q_OBJECT宏
-// 使用connect函数连接信号和槽，使用disconnect函数解除连接
-// 使用qOverload明确参数类型
-connect(ui->checkBox, &QCheckBox::clicked, this, qOverload<bool>(&Widget::do_click));
-// 3. qobject_cast<>进行动态类型转换
-// 使用sender()函数获取信号发射者
-QPushButton *btn = qobject_cast<QPushButton*>(sender());
-
-// QMetaObject::propertyCount()返回元对象描述的类中定义的属性个数，但是其中不包括对象的动态属性
+## 示例
+```go
+project/
+├── CMakeLists.txt
+├── main.cpp
+├── mainwindow.h
+└── mainwindow.cpp
 ```
-## CMakeLists.txt示例
+CMakeLists.txt 文件：
 ```cmake
 cmake_minimum_required(VERSION 3.16)
 
@@ -147,9 +119,87 @@ set_target_properties(helloworld PROPERTIES
 	MACOSX_BUNDLE ON
 )
 ```
-## Qt Essentials
-这些模块可在所有受支持的开发平台和已测试的目标平台上使用
-Qt Core、Qt Widgets、Qt GUI、Qt Test、Qt D-Bus、Qt Network、Qt Qml、Qt Quick、Qt Quick Controls、Qt Quick Dialogs、Qt Quick Layouts、Qt Quick Test
+main.cpp 文件：
+```cpp
+#include "mainwindow.h"
+#include <QApplication>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+}
+```
+mainwindow.h 文件：
+```cpp
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT // 宏，必须用于所有定义信号/槽/属性的 Qt 类
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+};
+
+#endif // MAINWINDOW_H
+```
+mainwindow.cpp 文件：
+```cpp
+#include "mainwindow.h"
+#include <QPushButton>
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+{
+    setWindowTitle("Hello Qt CMake");
+    QPushButton *button = new QPushButton("Click Me", this);
+    setCentralWidget(button);
+}
+
+MainWindow::~MainWindow()
+{
+}
+```
+## 关键概念
+QObject 是所有 Qt 对象的基类。它提供了信号与槽、对象树、国际化、定时器和运行时类型信息等核心服务，是 Qt 元对象系统 (Meta-Object System) 的基础
+
+当一个 QObject 在创建时被指定了父对象，则父对象析构时会删除所有子对象
+
+Qt 采用事件驱动模型。用户输入、系统通知或定时器触发的事件会被封装成 QEvent，通过事件队列和事件过滤器进行分发和处理
+
+资源系统 (Resource System): 允许将应用所需的非代码文件（如图片、图标、翻译文件）嵌入到可执行文件中，并通过统一的路径访问，简化部署
+## 渲染
+QWidget 是所有用户界面对象的基类，是 Qt GUI 的核心
+每个 QWidget 实例都是屏幕上的一个矩形区域，能够接收用户输入（事件）并进行绘制
+控件通过布局管理器进行组织和定位
+## 模块化设计
+Qt 框架被划分为多个模块，这使得应用程序可以只链接它们实际需要的组件，从而减小可执行文件的大小：
+核心模块 (QtCore): 提供了非 GUI 的核心功能，如对象模型、文件系统、定时器、线程等。
+GUI 模块 (QtGui): 提供了基本的 GUI 类，如字体、颜色、图标、2D 绘图等。
+控件模块 (QtWidgets): 提供了大量的标准用户界面控件，如按钮、文本框、表格等。
+其他模块： 如网络 (QtNetwork)、数据库 (QtSql)、XML (QtXml)、以及高级 3D 和多媒体模块。
+## 对象树
+当一个控件删除时，它包含的所有子控件被删除
+## 信号与槽
+```cpp
+// 使用信号与槽必须是QObject的子类并在类定义时包含Q_OBJECT宏
+// 使用connect函数连接信号和槽，使用disconnect函数解除连接
+// 使用qOverload明确参数类型
+connect(ui->checkBox, &QCheckBox::clicked, this, qOverload<bool>(&Widget::do_click));
+```
+## qobject_cast<>进行动态类型转换
+```cpp
+// 使用sender()函数获取信号发射者
+QPushButton *btn = qobject_cast<QPushButton*>(sender());
+// QMetaObject::propertyCount()返回元对象描述的类中定义的属性个数，但是其中不包括对象的动态属性
+```
 ## QStringLiteral
 ```cpp
 // 这样需要在运行时分配内存
