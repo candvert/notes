@@ -20,25 +20,40 @@ sudo apt install build-essential \
                  mesa-common-dev
 ```
 安装后的 moc，rcc，uic 等位于 ~/Qt/6.10.1/gcc_64/libexec/
+## 打开Qt文档
+将 assistant 添加到 PATH 中
+```sh
+export PATH="~/Qt/6.10.1/gcc_64/bin:$PATH"
+```
+在命令行输入：
+```sh
+assistant
+```
 ## 测试项目
 CMakeLists.txt：
-```cpp
+```cmake
 cmake_minimum_required(VERSION 3.16)
 
-project(MyQtApp VERSION 1.0 LANGUAGES CXX)
+project(helloworld VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
-add_executable(my_app
-    main.cpp
-    mainwindow.cpp
-    mainwindow.h
+qt_standard_project_setup()
+
+qt_add_executable(helloworld
+	mainwindow.cpp
+	main.cpp
 )
 
-target_link_libraries(my_app PRIVATE Qt6::Widgets)
+target_link_libraries(helloworld PRIVATE Qt6::Widgets)
+
+set_target_properties(helloworld PROPERTIES
+	WIN32_EXECUTABLE ON
+	MACOSX_BUNDLE ON
+)
 ```
 main.cpp：
 ```cpp

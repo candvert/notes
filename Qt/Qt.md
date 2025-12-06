@@ -1,5 +1,9 @@
 - [Qt](#Qt)
 	- [关键概念](#关键概念)
+	- [CMakeLists.txt示例](#CMakeLists.txt示例)
+
+
+	
 	- [QStringLiteral](#QStringLiteral)
 	- [QStackedWidget实现局部界面变换](#QStackedWidget实现局部界面变换)
 	- [QSplitter分隔左右或上下界面](#QSplitter分隔左右或上下界面)
@@ -115,6 +119,33 @@ connect(ui->checkBox, &QCheckBox::clicked, this, qOverload<bool>(&Widget::do_cli
 QPushButton *btn = qobject_cast<QPushButton*>(sender());
 
 // QMetaObject::propertyCount()返回元对象描述的类中定义的属性个数，但是其中不包括对象的动态属性
+```
+## CMakeLists.txt示例
+```cmake
+cmake_minimum_required(VERSION 3.16)
+
+project(helloworld VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
+qt_standard_project_setup()
+
+qt_add_executable(helloworld
+	mainwindow.cpp
+	main.cpp
+)
+
+target_link_libraries(helloworld PRIVATE Qt6::Widgets)
+
+set_target_properties(helloworld PROPERTIES
+	# 阻止在 Windows 上创建控制台窗口
+	WIN32_EXECUTABLE ON
+	# 在 macOS 上创建应用程序包
+	MACOSX_BUNDLE ON
+)
 ```
 ## Qt Essentials
 这些模块可在所有受支持的开发平台和已测试的目标平台上使用
