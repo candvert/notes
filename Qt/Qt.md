@@ -1,6 +1,7 @@
 - [示例](#示例)
 - [基础](#基础)
 	- [关键概念](#关键概念)
+	- [界面布局](#界面布局)
 
 
 	
@@ -199,6 +200,33 @@ connect(ui->checkBox, &QCheckBox::clicked, this, qOverload<bool>(&Widget::do_cli
 // 使用sender()函数获取信号发射者
 QPushButton *btn = qobject_cast<QPushButton*>(sender());
 // QMetaObject::propertyCount()返回元对象描述的类中定义的属性个数，但是其中不包括对象的动态属性
+```
+## 界面布局
+QHBoxLayout	水平布局
+QVBoxLayout	垂直布局
+QGridLayout	网格布局
+QFormLayout	表单布局：用于实现两列的标签-字段（Label-Field）对，常用于设置窗口
+QStackedLayout	堆栈布局：一次只显示一个控件，其他控件隐藏，常用于多页界面
+```cpp
+// 创建一些控件
+QPushButton *button1 = new QPushButton("按钮 1");
+QPushButton *button2 = new QPushButton("按钮 2");
+QLabel *label = new QLabel("这是一个标签");
+
+// 创建布局管理器
+// 创建一个水平布局
+QHBoxLayout *hLayout = new QHBoxLayout;
+
+// 将控件添加到水平布局
+hLayout->addWidget(button1);
+hLayout->addWidget(button2);
+hLayout->addWidget(label);
+
+// 布局管理器本身不能直接显示，它必须被设置给一个容器控件
+// 创建一个中心控件/容器
+QWidget *centralWidget = new QWidget;
+// 将布局设置给中心控件
+centralWidget->setLayout(hLayout);
 ```
 ## QStringLiteral
 ```cpp
